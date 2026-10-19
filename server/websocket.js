@@ -110,18 +110,28 @@ function broadcast(channelOrData, maybeData) {
 
   const messageStr = JSON.stringify(payload);
 
-  if (channel && subscriptions.has(channel)) {
-    // Send to subscribers of this channel
-    for (const client of subscriptions.get(channel)) {
-      if (client.readyState === 1) { // OPEN
-        client.send(messageStr);
+  if (channel) {
+    // Send ONLY to subscribers of this specific channel
+    if (subscriptions.has(channel)) {
+      for (const client of subscriptions.get(channel)) {
+        if (client.readyState === 1) { // OPEN
+          try {
+            client.send(messageStr);
+          } catch (e) {
+            console.error('[WS Send Error]', e.message);
+          }
+        }
       }
     }
   } else {
     // Broadcast to all connected clients
     wss.clients.forEach((client) => {
       if (client.readyState === 1) {
-        client.send(messageStr);
+        try {
+          client.send(messageStr);
+        } catch (e) {
+          console.error('[WS Broadcast Error]', e.message);
+        }
       }
     });
   }

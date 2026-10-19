@@ -8,5 +8,7 @@ router.patch('/preferences', userController.updatePreferences);
 router.post('/wallet/topup', orderLimiter, userController.topupWallet);
 router.get('/wallet/transactions', userController.getWalletTransactions);
 router.post('/addresses', userController.addAddress);
+router.delete('/addresses/:id', userController.deleteAddress);
+router.patch('/addresses/:id/default', userController.setDefaultAddress);
 
 module.exports = router;

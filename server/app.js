@@ -40,12 +40,31 @@ app.use('/api', apiRoutes);
 app.use('/admin', adminRoutes);
 app.get('/docs', (req, res) => res.redirect('/api'));
 
+// Security Guard: Block access to backend code, database, tests, config, and system files
+app.use((req, res, next) => {
+  const blockedPrefixes = ['/server', '/data', '/test', '/node_modules', '/package.json', '/package-lock.json', '/server.js', '/readme.md'];
+  const lowercasePath = req.path.toLowerCase();
+  const isBlocked = blockedPrefixes.some(p => lowercasePath === p || lowercasePath.startsWith(p + '/')) ||
+    lowercasePath.endsWith('.db') ||
+    lowercasePath.endsWith('.db-wal') ||
+    lowercasePath.endsWith('.db-shm') ||
+    lowercasePath.endsWith('.sqlite') ||
+    lowercasePath.endsWith('.log') ||
+    lowercasePath.includes('..');
+
+  if (isBlocked) {
+    return notFoundHandler(req, res);
+  }
+  next();
+});
+
 // Serve Frontend Static Files
 const staticRoot = path.join(__dirname, '..');
 app.use(express.static(staticRoot, {
   etag: true,
   maxAge: '1h',
-  index: 'index.html'
+  index: 'index.html',
+  dotfiles: 'ignore'
 }));
 
 // Fallback to index.html for root or handle 404

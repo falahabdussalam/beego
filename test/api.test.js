@@ -226,6 +226,7 @@ async function runTests() {
     });
 
     // 14. Add address
+    let newAddressId = null;
     await test('POST /api/user/addresses saves custom address', async () => {
       const res = await request('POST', '/api/user/addresses', {
         title: 'New Plantation Bungalow',
@@ -235,9 +236,39 @@ async function runTests() {
       });
       assert.strictEqual(res.status, 201);
       assert.strictEqual(res.body.data.title, 'New Plantation Bungalow');
+      newAddressId = res.body.data.id;
+    });
+
+    // 15. Security guard prevents accessing database file
+    await test('GET /data/beego.db returns 404 blocked by security guard', async () => {
+      const res = await request('GET', '/data/beego.db');
+      assert.strictEqual(res.status, 404);
+    });
+
+    // 16. Courier listings
+    await test('GET /api/courier returns courier dispatches', async () => {
+      const res = await request('GET', '/api/courier');
+      assert.strictEqual(res.status, 200);
+      assert.ok(res.body.data.length >= 1);
+    });
+
+    // 17. Delete address
+    await test('DELETE /api/user/addresses/:id removes address', async () => {
+      assert.ok(newAddressId);
+      const res = await request('DELETE', `/api/user/addresses/${newAddressId}`);
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(res.body.success, true);
     });
 
   } finally {
+    // Reset test artifacts to pristine clean database state
+    try {
+      db.prepare('DELETE FROM orders').run();
+      db.prepare('DELETE FROM courier_bookings').run();
+      db.prepare('DELETE FROM wallet_transactions').run();
+      db.prepare("UPDATE users SET wallet_balance = 0.00 WHERE id = 'user_falah'").run();
+    } catch (e) {}
+
     server.close();
   }
 

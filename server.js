@@ -40,10 +40,11 @@ function handleShutdown(signal) {
   server.close(() => {
     console.log('[Server] HTTP server stopped accepting connections.');
 
-    // Close SQLite
+    // Close SQLite cleanly
     try {
+      db.pragma('wal_checkpoint(TRUNCATE)');
       db.close();
-      console.log('[Database] SQLite connection closed.');
+      console.log('[Database] SQLite connection checkpointed and closed cleanly.');
     } catch (e) {
       console.error('[Database] Error closing SQLite:', e.message);
     }

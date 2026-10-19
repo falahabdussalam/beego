@@ -44,22 +44,24 @@ const orderController = {
 
       for (const cartItem of items) {
         const itemId = cartItem.id || cartItem.item?.id;
-        const qty = parseInt(cartItem.qty || 1, 10);
+        let qty = parseInt(cartItem.qty || cartItem.quantity || 1, 10);
+        if (isNaN(qty) || qty <= 0) continue;
+        qty = Math.min(99, qty);
 
-        if (!itemId || qty <= 0) continue;
+        if (!itemId) continue;
 
         const dbItem = getItemStmt.get(itemId);
         if (!dbItem) {
-          // If item was generated client-side, fallback gracefully to sent price
-          const price = parseFloat(cartItem.price || cartItem.item?.price || 0);
-          const name = cartItem.name || cartItem.item?.name || 'Custom Order Item';
+          const rawPrice = parseFloat(cartItem.price || cartItem.item?.price || 0);
+          const price = isNaN(rawPrice) ? 0 : Math.max(0, Math.min(50000, rawPrice));
+          const name = String(cartItem.name || cartItem.item?.name || 'Custom Order Item').substring(0, 100);
           subtotal += price * qty;
           verifiedItems.push({
             id: itemId,
             name,
             price,
             qty,
-            total: price * qty
+            total: Math.round(price * qty * 100) / 100
           });
         } else {
           subtotal += dbItem.price * qty;
@@ -70,7 +72,7 @@ const orderController = {
             name: dbItem.name,
             price: dbItem.price,
             qty,
-            total: dbItem.price * qty
+            total: Math.round(dbItem.price * qty * 100) / 100
           });
         }
       }
@@ -93,8 +95,13 @@ const orderController = {
         }
       }
 
+      // Free delivery for orders >= ₹199 in Virajpet
+      if (subtotal >= 199.00) {
+        deliveryFee = 0.00;
+      }
+
       const serviceFee = 15.00;
-      const tipAmount = Math.max(0, parseFloat(tip) || 0);
+      const tipAmount = Math.max(0, Math.min(5000, parseFloat(tip) || 0));
 
       // Validate Promo Code
       let discount = 0.00;
@@ -110,6 +117,7 @@ const orderController = {
             discount = Math.min(promo.max_discount, (subtotal * promo.value) / 100);
           } else if (promo.type === 'FREE_DELIVERY') {
             discount = deliveryFee;
+            deliveryFee = 0.00;
           } else if (promo.type === 'FLAT') {
             discount = Math.min(promo.max_discount, promo.value);
           }

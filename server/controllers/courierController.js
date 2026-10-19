@@ -1,5 +1,6 @@
 const { db } = require('../db/database');
 const { broadcast } = require('../websocket');
+const { startOrderSimulation } = require('../services/telemetryService');
 
 // Virajpet Locality Nodes & Topography Map
 const VIRAJPEE_LOCALITIES = {
@@ -133,6 +134,9 @@ const courierController = {
         timestamp: new Date().toISOString()
       });
 
+      // Start live telemetry simulation for courier
+      startOrderSimulation(bookingNumber);
+
       res.status(201).json({
         success: true,
         message: `Courier Booking #${bookingNumber} dispatched successfully!`,
@@ -220,6 +224,106 @@ const courierController = {
       success: true,
       data: list
     });
+  },
+
+  /**
+   * GET /api/courier
+   * List all courier bookings with status filter and pagination
+   */
+  getAllBookings: (req, res, next) => {
+    try {
+      const { status, limit = 20, offset = 0 } = req.query;
+      let sql = 'SELECT * FROM courier_bookings WHERE 1=1';
+      const params = {};
+
+      if (status) {
+        sql += ' AND status = @status';
+        params.status = status.toUpperCase();
+      }
+
+      sql += ' ORDER BY created_at DESC LIMIT @limit OFFSET @offset';
+      params.limit = parseInt(limit, 10) || 20;
+      params.offset = parseInt(offset, 10) || 0;
+
+      const rows = db.prepare(sql).all(params);
+      const total = db.prepare('SELECT count(*) as c FROM courier_bookings').get().c;
+
+      res.json({
+        success: true,
+        total,
+        count: rows.length,
+        data: rows.map(b => ({
+          id: b.id,
+          bookingNumber: b.booking_number,
+          packageType: b.package_type,
+          packageName: b.package_name,
+          origin: { id: b.origin_id, name: b.origin_name },
+          destination: { id: b.dest_id, name: b.dest_name },
+          fare: b.fare,
+          status: b.status,
+          rider: {
+            name: b.rider_name,
+            phone: b.rider_phone,
+            vehicle: b.rider_vehicle
+          },
+          etaMinutes: b.eta_minutes,
+          createdAt: b.created_at
+        }))
+      });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  /**
+   * PATCH /api/courier/:id/status
+   * Update courier booking status
+   */
+  updateBookingStatus: (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      const validStatuses = ['ASSIGNED', 'PICKED_UP', 'ON_THE_WAY', 'DELIVERED', 'CANCELLED'];
+      if (!status || !validStatuses.includes(status.toUpperCase())) {
+        return res.status(400).json({
+          success: false,
+          error: 'InvalidStatus',
+          message: `Status must be one of: ${validStatuses.join(', ')}`
+        });
+      }
+
+      const booking = db.prepare('SELECT * FROM courier_bookings WHERE id = ? OR booking_number = ?').get(id, id.toUpperCase());
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          error: 'BookingNotFound',
+          message: `Booking '${id}' was not found.`
+        });
+      }
+
+      const newStatus = status.toUpperCase();
+      db.prepare(`UPDATE courier_bookings SET status = ?, updated_at = datetime('now') WHERE id = ?`).run(newStatus, booking.id);
+
+      broadcast(`courier:${booking.booking_number}`, {
+        type: 'order_status_update',
+        orderNumber: booking.booking_number,
+        status: newStatus,
+        message: `Courier #${booking.booking_number} status updated to ${newStatus}`,
+        timestamp: new Date().toISOString()
+      });
+
+      res.json({
+        success: true,
+        message: `Courier #${booking.booking_number} updated to ${newStatus}`,
+        data: {
+          bookingNumber: booking.booking_number,
+          status: newStatus
+        }
+      });
+    } catch (e) {
+      next(e);
+    }
   }
 };
 

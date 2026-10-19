@@ -4,6 +4,16 @@
  */
 const rateLimits = new Map();
 
+// Periodic sweep to prevent unbounded memory growth from stale IPs
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, record] of rateLimits.entries()) {
+    if (now - record.startTime > 300000) {
+      rateLimits.delete(ip);
+    }
+  }
+}, 180000).unref();
+
 function createRateLimiter({ windowMs = 60 * 1000, max = 60, message = 'Too many requests, please try again shortly.' } = {}) {
   return function rateLimiter(req, res, next) {
     const ip = req.ip || req.connection.remoteAddress || 'unknown';

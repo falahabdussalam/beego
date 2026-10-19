@@ -19,8 +19,10 @@ const userController = {
       // Fetch saved addresses
       const addresses = db.prepare('SELECT * FROM addresses WHERE user_id = ? ORDER BY is_default DESC, created_at ASC').all(DEFAULT_USER_ID);
 
-      // Fetch recent orders
-      const orders = db.prepare('SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 5').all(DEFAULT_USER_ID);
+      // Fetch recent orders & courier dispatches
+      const orders = db.prepare('SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 6').all(DEFAULT_USER_ID);
+      const couriers = db.prepare('SELECT * FROM courier_bookings WHERE user_id = ? ORDER BY created_at DESC LIMIT 6').all(DEFAULT_USER_ID);
+
       const parsedOrders = orders.map(o => {
         let items = [];
         try { items = JSON.parse(o.items_json); } catch (e) { items = []; }
@@ -32,9 +34,26 @@ const userController = {
           total: o.total,
           itemsCount: items.length,
           firstItemName: items[0]?.name || 'Halal Meal',
-          createdAt: o.created_at
+          createdAt: o.created_at,
+          isCourier: false
         };
       });
+
+      const parsedCouriers = couriers.map(c => ({
+        id: c.id,
+        orderNumber: c.booking_number,
+        merchantName: `Town Courier: ${c.origin_name} → ${c.dest_name}`,
+        status: c.status,
+        total: c.fare,
+        itemsCount: 1,
+        firstItemName: c.package_name || 'Town Courier Parcel',
+        createdAt: c.created_at,
+        isCourier: true
+      }));
+
+      const combinedActivity = [...parsedOrders, ...parsedCouriers]
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 8);
 
       res.json({
         success: true,
@@ -61,7 +80,7 @@ const userController = {
             preset: a.preset,
             isDefault: Boolean(a.is_default)
           })),
-          recentOrders: parsedOrders
+          recentOrders: combinedActivity
         }
       });
     } catch (error) {
@@ -224,6 +243,58 @@ const userController = {
           referenceId: t.reference_id,
           createdAt: t.created_at
         }))
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * DELETE /api/user/addresses/:id
+   */
+  deleteAddress: (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const result = db.prepare('DELETE FROM addresses WHERE id = ? AND user_id = ?').run(id, DEFAULT_USER_ID);
+      if (result.changes === 0) {
+        return res.status(404).json({
+          success: false,
+          error: 'AddressNotFound',
+          message: `Address '${id}' was not found.`
+        });
+      }
+      res.json({
+        success: true,
+        message: 'Saved address deleted successfully.'
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * PATCH /api/user/addresses/:id/default
+   */
+  setDefaultAddress: (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const exists = db.prepare('SELECT id FROM addresses WHERE id = ? AND user_id = ?').get(id, DEFAULT_USER_ID);
+      if (!exists) {
+        return res.status(404).json({
+          success: false,
+          error: 'AddressNotFound',
+          message: `Address '${id}' was not found.`
+        });
+      }
+
+      db.transaction(() => {
+        db.prepare('UPDATE addresses SET is_default = 0 WHERE user_id = ?').run(DEFAULT_USER_ID);
+        db.prepare('UPDATE addresses SET is_default = 1 WHERE id = ? AND user_id = ?').run(id, DEFAULT_USER_ID);
+      })();
+
+      res.json({
+        success: true,
+        message: 'Default delivery address updated.'
       });
     } catch (error) {
       next(error);
