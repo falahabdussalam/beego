@@ -104,15 +104,21 @@ BEEGO features a dedicated, production-grade backend server tailored for Virajpe
 | `/api/orders` | `GET` | List orders with pagination & status filters |
 | `/api/orders/:id` | `GET` | Order details with 4-stage tracking timeline |
 | `/api/orders/:id/status` | `PATCH` | Update order status (`PREPARING`, `PICKED_UP`, `ON_THE_WAY`, `DELIVERED`) |
+| `/api/courier` | `GET` | List town courier bookings with pagination & status filters |
 | `/api/courier/quote` | `POST` | Calculate fare based on Virajpet distance multipliers & package weight |
-| `/api/courier/book` | `POST` | Book town courier dispatch (assigns Mohammed Suhail) |
+| `/api/courier/book` | `POST` | Book town courier dispatch (assigns Mohammed Suhail with live telemetry) |
+| `/api/courier/:id` | `GET` | Get courier booking details by booking number or ID |
+| `/api/courier/:id/status` | `PATCH` | Update courier status (`ASSIGNED`, `PICKED_UP`, `ON_THE_WAY`, `DELIVERED`) |
 | `/api/courier/localities` | `GET` | List supported Virajpet localities & GPS coordinates |
-| `/api/user/profile` | `GET` | User profile (Falah Abdulla), wallet balance, saved places, and recent orders |
+| `/api/user/profile` | `GET` | User profile (Falah Abdulla), wallet balance, saved places, and unified activity feed |
 | `/api/user/preferences` | `PATCH` | Update spice level and eco-packaging preference |
 | `/api/user/wallet/topup` | `POST` | Wallet top-up via UPI with transaction ledger entry |
+| `/api/user/wallet/transactions` | `GET` | Retrieve wallet credit/debit transaction history |
 | `/api/user/addresses` | `POST` | Add new saved address from Google Maps picker |
+| `/api/user/addresses/:id` | `DELETE` | Remove a saved address from user profile |
+| `/api/user/addresses/:id/default` | `PATCH` | Set default active delivery address |
 | `/api/promos/validate` | `POST` | Validate coupon codes (`BEEGO10`, `BEEGOFIRST`, `FREEDEL`, `KODAGU50`) |
-| `/ws` | `WebSocket` | Real-time telemetry & order event stream |
+| `/ws` | `WebSocket` | Real-time telemetry & order/courier event stream |
 
 ---
 
