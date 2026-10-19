@@ -63,6 +63,7 @@ const userController = {
           email: user.email,
           phone: user.phone,
           avatarUrl: user.avatar_url,
+          location: user.location || 'Virajpet Town, Kodagu 571218',
           membership: user.membership,
           walletBalance: user.wallet_balance,
           preferences: {
@@ -81,6 +82,76 @@ const userController = {
             isDefault: Boolean(a.is_default)
           })),
           recentOrders: combinedActivity
+        }
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * PATCH /api/user/profile
+   * PUT /api/user/profile
+   */
+  updateProfile: (req, res, next) => {
+    try {
+      const { name, email, phone, avatarUrl, location } = req.body;
+
+      const updates = [];
+      const params = [];
+
+      if (name !== undefined) {
+        const trimmedName = String(name).trim();
+        if (!trimmedName) {
+          return res.status(400).json({
+            success: false,
+            error: 'InvalidName',
+            message: 'Name cannot be empty.'
+          });
+        }
+        updates.push('name = ?');
+        params.push(trimmedName);
+      }
+
+      if (email !== undefined) {
+        updates.push('email = ?');
+        params.push(String(email).trim());
+      }
+
+      if (phone !== undefined) {
+        updates.push('phone = ?');
+        params.push(String(phone).trim());
+      }
+
+      if (avatarUrl !== undefined) {
+        updates.push('avatar_url = ?');
+        params.push(String(avatarUrl).trim());
+      }
+
+      if (location !== undefined) {
+        updates.push('location = ?');
+        params.push(String(location).trim());
+      }
+
+      if (updates.length > 0) {
+        params.push(DEFAULT_USER_ID);
+        db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).run(...params);
+      }
+
+      const updated = db.prepare('SELECT * FROM users WHERE id = ?').get(DEFAULT_USER_ID);
+
+      res.json({
+        success: true,
+        message: 'Profile updated successfully!',
+        data: {
+          id: updated.id,
+          name: updated.name,
+          email: updated.email,
+          phone: updated.phone,
+          avatarUrl: updated.avatar_url,
+          location: updated.location || 'Virajpet Town, Kodagu 571218',
+          membership: updated.membership,
+          walletBalance: updated.wallet_balance
         }
       });
     } catch (error) {

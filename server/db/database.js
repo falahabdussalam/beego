@@ -198,6 +198,17 @@ function initDatabase() {
   `;
 
   db.exec(schema);
+
+  // Migration: ensure location column exists on users table
+  try {
+    const tableInfo = db.pragma('table_info(users)');
+    const hasLocation = tableInfo.some(col => col.name === 'location');
+    if (!hasLocation) {
+      db.exec("ALTER TABLE users ADD COLUMN location TEXT DEFAULT 'Virajpet Town, Kodagu 571218'");
+    }
+  } catch (e) {
+    // ignore if already exists
+  }
 }
 
 module.exports = {

@@ -260,13 +260,39 @@ async function runTests() {
       assert.strictEqual(res.body.success, true);
     });
 
+    // 18. Update profile (name, phone, avatar)
+    await test('PATCH /api/user/profile updates user name, phone and avatar_url', async () => {
+      const res = await request('PATCH', '/api/user/profile', {
+        name: 'Falah Abdulla Kodagu',
+        phone: '+91 98451 99999',
+        avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=180&h=180&q=80',
+        location: 'College Road, Virajpet 571218'
+      });
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(res.body.success, true);
+      assert.strictEqual(res.body.data.name, 'Falah Abdulla Kodagu');
+      assert.strictEqual(res.body.data.phone, '+91 98451 99999');
+      assert.strictEqual(res.body.data.avatarUrl, 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=180&h=180&q=80');
+      assert.strictEqual(res.body.data.location, 'College Road, Virajpet 571218');
+    });
+
+    // 19. Validate profile name
+    await test('PATCH /api/user/profile rejects blank name', async () => {
+      const res = await request('PATCH', '/api/user/profile', {
+        name: '   '
+      });
+      assert.strictEqual(res.status, 400);
+      assert.strictEqual(res.body.success, false);
+      assert.strictEqual(res.body.error, 'InvalidName');
+    });
+
   } finally {
     // Reset test artifacts to pristine clean database state
     try {
       db.prepare('DELETE FROM orders').run();
       db.prepare('DELETE FROM courier_bookings').run();
       db.prepare('DELETE FROM wallet_transactions').run();
-      db.prepare("UPDATE users SET wallet_balance = 0.00 WHERE id = 'user_falah'").run();
+      db.prepare("UPDATE users SET name = 'Falah Abdulla', phone = '+91 98451 23456', email = 'falah.kodagu@gmail.com', avatar_url = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=180&q=80', location = 'Virajpet Town, Kodagu 571218', wallet_balance = 0.00 WHERE id = 'user_falah'").run();
     } catch (e) {}
 
     server.close();

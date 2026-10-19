@@ -475,9 +475,14 @@ function seedDatabase(options = {}) {
     db.prepare('DELETE FROM orders').run();
     db.prepare('DELETE FROM courier_bookings').run();
     db.prepare('DELETE FROM wallet_transactions').run();
-    db.prepare("UPDATE users SET wallet_balance = 0.00 WHERE id = 'user_falah'").run();
+    db.prepare("UPDATE users SET name = 'Falah Abdulla', phone = '+91 98451 23456', email = 'falah.kodagu@gmail.com', avatar_url = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=180&q=80', location = 'Virajpet Town, Kodagu 571218', wallet_balance = 0.00 WHERE id = 'user_falah'").run();
     console.log('[Seed] Cleared orders, couriers, and reset wallet balance to 0.00.');
   }
+
+  // Ensure default user has consistent baseline values
+  try {
+    db.prepare("UPDATE users SET name = 'Falah Abdulla', phone = '+91 98451 23456', email = 'falah.kodagu@gmail.com', location = 'Virajpet Town, Kodagu 571218' WHERE id = 'user_falah'").run();
+  } catch (e) {}
 
   const countMerchants = db.prepare('SELECT COUNT(*) as count FROM merchants').get().count;
   if (countMerchants > 0) {

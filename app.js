@@ -1762,6 +1762,62 @@ document.addEventListener('DOMContentLoaded', () => {
   const profileStatPoints = document.getElementById('profile-stat-points');
   const profileStatSavings = document.getElementById('profile-stat-savings');
 
+  // User Profile Data & Edit Bindings
+  const profileDisplayName = document.getElementById('profile-display-name');
+  const profileDisplayLocation = document.getElementById('profile-display-location');
+  const profileDisplayPhone = document.getElementById('profile-display-phone');
+  const profileDisplayEmail = document.getElementById('profile-display-email');
+  const profileMembershipPill = document.getElementById('profile-membership-pill');
+  const profileAvatarImg = document.getElementById('profile-avatar-img');
+  const profileAvatarWrap = document.getElementById('profile-avatar-wrap');
+  const btnChangeAvatar = document.getElementById('btn-change-avatar');
+  const btnOpenEditProfile = document.getElementById('btn-open-edit-profile');
+  const headerAvatarImg = document.getElementById('header-avatar-img');
+  const headerProfileName = document.getElementById('header-profile-name');
+
+  // Edit Profile Modal elements
+  const editProfileModal = document.getElementById('edit-profile-modal');
+  const btnCloseEditProfile = document.getElementById('btn-close-edit-profile');
+  const btnCancelEditProfile = document.getElementById('btn-cancel-edit-profile');
+  const editProfileForm = document.getElementById('edit-profile-form');
+  const editAvatarPreview = document.getElementById('edit-avatar-preview');
+  const editProfileFileInput = document.getElementById('edit-profile-file-input');
+  const btnTriggerFileUpload = document.getElementById('btn-trigger-file-upload');
+  const editProfileAvatarUrl = document.getElementById('edit-profile-avatar-url');
+  const avatarPresetBtns = document.querySelectorAll('.avatar-preset-btn');
+  const editProfileName = document.getElementById('edit-profile-name');
+  const editProfilePhone = document.getElementById('edit-profile-phone');
+  const editProfileEmail = document.getElementById('edit-profile-email');
+  const editProfileLocation = document.getElementById('edit-profile-location');
+  const btnSaveProfile = document.getElementById('btn-save-profile');
+
+  let currentProfile = {
+    name: 'Falah Abdulla',
+    email: 'falah.kodagu@gmail.com',
+    phone: '+91 98451 23456',
+    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=180&q=80',
+    location: 'Virajpet Town, Kodagu 571218',
+    membership: 'ROYALE GOLD'
+  };
+
+  function applyProfileToUI(profile) {
+    if (!profile) return;
+    currentProfile = { ...currentProfile, ...profile };
+
+    if (profileDisplayName && currentProfile.name) profileDisplayName.textContent = currentProfile.name;
+    if (profileDisplayLocation) profileDisplayLocation.textContent = '📍 ' + (currentProfile.location || 'Virajpet Town, Kodagu 571218');
+    if (profileDisplayPhone) profileDisplayPhone.textContent = '📞 ' + (currentProfile.phone || '+91 98451 23456');
+    if (profileDisplayEmail) profileDisplayEmail.textContent = '✉️ ' + (currentProfile.email || 'falah.kodagu@gmail.com');
+    if (profileMembershipPill && currentProfile.membership) profileMembershipPill.textContent = currentProfile.membership.toUpperCase();
+    if (profileAvatarImg && currentProfile.avatarUrl) profileAvatarImg.src = currentProfile.avatarUrl;
+
+    if (headerAvatarImg && currentProfile.avatarUrl) headerAvatarImg.src = currentProfile.avatarUrl;
+    if (headerProfileName && currentProfile.name) {
+      const firstName = currentProfile.name.trim().split(' ')[0] || 'Falah';
+      headerProfileName.textContent = firstName;
+    }
+  }
+
   function openProfileDrawer() {
     if (cartDrawer && cartDrawer.classList.contains('open')) {
       closeCartDrawer();
@@ -2013,6 +2069,180 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- EDIT PROFILE & AVATAR MODAL CONTROLS ---
+  function openEditProfileModal() {
+    if (!editProfileModal) return;
+
+    // Populate current values
+    if (editProfileName) editProfileName.value = currentProfile.name || 'Falah Abdulla';
+    if (editProfilePhone) editProfilePhone.value = currentProfile.phone || '+91 98451 23456';
+    if (editProfileEmail) editProfileEmail.value = currentProfile.email || 'falah.kodagu@gmail.com';
+    if (editProfileLocation) editProfileLocation.value = currentProfile.location || 'Virajpet Town, Kodagu 571218';
+    if (editProfileAvatarUrl) editProfileAvatarUrl.value = currentProfile.avatarUrl || '';
+    if (editAvatarPreview) editAvatarPreview.src = currentProfile.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=180&q=80';
+
+    // Highlight matching preset
+    avatarPresetBtns.forEach(btn => {
+      const url = btn.getAttribute('data-url');
+      if (url === currentProfile.avatarUrl) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    editProfileModal.style.display = 'flex';
+  }
+
+  function closeEditProfileModal() {
+    if (editProfileModal) {
+      editProfileModal.style.display = 'none';
+    }
+  }
+
+  if (btnOpenEditProfile) {
+    btnOpenEditProfile.addEventListener('click', openEditProfileModal);
+  }
+  if (btnChangeAvatar) {
+    btnChangeAvatar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openEditProfileModal();
+    });
+  }
+  if (profileAvatarWrap) {
+    profileAvatarWrap.addEventListener('click', openEditProfileModal);
+  }
+
+  if (btnCloseEditProfile) {
+    btnCloseEditProfile.addEventListener('click', closeEditProfileModal);
+  }
+  if (btnCancelEditProfile) {
+    btnCancelEditProfile.addEventListener('click', closeEditProfileModal);
+  }
+
+  if (editProfileModal) {
+    editProfileModal.addEventListener('click', (e) => {
+      if (e.target === editProfileModal) {
+        closeEditProfileModal();
+      }
+    });
+  }
+
+  // Trigger Device File Picker
+  if (btnTriggerFileUpload && editProfileFileInput) {
+    btnTriggerFileUpload.addEventListener('click', () => {
+      editProfileFileInput.click();
+    });
+  }
+
+  // Handle Device File Upload
+  if (editProfileFileInput) {
+    editProfileFileInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (file) {
+        if (!file.type.startsWith('image/')) {
+          showToast('Please select a valid image file (PNG, JPG, WebP).');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (loadEvt) => {
+          const dataUrl = loadEvt.target.result;
+          if (editAvatarPreview) editAvatarPreview.src = dataUrl;
+          if (editProfileAvatarUrl) editProfileAvatarUrl.value = dataUrl;
+          avatarPresetBtns.forEach(b => b.classList.remove('active'));
+          showToast('📸 Photo loaded from device! Click Save to apply.');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Handle Preset Avatar Selection
+  avatarPresetBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      avatarPresetBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const url = btn.getAttribute('data-url');
+      if (url) {
+        if (editAvatarPreview) editAvatarPreview.src = url;
+        if (editProfileAvatarUrl) editProfileAvatarUrl.value = url;
+      }
+    });
+  });
+
+  // Handle Manual Avatar URL input
+  if (editProfileAvatarUrl) {
+    editProfileAvatarUrl.addEventListener('input', () => {
+      const url = editProfileAvatarUrl.value.trim();
+      if (url && (url.startsWith('http') || url.startsWith('data:image'))) {
+        if (editAvatarPreview) editAvatarPreview.src = url;
+      }
+    });
+  }
+
+  // Submit Profile Changes
+  if (editProfileForm) {
+    editProfileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nameVal = editProfileName ? editProfileName.value.trim() : '';
+      const phoneVal = editProfilePhone ? editProfilePhone.value.trim() : '';
+      const emailVal = editProfileEmail ? editProfileEmail.value.trim() : '';
+      const locVal = editProfileLocation ? editProfileLocation.value.trim() : '';
+      const avatarVal = editProfileAvatarUrl ? editProfileAvatarUrl.value.trim() : (editAvatarPreview ? editAvatarPreview.src : '');
+
+      if (!nameVal) {
+        showToast('Please enter your full name.');
+        return;
+      }
+
+      if (btnSaveProfile) {
+        btnSaveProfile.disabled = true;
+        btnSaveProfile.innerHTML = '<span>Saving...</span>';
+      }
+
+      try {
+        const res = await fetch('/api/user/profile', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: nameVal,
+            phone: phoneVal,
+            email: emailVal,
+            location: locVal,
+            avatarUrl: avatarVal
+          })
+        });
+
+        const json = await res.json();
+        if (json.success && json.data) {
+          applyProfileToUI(json.data);
+          closeEditProfileModal();
+          showToast('✨ Profile & avatar updated successfully!');
+        } else {
+          showToast(json.message || 'Failed to update profile. Please try again.');
+        }
+      } catch (err) {
+        // Fallback for offline mode: apply locally
+        applyProfileToUI({
+          name: nameVal,
+          phone: phoneVal,
+          email: emailVal,
+          location: locVal,
+          avatarUrl: avatarVal
+        });
+        closeEditProfileModal();
+        showToast('✨ Profile updated locally!');
+      } finally {
+        if (btnSaveProfile) {
+          btnSaveProfile.disabled = false;
+          btnSaveProfile.innerHTML = '<span>Save Profile Changes</span>';
+        }
+      }
+    });
+  }
+
   // =========================================================================
   // 15. HEADER SCROLL ELEVATION
   // =========================================================================
@@ -2035,6 +2265,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
       if (data.success && data.data) {
         const profile = data.data;
+        applyProfileToUI(profile);
+
         currentWalletBalance = profile.walletBalance || 0;
         if (profileWalletBalance) profileWalletBalance.textContent = currentWalletBalance.toFixed(2);
         
@@ -2044,7 +2276,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const orders = profile.recentOrders || [];
-        if (profileStatOrders) profileStatOrders.textContent = orders.length;
+        const foodOrders = orders.filter(o => !o.isCourier);
+        const courierOrders = orders.filter(o => o.isCourier);
+
+        if (profileStatOrders) profileStatOrders.textContent = foodOrders.length;
+        if (profileStatCouriers) profileStatCouriers.textContent = courierOrders.length;
+        if (profileStatPoints) profileStatPoints.textContent = (foodOrders.length * 25 + courierOrders.length * 15);
+        if (profileStatSavings) profileStatSavings.textContent = '₹' + ((foodOrders.length + courierOrders.length) * 35);
 
         // Check if there is an active order in transit
         const activeOrder = orders.find(o => ['PENDING', 'ACCEPTED', 'PREPARING', 'PICKED_UP', 'ON_THE_WAY'].includes(o.status));

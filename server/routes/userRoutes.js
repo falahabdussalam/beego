@@ -4,6 +4,8 @@ const userController = require('../controllers/userController');
 const { orderLimiter } = require('../middleware/rateLimiter');
 
 router.get('/profile', userController.getProfile);
+router.patch('/profile', userController.updateProfile);
+router.put('/profile', userController.updateProfile);
 router.patch('/preferences', userController.updatePreferences);
 router.post('/wallet/topup', orderLimiter, userController.topupWallet);
 router.get('/wallet/transactions', userController.getWalletTransactions);
