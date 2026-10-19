@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BEEGO</title>
+  <meta name="description"
+    content="Virajpet's premier on-demand delivery platform. 100% Halal certified Kodagu dining, biryani, akki roti, estate coffee, pure honey, and express town courier service.">
+
+  <!-- Google Fonts: Bricolage Grotesque -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <!-- Leaflet Map CSS for Google Maps Picker -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+</head>
+
+<body>
+
+  <!-- Main Navigation Header -->
+  <header class="site-header" id="header">
+    <div class="container header-inner">
+      <!-- Brand Logo -->
+      <a href="#" class="brand-logo" aria-label="BEEGO Virajpet Home">
+        <div class="logo-symbol">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">BEEGO</span>
+          <span class="logo-sub">VIRAJPEE • KODAGU</span>
+        </div>
+      </a>
+
+      <!-- Delivery / Courier Mode Toggle -->
+      <nav class="mode-switcher" aria-label="Service Mode">
+        <button type="button" class="mode-btn active" data-mode="dining">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+            <line x1="6" y1="1" x2="6" y2="4" />
+            <line x1="10" y1="1" x2="10" y2="4" />
+            <line x1="14" y1="1" x2="14" y2="4" />
+          </svg>
+          <span>Halal Food</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="courier">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          <span>Town Courier</span>
+        </button>
+      </nav>
+
+      <!-- Location Address Selector -->
+      <div class="address-picker" id="address-trigger" role="button" tabindex="0"
+        title="Click to change delivery location">
+        <div class="pin-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+        </div>
+        <div class="address-content">
+          <span class="address-label">Delivering in Virajpet</span>
+          <span class="address-current" id="current-address-text">Clock Tower Circle, Virajpet</span>
+        </div>
+        <svg class="chevron-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+
+      <!-- Action Utilities -->
+      <div class="header-actions">
+        <!-- Live Search Trigger -->
+        <div class="search-input-wrapper">
+          <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="global-search-input" placeholder="Search halal biryani, koli curry..."
+            aria-label="Search">
+          <button type="button" class="clear-search-btn" id="clear-search" aria-label="Clear search"
+            style="display: none;">&times;</button>
+        </div>
+
+        <!-- Track Action Pill (Hidden until real active order exists) -->
+        <button type="button" class="btn-track-pill" id="track-modal-trigger" title="Track Live Order" style="display: none;">
+          <span class="pulsing-dot"></span>
+          <span id="track-modal-trigger-text">Track Order</span>
+        </button>
+
+        <!-- Cart Drawer Button -->
+        <button type="button" class="cart-trigger-btn" id="cart-drawer-trigger" aria-label="View basket">
+          <div class="cart-icon-wrap">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span class="cart-badge" id="cart-badge-count" style="display: none;">0</span>
+          </div>
+          <span class="cart-total-text" id="cart-header-total" style="display: none;">₹0</span>
+        </button>
+
+        <!-- User Profile Trigger Button -->
+        <button type="button" class="btn-profile-trigger" id="profile-trigger" aria-label="Open User Profile" title="Falah Abdulla (My Account)">
+          <div class="profile-avatar-thumb">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80" alt="Falah Abdulla">
+            <span class="profile-status-dot" title="Royale Member Active"></span>
+          </div>
+          <span class="profile-name-text">Falah</span>
+          <svg class="profile-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <!-- HERO SECTION (NEAT, CLEAN, ALL-IN-ONE-LINE DESIGN) -->
+    <section class="hero-section">
+      <div class="container hero-container-neat">
+        <div class="hero-tag">
+          <span class="hero-tag-gem"></span>
+          <span>100% Halal Certified • Virajpet, Kodagu</span>
+        </div>
+
+        <h1 class="hero-headline-neat">Virajpet's finest halal food, delivered in minutes.</h1>
+        <p class="hero-description-neat">Authentic Kodagu koli curry, Thalassery kaima biryani, estate coffee &amp; town
+          courier.</p>
+
+        <!-- Hero Section Category Navigations -->
+        <nav class="hero-nav-bar" id="hero-quick-nav" aria-label="Hero service categories">
+          <button type="button" class="hero-nav-item active" data-category="food">
+            <span class="hero-nav-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+                <line x1="6" y1="1" x2="6" y2="4" />
+                <line x1="10" y1="1" x2="10" y2="4" />
+                <line x1="14" y1="1" x2="14" y2="4" />
+              </svg>
+            </span>
+            <span class="hero-nav-label">Food</span>
+          </button>
+
+          <button type="button" class="hero-nav-item" data-category="grocery">
+            <span class="hero-nav-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+            </span>
+            <span class="hero-nav-label">Grocery</span>
+          </button>
+
+          <button type="button" class="hero-nav-item" data-category="medicine">
+            <span class="hero-nav-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="4" />
+                <line x1="12" y1="8" x2="12" y2="16" />
+                <line x1="8" y1="12" x2="16" y2="12" />
+              </svg>
+            </span>
+            <span class="hero-nav-label">Medicine</span>
+          </button>
+
+          <button type="button" class="hero-nav-item" data-category="beverages">
+            <span class="hero-nav-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+                <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+                <line x1="6" y1="2" x2="6" y2="4" />
+                <line x1="10" y1="2" x2="10" y2="4" />
+                <line x1="14" y1="2" x2="14" y2="4" />
+              </svg>
+            </span>
+            <span class="hero-nav-label">Beverages</span>
+          </button>
+
+          <button type="button" class="hero-nav-item" data-category="desserts">
+            <span class="hero-nav-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M12 2a4 4 0 0 0-4 4c0 1.25.57 2.37 1.46 3.1A6 6 0 0 0 3 15v1a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-1a6 6 0 0 0-6.46-5.9A4 4 0 0 0 16 6a4 4 0 0 0-4-4Z" />
+              </svg>
+            </span>
+            <span class="hero-nav-label">Desserts</span>
+          </button>
+        </nav>
+
+        <!-- All-in-One-Line Action Bar -->
+        <div class="hero-oneline-bar">
+          <div class="oneline-segment segment-location" id="hero-location-segment" role="button" tabindex="0"
+            title="Click to pick location on Google Map">
+            <div class="segment-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </div>
+            <div class="segment-field">
+              <label for="delivery-location-input">Location (Map Select)</label>
+              <input type="text" id="delivery-location-input" value="Clock Tower Circle, Virajpet"
+                placeholder="Select location on Google Map..." readonly>
+            </div>
+            <button type="button" class="btn-map-shortcut" id="btn-hero-open-map" title="Open Google Map Pin Picker">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                <line x1="8" y1="2" x2="8" y2="18"></line>
+                <line x1="16" y1="6" x2="16" y2="22"></line>
+              </svg>
+              <span>Map</span>
+            </button>
+          </div>
+
+          <div class="oneline-divider"></div>
+
+          <div class="oneline-segment segment-service">
+            <div class="segment-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <div class="segment-field">
+              <label for="hero-service-mode">Service</label>
+              <select id="hero-service-mode">
+                <option value="food">Halal Food (15–25 min)</option>
+                <option value="grocery">Grocery &amp; Spices (15–25 min)</option>
+                <option value="medicine">Medicine &amp; Health (10–20 min)</option>
+                <option value="beverages">Estate Kaapi &amp; Tea (10–15 min)</option>
+                <option value="desserts">Desserts &amp; Bakes (15–20 min)</option>
+                <option value="courier">Town &amp; Estate Courier</option>
+                <option value="track">Track Live Telemetry</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary oneline-btn" id="btn-hero-explore">
+            <span id="hero-btn-label">Explore Halal Menus</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Single-Line Proof Strip -->
+        <div class="hero-proof-line">
+          <div class="proof-pill">
+            <span class="proof-dot"></span>
+            <span><strong>20m</strong> Avg Town Delivery</span>
+          </div>
+          <span class="proof-sep">•</span>
+          <div class="proof-pill">
+            <span>🍗 <strong>100% Halal</strong> Certified</span>
+          </div>
+          <span class="proof-sep">•</span>
+          <div class="proof-pill">
+            <span>⭐ <strong>4.96★</strong> (18k+ Orders)</span>
+          </div>
+          <span class="proof-sep">•</span>
+          <div class="proof-pill">
+            <span>🛵 <strong>18 Riders</strong> Live in Virajpet</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIVE TRACKING INTERACTIVE BANNER / SECTION -->
+    <section class="tracking-drawer-section" id="track-section">
+      <div class="container">
+        <!-- STANDBY VIEW: When no delivery is active -->
+        <div class="tracking-card tracking-standby" id="tracking-standby-view">
+          <div class="standby-content">
+            <div class="standby-left">
+              <div class="standby-icon-badge">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                </svg>
+              </div>
+              <div class="standby-text">
+                <span class="kicker-small">LIVE VIRAJPEE TELEMETRY • READY</span>
+                <h3 class="standby-heading">No Active Deliveries Right Now</h3>
+                <p class="standby-desc">Order authentic Kodagu halal dining or request a town courier to watch real-time GPS telemetry from rider Mohammed Suhail right here.</p>
+              </div>
+            </div>
+            <div class="standby-actions">
+              <a href="#categories-browse" class="btn btn-primary btn-sm">Browse Halal Menus</a>
+              <a href="#courier-service-section" class="btn btn-outline-maroon btn-sm">Book Town Courier</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTIVE VIEW: Revealed dynamically when an order is placed -->
+        <div class="tracking-card tracking-active" id="tracking-active-view" style="display: none;">
+          <div class="tracking-top-bar">
+            <div class="tracking-title-wrap">
+              <div class="tracking-pulsing-icon">
+                <span class="pulse-ring"></span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                </svg>
+              </div>
+              <div>
+                <span class="kicker-small">LIVE VIRAJPEE TELEMETRY</span>
+                <h2 class="tracking-heading" id="tracking-heading-text">Active Delivery: Order</h2>
+              </div>
+            </div>
+
+            <div class="tracking-controls">
+              <span class="badge-status-live" id="live-tracking-badge">Assigning Rider...</span>
+              <button class="btn-sm btn-outline-maroon" id="btn-toggle-tracking-details">
+                <span id="toggle-tracking-text">Hide Live Map</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="tracking-content-body" id="tracking-body">
+            <!-- Timeline Steps -->
+            <div class="tracking-timeline-grid">
+              <div class="timeline-step completed">
+                <div class="step-dot">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div class="step-info">
+                  <span class="step-title">Order Placed</span>
+                  <span class="step-time">Kitchen Verified</span>
+                </div>
+              </div>
+
+              <div class="timeline-step active-step">
+                <div class="step-dot dot-pulsing">
+                  <div class="inner-dot"></div>
+                </div>
+                <div class="step-info">
+                  <span class="step-title">Freshly Prepared</span>
+                  <span class="step-time">Thermal Sealed</span>
+                </div>
+              </div>
+
+              <div class="timeline-step pending">
+                <div class="step-dot"></div>
+                <div class="step-info">
+                  <span class="step-title">Rider On The Way</span>
+                  <span class="step-time">Mohammed Suhail</span>
+                </div>
+              </div>
+
+              <div class="timeline-step pending">
+                <div class="step-dot"></div>
+                <div class="step-info">
+                  <span class="step-title">OTP Handover</span>
+                  <span class="step-time">Contactless Sign-off</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Simulated Real-time Map and Courier Details -->
+            <div class="tracking-map-row">
+              <!-- Stylized Vector Map Component (Virajpet / Western Ghats Hill layout) -->
+              <div class="map-simulation-container">
+                <div class="map-canvas-mock">
+                  <!-- Street Lines Grid -->
+                  <div class="map-grid-lines"></div>
+                  <!-- Coffee estate green zone & local stream -->
+                  <div class="map-waterway"></div>
+                  <div class="map-park"
+                    style="background-color: rgba(144, 190, 109, 0.45); width: 180px; height: 110px;"></div>
+
+                  <!-- Route Polyline SVG -->
+                  <svg class="map-route-svg" viewBox="0 0 600 240" preserveAspectRatio="none">
+                    <path class="route-bg" d="M 60,180 C 140,180 180,120 280,110 C 360,100 420,150 520,70" />
+                    <path class="route-active" d="M 60,180 C 140,180 180,120 280,110 C 360,100 420,150 520,70" />
+                  </svg>
+
+                  <!-- Store Marker (Start - Clock Tower Circle) -->
+                  <div class="map-pin pin-store" style="left: 10%; top: 73%;">
+                    <div class="pin-marker">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                      </svg>
+                    </div>
+                    <span class="pin-popup">Kitchen / Merchant</span>
+                  </div>
+
+                  <!-- Courier Vehicle Moving Marker (Current) -->
+                  <div class="map-pin pin-courier" style="left: 10%; top: 73%;">
+                    <div class="courier-halo"></div>
+                    <div class="courier-vehicle-icon">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="18.5" cy="17.5" r="3.5" />
+                        <circle cx="5.5" cy="17.5" r="3.5" />
+                        <circle cx="15" cy="5" r="1" />
+                        <path d="M12 17.5V14l-3-3 4-3 2 3h2" />
+                      </svg>
+                    </div>
+                    <span class="pin-popup pin-courier-popup">Suhail (Rider) • Assigning Route</span>
+                  </div>
+
+                  <!-- Destination Marker (End) -->
+                  <div class="map-pin pin-dest" style="left: 86%; top: 25%;">
+                    <div class="pin-marker dest-marker">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
+                    </div>
+                    <span class="pin-popup">Your Residence</span>
+                  </div>
+
+                  <div class="map-controls-overlay">
+                    <span class="map-status-pill">● Virajpet Telemetry Active (1 Hz)</span>
+                    <span class="map-speed-pill">Speed: 0 km/h • Electric Smart Scooter</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Courier Card & Action buttons -->
+              <div class="courier-profile-card">
+                <div class="courier-card-head">
+                  <img
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80"
+                    alt="Courier Mohammed Suhail" class="courier-headshot">
+                  <div class="courier-meta">
+                    <h3 class="courier-full-name">Mohammed Suhail</h3>
+                    <div class="courier-stats">
+                      <span class="star-rating">★ 4.99</span>
+                      <span class="dot-sep">•</span>
+                      <span>1,840 Virajpet Deliveries</span>
+                    </div>
+                    <span class="courier-badge-tag">Certified Halal Delivery Fleet</span>
+                  </div>
+                </div>
+
+                <div class="courier-bag-specs">
+                  <div class="spec-row">
+                    <span class="spec-label">Transport Unit</span>
+                    <span class="spec-val">TVS iQube (Thermal Box)</span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-label">Delivery Note</span>
+                    <span class="spec-val">"Ring bell or leave at front door"</span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-label">Handover Code</span>
+                    <span class="spec-val font-mono"><strong>Share OTP with rider</strong></span>
+                  </div>
+                </div>
+
+                <div class="courier-actions">
+                  <button class="btn btn-secondary btn-full" id="btn-call-courier">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path
+                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                    </svg>
+                    <span>Contact Rider</span>
+                  </button>
+                  <button class="btn btn-outline-maroon btn-full" id="btn-tip-courier-now">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                      </path>
+                    </svg>
+                    <span>Add Rider Tip</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATEGORY NAVIGATION & SERVICE SELECTOR -->
+    <section class="categories-section" id="categories-browse">
+      <div class="container">
+        <div class="section-header-row">
+          <div>
+            <span class="kicker-small">100% HALAL SPECIALTIES &amp; KODAGU PROVISIONS</span>
+            <h2 class="section-heading">Explore Virajpet Offerings</h2>
+          </div>
+          <div class="category-filter-pills" id="category-pills" role="tablist">
+            <button class="cat-pill active" data-category="all" role="tab">All Selections</button>
+            <button class="cat-pill" data-category="food" role="tab">Halal Food</button>
+            <button class="cat-pill" data-category="grocery" role="tab">Grocery &amp; Spices</button>
+            <button class="cat-pill" data-category="medicine" role="tab">Medicine &amp; Health</button>
+            <button class="cat-pill" data-category="beverages" role="tab">Estate Kaapi &amp; Beverages</button>
+            <button class="cat-pill" data-category="desserts" role="tab">Halal Desserts &amp; Bakes</button>
+            <button class="cat-pill" data-category="courier" role="tab">Town Courier</button>
+          </div>
+        </div>
+
+        <!-- Curated Merchants Grid -->
+        <div class="merchants-grid" id="merchants-grid">
+          <!-- Populated dynamically via app.js -->
+        </div>
+
+        <div class="empty-results-state" id="empty-search-state" style="display: none;">
+          <div class="empty-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <h3>No halal merchants found</h3>
+          <p>We couldn't find matches for "<span id="empty-search-query"></span>". Try another Kodagu delicacy or clear
+            filter.</p>
+          <button class="btn btn-secondary" id="btn-reset-search">Reset Search</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEND A PARCEL / COURIER ESTIMATOR SECTION -->
+    <section class="parcel-service-section" id="courier-service-section">
+      <div class="container">
+        <div class="parcel-card">
+          <div class="parcel-left">
+            <span class="kicker-small">BEEGO VIRAJPEE TOWN &amp; ESTATE COURIER</span>
+            <h2 class="section-heading-cream">Need an express courier across Virajpet?</h2>
+            <p class="parcel-desc">
+              From coffee estate documents and banking cheques to hot homemade lunch tiffins, fresh cakes, and spice
+              parcels sent to Gonikoppal or Ammathi. Trusted point-to-point delivery.
+            </p>
+
+            <div class="parcel-features-list">
+              <div class="p-feat">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span><strong>Instant Dispatch:</strong> Rider at your gate in 5–8 minutes.</span>
+              </div>
+              <div class="p-feat">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span><strong>Hot Tiffin &amp; Fragile Care:</strong> Kept upright in insulated boxes.</span>
+              </div>
+              <div class="p-feat">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span><strong>Secure Delivery OTP:</strong> Handed over only upon recipient PIN check.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="parcel-right">
+            <div class="calculator-box">
+              <h3 class="calc-title">Virajpet Courier Fare Estimator</h3>
+
+              <div class="calc-group">
+                <label>Pickup Location</label>
+                <select id="calc-origin">
+                  <option value="clock_tower">Clock Tower Circle (Town Center)</option>
+                  <option value="college_rd">College Road &amp; Kaveri Layout</option>
+                  <option value="malabar_rd">Malabar Road &amp; Meenupet</option>
+                  <option value="bittangala">Bittangala &amp; Arji Junction</option>
+                  <option value="gonikoppal_rd">Gonikoppal Road &amp; Estate Belt</option>
+                </select>
+              </div>
+
+              <div class="calc-group">
+                <label>Destination Location</label>
+                <select id="calc-dest">
+                  <option value="college_rd">College Road &amp; Kaveri Layout</option>
+                  <option value="clock_tower">Clock Tower Circle (Town Center)</option>
+                  <option value="malabar_rd">Malabar Road &amp; Meenupet</option>
+                  <option value="bittangala">Bittangala &amp; Arji Junction</option>
+                  <option value="gonikoppal_rd">Gonikoppal Road &amp; Estate Belt</option>
+                </select>
+              </div>
+
+              <div class="calc-group">
+                <label>Package Category</label>
+                <div class="package-size-buttons">
+                  <button type="button" class="pkg-btn active" data-type="doc" data-base="40">
+                    <span class="pkg-name">Documents</span>
+                    <span class="pkg-sub">Envelope / Papers</span>
+                  </button>
+                  <button type="button" class="pkg-btn" data-type="tiffin" data-base="60">
+                    <span class="pkg-name">Hot Tiffin</span>
+                    <span class="pkg-sub">Lunch Carrier</span>
+                  </button>
+                  <button type="button" class="pkg-btn" data-type="parcel" data-base="90">
+                    <span class="pkg-name">Spices/Coffee</span>
+                    <span class="pkg-sub">Up to 4 kg</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="calc-summary">
+                <div class="calc-price-display">
+                  <span class="calc-price-label">Estimated Delivery Fare</span>
+                  <div class="calc-price-num" id="calc-total-fare">₹55</div>
+                </div>
+                <div class="calc-eta-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  <span>Pickup: <strong>5 mins</strong> • Drop: <strong>18 mins</strong></span>
+                </div>
+              </div>
+
+              <button class="btn btn-primary btn-full" id="btn-request-courier-modal">
+                <span>Book Courier Pickup</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE BEEGO VIRAJPEE STANDARDS -->
+    <section class="standards-section">
+      <div class="container">
+        <div class="section-title-center">
+          <span class="kicker-small">OUR VIRAJPEE PROMISE</span>
+          <h2 class="section-heading">Why Kodagu Trusts BEEGO</h2>
+          <p class="section-subtext">Punctual, strictly halal, and engineered for Kodagu's hill terrain.</p>
+        </div>
+
+        <div class="standards-grid">
+          <div class="standard-card">
+            <div class="standard-icon-wrap">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </div>
+            <h3 class="standard-title">100% Halal Certified</h3>
+            <p class="standard-text">
+              Every partnered restaurant, cloud kitchen, and meat item is strictly Zabiha Halal verified with zero
+              compromises.
+            </p>
+          </div>
+
+          <div class="standard-card">
+            <div class="standard-icon-wrap">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
+              </svg>
+            </div>
+            <h3 class="standard-title">Thermal-Shielded Delivery</h3>
+            <p class="standard-text">
+              Akki roti, koli curry, and biryanis stay boiling hot even through chilly Kodagu evening mist and monsoon
+              rain.
+            </p>
+          </div>
+
+          <div class="standard-card">
+            <div class="standard-icon-wrap">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 14 10"></polyline>
+              </svg>
+            </div>
+            <h3 class="standard-title">Local Town Navigators</h3>
+            <p class="standard-text">
+              Our riders are local Virajpet residents who know every lane from Clock Tower to Kakotuparambu without
+              needing directions.
+            </p>
+          </div>
+
+          <div class="standard-card">
+            <div class="standard-icon-wrap">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <h3 class="standard-title">Clean Handover Guarantee</h3>
+            <p class="standard-text">
+              No spillage, no missing items. If your order isn't in pristine condition, we replace it immediately or
+              refund your payment.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLIENT TESTIMONIALS & REVIEWS -->
+    <section class="testimonials-section">
+      <div class="container">
+        <div class="section-title-center">
+          <span class="kicker-small">LOCAL VOICES</span>
+          <h2 class="section-heading">Loved Across Virajpet &amp; South Kodagu</h2>
+        </div>
+
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <div class="stars-row">★★★★★</div>
+            <p class="testimonial-quote">
+              "Finally, a dependable delivery service in Virajpet! The koli curry and akki roti from Al-Bait reached our
+              house in Kaveri Layout steaming hot in under 20 minutes."
+            </p>
+            <div class="testimonial-author">
+              <div class="author-name">Fathima Zohra</div>
+              <div class="author-location">Kaveri Layout, Virajpet • Verified Local Resident</div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="stars-row">★★★★★</div>
+            <p class="testimonial-quote">
+              "Knowing that every single restaurant on BEEGO Virajpet is 100% Halal certified gives our family complete
+              peace of mind. The Thalassery mutton dum biryani was outstanding."
+            </p>
+            <div class="testimonial-author">
+              <div class="author-name">Abdul Rauf</div>
+              <div class="author-location">Malabar Road, Virajpet • Coffee Planter</div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="stars-row">★★★★★</div>
+            <p class="testimonial-quote">
+              "We regularly use BEEGO to send freshly packed roasted estate coffee and spice jars to our relatives near
+              Gonikoppal. Prompt pickup and very polite riders."
+            </p>
+            <div class="testimonial-author">
+              <div class="author-name">K. B. Somanna</div>
+              <div class="author-location">Bittangala, Kodagu • Estate Owner</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOBILE APPLICATION & MEMBERSHIP BANNER -->
+    <section class="membership-section">
+      <div class="container">
+        <div class="membership-banner">
+          <div class="membership-content">
+            <span class="badge-gold">BEEGO VIRAJPEE ROYALE</span>
+            <h2 class="membership-title">Your everyday Virajpet delivery companion</h2>
+            <p class="membership-text">
+              Join BEEGO Royale Virajpet for unlimited free town deliveries on orders above ₹199, priority courier
+              dispatch during monsoon rains, and exclusive discounts on festive halal feasts.
+            </p>
+            <div class="app-badges-row">
+              <button class="app-store-pill">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.93.04-2.02.63-2.65 1.37-.56.64-1.04 1.7-0.91 2.74 1.05.08 2.08-.54 2.64-1.24z" />
+                </svg>
+                <div>
+                  <span class="app-sub">Download on the</span>
+                  <span class="app-name">Apple App Store</span>
+                </div>
+              </button>
+
+              <button class="app-store-pill">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M3 20.5v-17c0-.83.67-1.5 1.5-1.5.3 0 .58.09.82.25l13.5 8.5c.62.39.81 1.21.42 1.83-.11.18-.27.32-.42.42l-13.5 8.5c-.24.16-.52.25-.82.25-.83 0-1.5-.67-1.5-1.5z" />
+                </svg>
+                <div>
+                  <span class="app-sub">Get it on</span>
+                  <span class="app-name">Google Play</span>
+                </div>
+              </button>
+            </div>
+          </div>
+          <div class="membership-graphic">
+            <div class="card-mockup">
+              <div class="card-logo-row">
+                <span class="card-brand">BEEGO</span>
+                <span class="card-tier">VIRAJPEE SELECT</span>
+              </div>
+              <div class="card-chip"></div>
+              <div class="card-number">•••• •••• •••• 5712</div>
+              <div class="card-bottom">
+                <span>VIRAJPEE MEMBER</span>
+                <span>PINCODE: 571218</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- STORE & PRODUCT DETAILS MODAL -->
+  <div class="modal-backdrop" id="merchant-modal" style="display: none;">
+    <div class="modal-dialog modal-lg">
+      <button class="modal-close-btn" id="btn-close-merchant-modal" aria-label="Close modal">&times;</button>
+
+      <div class="merchant-modal-banner" id="modal-banner-img">
+        <div class="merchant-modal-overlay"></div>
+        <div class="merchant-modal-headline">
+          <span class="badge-store-tag" id="modal-tag">100% Halal Kitchen</span>
+          <h2 id="modal-store-name">Al-Bait Kodagu Halal Kitchen</h2>
+          <div class="merchant-quick-meta" id="modal-meta-row">
+            <span>★ 4.97 (1.4k+ reviews)</span>
+            <span>•</span>
+            <span>15–25 min delivery</span>
+            <span>•</span>
+            <span>Clock Tower Circle, Virajpet</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="merchant-modal-content">
+        <div class="menu-filter-bar">
+          <h3 class="menu-heading">Featured Halal Offerings</h3>
+          <span class="menu-notice">Prepared fresh with authentic Kodagu estate spices</span>
+        </div>
+
+        <div class="menu-items-list" id="modal-menu-list">
+          <!-- Populated dynamically via app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOOGLE MAP MANUAL LOCATION PICKER MODAL -->
+  <div class="modal-backdrop" id="address-modal" style="display: none;">
+    <div class="modal-dialog modal-map">
+      <button class="modal-close-btn" id="btn-close-address-modal" aria-label="Close modal">&times;</button>
+
+      <div class="map-modal-header">
+        <div class="map-modal-title-wrap">
+          <div class="map-modal-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
+          <div>
+            <h3 class="modal-title">Select Delivery Location on Google Map</h3>
+            <p class="modal-sub">Drag the map or pin manually to pinpoint your exact doorstep in Virajpet</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map Container with Overlays -->
+      <div class="map-picker-viewport-wrap">
+        <!-- Floating Search & Quick Chips on Top of Map -->
+        <div class="map-floating-search-bar">
+          <div class="map-search-input-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="map-search-input" placeholder="Search street, landmark, or area in Virajpet..."
+              autocomplete="off">
+            <button type="button" id="map-clear-search-btn" class="map-clear-btn"
+              style="display: none;">&times;</button>
+          </div>
+          <div class="map-search-suggestions" id="map-search-suggestions" style="display: none;"></div>
+
+          <!-- Quick Landmark Chips -->
+          <div class="map-quick-landmarks" id="map-quick-landmarks">
+            <button type="button" class="map-chip active" data-lat="12.2015" data-lng="75.8034"
+              data-title="Clock Tower Circle, Main Road">📍 Clock Tower</button>
+            <button type="button" class="map-chip" data-lat="12.2052" data-lng="75.8068"
+              data-title="Kaveri Layout, College Road">📍 Kaveri Layout</button>
+            <button type="button" class="map-chip" data-lat="12.1985" data-lng="75.8012"
+              data-title="Malabar Road, Near Mosque">📍 Malabar Road</button>
+            <button type="button" class="map-chip" data-lat="12.2080" data-lng="75.8090"
+              data-title="College Road, Near Kaveri Campus">📍 College Road</button>
+            <button type="button" class="map-chip" data-lat="12.1950" data-lng="75.7980"
+              data-title="Meenupet, Fish Market Road">📍 Meenupet</button>
+            <button type="button" class="map-chip" data-lat="12.1998" data-lng="75.8028"
+              data-title="KSRTC Bus Stand Area">📍 Bus Stand</button>
+          </div>
+        </div>
+
+        <!-- The Leaflet Google Map Container -->
+        <div id="google-picker-map" class="google-picker-map-canvas"></div>
+
+        <!-- Center Pin Overlay (Bouncing delivery pin positioned in center of map) -->
+        <div class="map-center-pin-overlay" id="map-center-pin">
+          <div class="center-pin-tooltip" id="map-pin-tooltip">Move map to place pin</div>
+          <div class="center-pin-marker">
+            <svg width="36" height="46" viewBox="0 0 36 46" fill="none">
+              <path d="M18 0C8.06 0 0 8.06 0 18c0 13.5 18 28 18 28s18-14.5 18-28C36 8.06 27.94 0 18 0z"
+                fill="#520D18" />
+              <circle cx="18" cy="18" r="8" fill="#FAF7F2" />
+              <circle cx="18" cy="18" r="4" fill="#C08D38" />
+            </svg>
+          </div>
+          <div class="center-pin-shadow"></div>
+        </div>
+
+        <!-- Floating Map Controls (GPS Locate + Layer Toggle) -->
+        <div class="map-floating-actions">
+          <button type="button" class="map-action-icon-btn" id="btn-map-locate-me"
+            aria-label="Use My Current GPS Location" title="Use My Current GPS Location">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+            </svg>
+          </button>
+          <button type="button" class="map-action-icon-btn" id="btn-map-layer-toggle"
+            aria-label="Toggle Google Satellite / Road View" title="Toggle Google Satellite / Road View">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <div class="map-badge-coords" id="map-badge-coords">
+          12.2015° N, 75.8034° E • Google Maps
+        </div>
+      </div>
+
+      <!-- Address Details & Manual Edit Bottom Section -->
+      <div class="map-address-details-panel">
+        <div class="map-selected-address-box">
+          <div class="map-address-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
+          <div class="map-address-text-group">
+            <div class="map-address-primary-row">
+              <h4 class="map-address-primary" id="map-picked-title">Clock Tower Circle, Virajpet</h4>
+              <span class="map-verified-tag">Pin Placed</span>
+            </div>
+            <p class="map-address-secondary" id="map-picked-subtext">Main Road, Beside Jamia Masjid, Virajpet, Kodagu,
+              Karnataka 571218</p>
+          </div>
+        </div>
+
+        <div class="map-address-extra-inputs">
+          <div class="map-input-col">
+            <label for="input-map-flat">Flat / House No. / Building (Optional):</label>
+            <input type="text" id="input-map-flat" placeholder="e.g. House #14, 1st Floor, Near Green Gate">
+          </div>
+          <div class="map-input-col">
+            <label for="input-map-landmark">Nearby Landmark / Delivery Note (Optional):</label>
+            <input type="text" id="input-map-landmark" placeholder="e.g. Opposite Jamia Masjid, Call upon arrival">
+          </div>
+        </div>
+
+        <!-- Saved / Quick Presets -->
+        <div class="map-saved-presets-row">
+          <span class="preset-label">Save As / Quick Tag:</span>
+          <button type="button" class="preset-tag active" data-tag="Home">🏠 Home</button>
+          <button type="button" class="preset-tag" data-tag="Work">💼 Work</button>
+          <button type="button" class="preset-tag" data-tag="Estate">🌿 Estate</button>
+          <button type="button" class="preset-tag" data-tag="Other">📍 Other</button>
+        </div>
+
+        <div class="modal-actions-row map-modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-address">Cancel</button>
+          <button type="button" class="btn btn-primary btn-confirm-map" id="btn-confirm-address">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Confirm Location &amp; Deliver Here</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SLIDE-OVER USER PROFILE DRAWER -->
+  <div class="cart-backdrop" id="profile-drawer-backdrop" style="display: none;"></div>
+  <aside class="profile-drawer" id="profile-drawer" aria-label="User Profile and Account">
+    <!-- Drawer Header -->
+    <div class="profile-drawer-header">
+      <div class="profile-header-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <h3>My Account</h3>
+      </div>
+      <button class="profile-close-btn" id="btn-close-profile" aria-label="Close profile">&times;</button>
+    </div>
+
+    <div class="profile-drawer-scrollable">
+      <!-- User Profile Card -->
+      <div class="profile-user-card">
+        <div class="profile-avatar-large-wrap">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=180&q=80" alt="Falah Abdulla" class="profile-avatar-large">
+          <span class="royale-crown-badge" title="Royale Gold Member">👑</span>
+        </div>
+        <div class="profile-main-meta">
+          <div class="profile-name-row">
+            <h4 class="profile-user-name" id="profile-display-name">Falah Abdulla</h4>
+            <span class="badge-royale-pill">ROYALE GOLD</span>
+          </div>
+          <p class="profile-user-location">📍 Virajpet Town, Kodagu 571218</p>
+          <div class="profile-contact-chips">
+            <span class="profile-contact-pill">📞 +91 98451 23456</span>
+            <span class="profile-contact-pill">✉️ falah.kodagu@gmail.com</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Row (Live synced) -->
+      <div class="profile-stats-grid">
+        <div class="profile-stat-box">
+          <span class="stat-number" id="profile-stat-orders">0</span>
+          <span class="stat-label">Halal Orders</span>
+        </div>
+        <div class="profile-stat-box">
+          <span class="stat-number" id="profile-stat-couriers">0</span>
+          <span class="stat-label">Town Couriers</span>
+        </div>
+        <div class="profile-stat-box">
+          <span class="stat-number" id="profile-stat-points">0</span>
+          <span class="stat-label">BeePoints</span>
+        </div>
+        <div class="profile-stat-box">
+          <span class="stat-number" id="profile-stat-savings">₹0</span>
+          <span class="stat-label">Total Saved</span>
+        </div>
+      </div>
+
+      <!-- Profile Tabs -->
+      <div class="profile-tab-nav" role="tablist">
+        <button type="button" class="profile-tab-btn active" data-tab="tab-orders">📦 Orders &amp; Activity</button>
+        <button type="button" class="profile-tab-btn" data-tab="tab-addresses">📍 Saved Places</button>
+        <button type="button" class="profile-tab-btn" data-tab="tab-wallet">💳 Wallet &amp; Pay</button>
+        <button type="button" class="profile-tab-btn" data-tab="tab-preferences">⚙️ Preferences</button>
+      </div>
+
+      <!-- Tab Content: Orders & Activity (Real Live History) -->
+      <div class="profile-tab-pane" id="tab-orders">
+        <div class="profile-orders-list" id="profile-orders-container" style="width: 100%;">
+          <div class="empty-orders-view">
+            <div class="empty-orders-icon">📦</div>
+            <h4>No Orders Placed Yet</h4>
+            <p>Your ongoing halal food deliveries and town courier dispatches will be tracked here live.</p>
+            <a href="#categories-browse" class="btn btn-sm btn-primary" id="btn-profile-explore-now">Explore Halal Menus</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content: Saved Places -->
+      <div class="profile-tab-pane" id="tab-addresses" style="display: none;">
+        <div class="saved-places-list">
+          <div class="profile-place-card active" data-addr="Clock Tower Circle, Main Road, Virajpet 571218">
+            <div class="place-icon-badge">🏠</div>
+            <div class="place-details">
+              <div class="place-title-row">
+                <span class="place-title">Home (Town Center)</span>
+                <span class="place-active-pill">Active Delivery</span>
+              </div>
+              <p class="place-sub">Clock Tower Circle, Main Road, Virajpet 571218</p>
+              <span class="place-note">Landmark: Beside Jamia Masjid road</span>
+            </div>
+          </div>
+
+          <div class="profile-place-card" data-addr="House 42, Kaveri Layout, College Road, Virajpet 571218">
+            <div class="place-icon-badge">💼</div>
+            <div class="place-details">
+              <div class="place-title-row">
+                <span class="place-title">Kaveri Layout Residence</span>
+                <button type="button" class="btn-use-address-chip">Select</button>
+              </div>
+              <p class="place-sub">House 42, Kaveri Layout, College Road, Virajpet 571218</p>
+              <span class="place-note">Landmark: Green gate near Kaveri school</span>
+            </div>
+          </div>
+
+          <div class="profile-place-card" data-addr="Estate Bungalow, Malabar Road, Near Meenupet, Virajpet">
+            <div class="place-icon-badge">🌿</div>
+            <div class="place-details">
+              <div class="place-title-row">
+                <span class="place-title">Malabar Road Estate</span>
+                <button type="button" class="btn-use-address-chip">Select</button>
+              </div>
+              <p class="place-sub">Estate Bungalow, Malabar Road, Near Meenupet, Virajpet</p>
+              <span class="place-note">Landmark: Coffee drying yard entrance</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn-add-new-address-map" id="btn-profile-add-address-map">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+          <span>Pin New Address on Google Map</span>
+        </button>
+      </div>
+
+      <!-- Tab Content: Wallet & Payments -->
+      <div class="profile-tab-pane" id="tab-wallet" style="display: none;">
+        <div class="wallet-balance-card">
+          <div class="wallet-balance-header">
+            <div>
+              <span class="wallet-kicker">BEEGO WALLET BALANCE</span>
+              <div class="wallet-amount-row">
+                <span class="wallet-currency">₹</span>
+                <span class="wallet-amount-val" id="profile-wallet-balance">0.00</span>
+              </div>
+            </div>
+            <div class="wallet-coin-icon">🪙</div>
+          </div>
+          <div class="wallet-quick-add-row">
+            <span class="quick-add-label">Quick Top Up:</span>
+            <button type="button" class="wallet-add-chip" data-amount="200">+₹200</button>
+            <button type="button" class="wallet-add-chip" data-amount="500">+₹500</button>
+            <button type="button" class="wallet-add-chip" data-amount="1000">+₹1,000</button>
+          </div>
+        </div>
+
+        <div class="payment-methods-box">
+          <h5 class="pay-methods-title">Saved Payment Options</h5>
+          <div class="pay-method-item">
+            <div class="pay-method-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            </div>
+            <div class="pay-method-info">
+              <strong>Google Pay / PhonePe UPI</strong>
+              <span>falah.abdulla@okaxis • Verified</span>
+            </div>
+            <span class="pay-default-tag">Primary</span>
+          </div>
+
+          <div class="pay-method-item">
+            <div class="pay-method-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            </div>
+            <div class="pay-method-info">
+              <strong>Cash / UPI on Handover</strong>
+              <span>Pay directly to courier rider upon OTP match</span>
+            </div>
+            <span class="pay-active-tag">Active</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content: Halal & Preferences -->
+      <div class="profile-tab-pane" id="tab-preferences" style="display: none;">
+        <div class="prefs-group">
+          <h5 class="prefs-heading">Halal Certification &amp; Standards</h5>
+          <div class="pref-toggle-item">
+            <div>
+              <strong>Strict 100% Halal Guarantee</strong>
+              <p>Filter only 100% verified halal kitchens in Virajpet</p>
+            </div>
+            <span class="pref-badge-enforced">Always Enforced</span>
+          </div>
+
+          <div class="pref-toggle-item">
+            <div>
+              <strong>Spice Customization</strong>
+              <p>Preferred Kodagu spice blend level</p>
+            </div>
+            <select class="pref-select" id="pref-spice-level">
+              <option value="medium" selected>Medium Kodagu Hot (Pepper Roasted)</option>
+              <option value="mild">Mild (Low Chili)</option>
+              <option value="extra">Extra Spicy (Handi Roasted Ghost Pepper)</option>
+            </select>
+          </div>
+
+          <div class="pref-toggle-item">
+            <div>
+              <strong>Eco Packaging (Areca Nut Plates)</strong>
+              <p>Zero plastic cutlery, traditional banana leaf packaging</p>
+            </div>
+            <input type="checkbox" id="pref-eco-pack" checked style="accent-color: var(--maroon-700);">
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Quick Utilities -->
+      <div class="profile-footer-actions">
+        <button type="button" class="btn-profile-help" id="btn-profile-support">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          <span>Virajpet 24x7 Helpdesk (08274-256789)</span>
+        </button>
+
+        <button type="button" class="btn-profile-logout" id="btn-profile-logout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          <span>Log Out</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- SLIDE-OVER BASKET (CART) DRAWER -->
+  <div class="cart-backdrop" id="cart-drawer-backdrop" style="display: none;"></div>
+  <aside class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+      <div class="cart-drawer-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <h3>Your Halal Basket</h3>
+      </div>
+      <button class="cart-close-btn" id="btn-close-cart" aria-label="Close basket">&times;</button>
+    </div>
+
+    <!-- Active Delivery Store info (Hidden until items added) -->
+    <div class="cart-merchant-banner" id="cart-merchant-info" style="display: none;">
+      <div class="cart-store-tag">Delivering From (100% Halal)</div>
+      <div class="cart-store-name" id="cart-store-name">No Kitchen Selected</div>
+      <div class="cart-store-eta">Estimated delivery: 15–25 min</div>
+    </div>
+
+    <!-- Basket Items Body -->
+    <div class="cart-items-body" id="cart-items-container">
+      <div class="empty-cart-view">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <h4>Your Halal Basket is Empty</h4>
+        <p>Explore authentic Kodagu koli curries, Thalassery biryanis, and estate coffee to begin your order.</p>
+      </div>
+    </div>
+
+    <!-- Promo code input -->
+    <div class="cart-promo-section">
+      <div class="promo-input-row">
+        <input type="text" id="promo-code-input" placeholder="Promo code (try 'BEEGO10')" aria-label="Promo code">
+        <button type="button" class="btn btn-sm btn-outline-maroon" id="btn-apply-promo">Apply</button>
+      </div>
+      <div class="promo-status-msg" id="promo-msg" style="display: none;"></div>
+    </div>
+
+    <!-- Courier Tip Selector -->
+    <div class="cart-tip-section">
+      <span class="tip-label">Virajpet Delivery Partner Gratuity (100% to Rider):</span>
+      <div class="tip-buttons">
+        <button class="tip-btn" data-tip="15">₹15</button>
+        <button class="tip-btn" data-tip="30">₹30</button>
+        <button class="tip-btn" data-tip="50">₹50</button>
+        <button class="tip-btn active" data-tip="0">None</button>
+      </div>
+    </div>
+
+    <!-- Order Summary Financials -->
+    <div class="cart-summary-footer">
+      <div class="summary-line">
+        <span>Item Subtotal</span>
+        <span id="summary-subtotal">₹0.00</span>
+      </div>
+      <div class="summary-line">
+        <span>Thermal Sealed Delivery</span>
+        <span id="summary-delivery">FREE</span>
+      </div>
+      <div class="summary-line">
+        <span>Packaging &amp; Town Service</span>
+        <span id="summary-service">₹0.00</span>
+      </div>
+      <div class="summary-line text-success" id="summary-discount-row" style="display: none;">
+        <span>Promo Discount</span>
+        <span id="summary-discount">-₹0.00</span>
+      </div>
+      <div class="summary-line">
+        <span>Rider Gratuity</span>
+        <span id="summary-tip">₹0.00</span>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-total-line">
+        <span>Final Total</span>
+        <span class="total-amount" id="summary-total">₹0.00</span>
+      </div>
+
+      <button class="btn btn-primary btn-full btn-checkout" id="btn-checkout" disabled style="opacity: 0.6; cursor: not-allowed;">
+        <span>Confirm Halal Order</span>
+        <span class="checkout-price" id="btn-checkout-amount">₹0.00</span>
+      </button>
+
+      <div class="checkout-guarantee">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        <span>BEEGO Guarantee • 100% Halal Certified • UPI / Cash on Delivery</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ORDER SUCCESS / CHECKOUT CONFIRMATION MODAL -->
+  <div class="modal-backdrop" id="checkout-modal" style="display: none;">
+    <div class="modal-dialog modal-md">
+      <button class="modal-close-btn" id="btn-close-checkout-modal">&times;</button>
+      <div class="checkout-success-body">
+        <div class="success-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h3 class="modal-title">Order Confirmed!</h3>
+        <p class="modal-sub">
+          Your halal order <strong>#BG-<span id="confirmed-order-id">----</span></strong> has been sent to the Virajpet
+          kitchen.
+        </p>
+
+        <div class="confirmed-summary-box">
+          <div class="conf-row">
+            <span>Delivering To:</span>
+            <strong id="conf-address-text">Clock Tower Circle, Virajpet</strong>
+          </div>
+          <div class="conf-row">
+            <span>Estimated Arrival:</span>
+            <strong class="text-maroon">15–25 minutes</strong>
+          </div>
+          <div class="conf-row">
+            <span>Payment Mode:</span>
+            <strong>UPI (GPay / PhonePe / Cash on Delivery)</strong>
+          </div>
+          <div class="conf-row">
+            <span>Total Paid:</span>
+            <strong id="conf-total-price">₹665.00</strong>
+          </div>
+        </div>
+
+        <div class="modal-actions-row">
+          <button class="btn btn-primary btn-full" id="btn-track-new-order">
+            <span>View Live Rider Tracking</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div class="footer-brand-col">
+        <div class="footer-logo">
+          <div class="logo-symbol-light">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+          </div>
+          <span class="footer-brand-name">BEEGO VIRAJPEE</span>
+        </div>
+        <p class="footer-brand-desc">
+          Kodagu's dedicated 100% Halal food delivery and point-to-point courier network. Serving Virajpet town,
+          Gonikoppal Road, Bittangala, and surrounding coffee plantations.
+        </p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+          </a>
+          <a href="#" aria-label="Twitter">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+              </path>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-links-col">
+        <h4 class="footer-heading">Halal Specialties</h4>
+        <ul>
+          <li><a href="#categories-browse">Kodagu Koli Curry &amp; Akki Oti</a></li>
+          <li><a href="#categories-browse">Thalassery Mutton Dum Biryani</a></li>
+          <li><a href="#categories-browse">Kadambuttu &amp; Pepper Chicken</a></li>
+          <li><a href="#categories-browse">Virajpet Estate Filter Kaapi</a></li>
+          <li><a href="#categories-browse">Pure Coorg Wild Honey &amp; Pepper</a></li>
+          <li><a href="#courier-service-section">Hot Tiffin Estate Courier</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h4 class="footer-heading">Virajpet Coverage</h4>
+        <ul>
+          <li><a href="#">Clock Tower (Gadiyara Kambha)</a></li>
+          <li><a href="#">College Road &amp; Kaveri Layout</a></li>
+          <li><a href="#">Malabar Road &amp; Meenupet</a></li>
+          <li><a href="#">Bittangala &amp; Arji Junction</a></li>
+          <li><a href="#">Gonikoppal Road &amp; Ammathi</a></li>
+          <li><a href="#">Kakotuparambu &amp; Ponnampet</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h4 class="footer-heading">Partner With Us</h4>
+        <ul>
+          <li><a href="#">Register Halal Restaurant</a></li>
+          <li><a href="#">BEEGO Virajpet Rider Fleet</a></li>
+          <li><a href="#">Coffee Estate Gifting &amp; Courier</a></li>
+          <li><a href="#">Home Kitchen Halal Partner</a></li>
+          <li><a href="#">FSSAI &amp; Halal Compliance</a></li>
+          <li><a href="#">Contact Virajpet Hub</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div class="footer-copy">
+        &copy; 2026 BEEGO Virajpet Delivery Technologies (Kodagu, Karnataka). All rights reserved. 100% Halal Verified.
+      </div>
+      <div class="footer-legal-links">
+        <a href="#">Halal Verification Standards</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">FSSAI Kodagu License</a>
+        <a href="#">Terms of Delivery</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Leaflet Map JS for Google Maps Picker -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
