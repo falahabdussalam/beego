@@ -384,47 +384,6 @@ const SEED_MERCHANTS = [
         category: 'Wraps & Rolls'
       }
     ]
-  },
-  {
-    id: 'm7',
-    name: 'BEEGO Virajpet Express Courier',
-    category: 'courier',
-    cuisine: 'Town & Coffee Estate Rapid Two-Wheeler Logistics',
-    rating: 4.99,
-    reviewsCount: '5.2k+',
-    deliveryTime: '10–25 min',
-    deliveryFee: 40.00,
-    minOrder: 40.00,
-    featuredBadge: 'Rapid 5-Min Pickup',
-    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=700&q=80',
-    bannerImage: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=1200&q=80',
-    location: 'Clock Tower Hub, Virajpet',
-    items: [
-      {
-        id: 'item_701',
-        name: 'Town Document / Bank Cheque / Legal Pouch',
-        price: 40.00,
-        desc: 'Secure weather-proof sealed envelope dispatch anywhere in Virajpet town within 20 minutes with recipient PIN verification.',
-        image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=300&q=80',
-        category: 'Town Logistics'
-      },
-      {
-        id: 'item_702',
-        name: 'Hot Tiffin Carrier / Estate Lunch Handover',
-        price: 60.00,
-        desc: 'Carefully transported upright in thermal carriers from town homes directly to plantation offices and estates.',
-        image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=300&q=80',
-        category: 'Estate Deliveries'
-      },
-      {
-        id: 'item_703',
-        name: 'Estate Coffee & Spices Parcel (Up to 4kg)',
-        price: 90.00,
-        desc: 'Same-day courier dispatch between Virajpet, Bittangala, Arji, and Gonikoppal junction.',
-        image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=300&q=80',
-        category: 'Heavy Parcels'
-      }
-    ]
   }
 ];
 
@@ -473,15 +432,20 @@ function seedDatabase(options = {}) {
 
   if (isForce) {
     db.prepare('DELETE FROM orders').run();
-    db.prepare('DELETE FROM courier_bookings').run();
     db.prepare('DELETE FROM wallet_transactions').run();
     db.prepare("UPDATE users SET name = 'Falah Abdulla', phone = '+91 98451 23456', email = 'falah.kodagu@gmail.com', avatar_url = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=180&q=80', location = 'Virajpet Town, Kodagu 571218', wallet_balance = 0.00 WHERE id = 'user_falah'").run();
-    console.log('[Seed] Cleared orders, couriers, and reset wallet balance to 0.00.');
+    console.log('[Seed] Cleared orders and reset wallet balance to 0.00.');
   }
 
   // Ensure default user has consistent baseline values
   try {
     db.prepare("UPDATE users SET name = 'Falah Abdulla', phone = '+91 98451 23456', email = 'falah.kodagu@gmail.com', location = 'Virajpet Town, Kodagu 571218' WHERE id = 'user_falah'").run();
+  } catch (e) {}
+
+  // Ensure legacy courier merchants and items are purged from existing database
+  try {
+    db.prepare("DELETE FROM menu_items WHERE merchant_id = 'm7'").run();
+    db.prepare("DELETE FROM merchants WHERE id = 'm7' OR category = 'courier'").run();
   } catch (e) {}
 
   const countMerchants = db.prepare('SELECT COUNT(*) as count FROM merchants').get().count;
@@ -594,7 +558,7 @@ function seedDatabase(options = {}) {
       is_default: 0
     });
 
-    // 5. Clean Slate: No demo orders, courier bookings or artificial transactions
+    // 5. Clean Slate: No demo orders or artificial transactions
     // Real orders and top-ups will be placed by the customer and recorded live!
   });
 

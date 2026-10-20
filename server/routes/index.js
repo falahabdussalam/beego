@@ -3,7 +3,6 @@ const router = express.Router();
 
 const merchantRoutes = require('./merchantRoutes');
 const orderRoutes = require('./orderRoutes');
-const courierRoutes = require('./courierRoutes');
 const userRoutes = require('./userRoutes');
 const promoRoutes = require('./promoRoutes');
 const healthRoutes = require('./healthRoutes');
@@ -12,7 +11,6 @@ const healthRoutes = require('./healthRoutes');
 router.use('/health', healthRoutes);
 router.use('/merchants', merchantRoutes);
 router.use('/orders', orderRoutes);
-router.use('/courier', courierRoutes);
 router.use('/user', userRoutes);
 router.use('/promos', promoRoutes);
 
@@ -23,14 +21,12 @@ router.get('/', (req, res) => {
     return res.json({
       name: 'BEEGO Virajpet REST API',
       version: '1.0.0',
-      description: 'API for 100% Halal Food, Estate Coffee & Town Express Courier',
+      description: 'API for 100% Halal Food & Estate Coffee Delivery',
       endpoints: {
         health: '/api/health',
         merchants: '/api/merchants',
         categories: '/api/merchants/categories',
         orders: '/api/orders',
-        courierQuote: '/api/courier/quote',
-        courierBook: '/api/courier/book',
         userProfile: '/api/user/profile',
         userPreferences: '/api/user/preferences',
         walletTopup: '/api/user/wallet/topup',
@@ -294,41 +290,6 @@ router.get('/', (req, res) => {
         </div>
       </div>
 
-      <!-- Endpoint 5: Courier Quote -->
-      <div class="endpoint-card">
-        <div class="endpoint-header">
-          <span class="method method-POST">POST</span>
-          <span class="path">/api/courier/quote</span>
-          <span class="desc">Calculate exact Virajpet topography courier fare</span>
-          <button class="btn-test" onclick="runTest('POST', '/api/courier/quote', {
-            origin: 'clock_tower',
-            dest: 'gonikoppal_rd',
-            packageType: 'coffee_parcel'
-          }, 'res-courier-quote')">Test Endpoint</button>
-        </div>
-        <div class="endpoint-body">
-          <div class="live-result" id="res-courier-quote"></div>
-        </div>
-      </div>
-
-      <!-- Endpoint 6: Courier Book -->
-      <div class="endpoint-card">
-        <div class="endpoint-header">
-          <span class="method method-POST">POST</span>
-          <span class="path">/api/courier/book</span>
-          <span class="desc">Book town courier dispatch (assigns Mohammed Suhail)</span>
-          <button class="btn-test" onclick="runTest('POST', '/api/courier/book', {
-            origin: 'clock_tower',
-            dest: 'malabar_rd',
-            packageType: 'document',
-            senderName: 'Falah Abdulla',
-            recipientName: 'Kaveri Estate Office'
-          }, 'res-courier-book')">Test Endpoint</button>
-        </div>
-        <div class="endpoint-body">
-          <div class="live-result" id="res-courier-book"></div>
-        </div>
-      </div>
 
       <!-- Endpoint 7: User Profile -->
       <div class="endpoint-card">

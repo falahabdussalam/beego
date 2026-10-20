@@ -1,7 +1,7 @@
 {
   "name": "beego",
   "version": "1.0.0",
-  "description": "BEEGO Virajpet Edition — 100% Halal Food, Estate Coffee & Town Express Courier Server",
+  "description": "BEEGO Virajpet Edition — 100% Halal Food & Estate Coffee Server",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -14,7 +14,6 @@
     "virajpet",
     "kodagu",
     "delivery",
-    "courier",
     "halal",
     "express",
     "sqlite",

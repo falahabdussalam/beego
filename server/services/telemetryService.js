@@ -14,7 +14,7 @@ const VIRAJPEE_ROUTE = [
 const activeSimulations = new Map();
 
 /**
- * Start or advance a live tracking simulation for an order or courier
+ * Start or advance a live tracking simulation for an order
  */
 function startOrderSimulation(orderNumber, { fastMode = false } = {}) {
   // If already running, do not duplicate
@@ -24,10 +24,8 @@ function startOrderSimulation(orderNumber, { fastMode = false } = {}) {
 
   let stepIndex = 0;
   const intervalMs = fastMode ? 3000 : 6000;
-  const isCourier = String(orderNumber).startsWith('CR-');
-  const typeLabel = isCourier ? 'Courier' : 'Order';
 
-  console.log(`[Telemetry] Starting live Virajpet courier telemetry for ${typeLabel} #${orderNumber}`);
+  console.log(`[Telemetry] Starting live Virajpet delivery telemetry for Order #${orderNumber}`);
 
   const timer = setInterval(() => {
     if (stepIndex >= VIRAJPEE_ROUTE.length) {
@@ -36,32 +34,21 @@ function startOrderSimulation(orderNumber, { fastMode = false } = {}) {
 
       // Final status: DELIVERED
       try {
-        if (isCourier) {
-          db.prepare(`
-            UPDATE courier_bookings 
-            SET status = 'DELIVERED', eta_minutes = 0, updated_at = datetime('now')
-            WHERE booking_number = ?
-          `).run(orderNumber);
-        } else {
-          db.prepare(`
-            UPDATE orders 
-            SET status = 'DELIVERED', eta_minutes = 0, updated_at = datetime('now')
-            WHERE order_number = ?
-          `).run(orderNumber);
-        }
+        db.prepare(`
+          UPDATE orders 
+          SET status = 'DELIVERED', eta_minutes = 0, updated_at = datetime('now')
+          WHERE order_number = ?
+        `).run(orderNumber);
 
         const completionMsg = {
           type: 'order_status_update',
           orderNumber,
           status: 'DELIVERED',
-          message: `${typeLabel} #${orderNumber} safely delivered to destination in Virajpet!`,
+          message: `Order #${orderNumber} safely delivered to destination in Virajpet!`,
           timestamp: new Date().toISOString()
         };
 
         broadcast(`order:${orderNumber}`, completionMsg);
-        if (isCourier) {
-          broadcast(`courier:${orderNumber}`, completionMsg);
-        }
       } catch (err) {
         console.error('[Telemetry Error]', err.message);
       }
@@ -73,8 +60,8 @@ function startOrderSimulation(orderNumber, { fastMode = false } = {}) {
     let statusText = `In Transit (Area: ${currentWaypoint.area})`;
 
     if (stepIndex === 0) {
-      status = isCourier ? 'ASSIGNED' : 'PREPARING';
-      statusText = isCourier ? 'Rider assigned & heading to pickup' : 'Kitchen preparing your fresh halal meal';
+      status = 'PREPARING';
+      statusText = 'Kitchen preparing your fresh halal meal';
     } else if (stepIndex === 1) {
       status = 'PICKED_UP';
       statusText = 'Rider Mohammed Suhail picked up package';
@@ -88,19 +75,11 @@ function startOrderSimulation(orderNumber, { fastMode = false } = {}) {
 
     // Update DB
     try {
-      if (isCourier) {
-        db.prepare(`
-          UPDATE courier_bookings 
-          SET status = ?, eta_minutes = ?, updated_at = datetime('now')
-          WHERE booking_number = ?
-        `).run(status, eta, orderNumber);
-      } else {
-        db.prepare(`
-          UPDATE orders 
-          SET status = ?, rider_lat = ?, rider_lng = ?, eta_minutes = ?, updated_at = datetime('now')
-          WHERE order_number = ?
-        `).run(status, currentWaypoint.lat, currentWaypoint.lng, eta, orderNumber);
-      }
+      db.prepare(`
+        UPDATE orders 
+        SET status = ?, rider_lat = ?, rider_lng = ?, eta_minutes = ?, updated_at = datetime('now')
+        WHERE order_number = ?
+      `).run(status, currentWaypoint.lat, currentWaypoint.lng, eta, orderNumber);
 
       // Log to telemetry logs
       db.prepare(`
@@ -111,11 +90,10 @@ function startOrderSimulation(orderNumber, { fastMode = false } = {}) {
       console.error('[Telemetry DB update error]', err.message);
     }
 
-    // Broadcast to specific order channel AND courier channel AND general feed
+    // Broadcast to specific order channel AND general feed
     const telemetryPayload = {
       type: 'telemetry_update',
       orderNumber,
-      isCourier,
       rider: {
         name: 'Mohammed Suhail',
         vehicle: 'TVS iQube Electric',
@@ -133,9 +111,6 @@ function startOrderSimulation(orderNumber, { fastMode = false } = {}) {
     };
 
     broadcast(`order:${orderNumber}`, telemetryPayload);
-    if (isCourier) {
-      broadcast(`courier:${orderNumber}`, telemetryPayload);
-    }
     broadcast('live_telemetry_feed', telemetryPayload);
 
     stepIndex++;
@@ -155,6 +130,5 @@ function stopSimulation(orderNumber) {
 module.exports = {
   VIRAJPEE_ROUTE,
   startOrderSimulation,
-  startCourierSimulation: startOrderSimulation,
   stopSimulation
 };

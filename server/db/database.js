@@ -132,30 +132,6 @@ function initDatabase() {
     CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
     CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at);
 
-    -- Courier Bookings Table
-    CREATE TABLE IF NOT EXISTS courier_bookings (
-      id TEXT PRIMARY KEY,
-      booking_number TEXT UNIQUE NOT NULL,
-      user_id TEXT REFERENCES users(id),
-      package_type TEXT NOT NULL,
-      package_name TEXT NOT NULL,
-      origin_id TEXT NOT NULL,
-      origin_name TEXT NOT NULL,
-      dest_id TEXT NOT NULL,
-      dest_name TEXT NOT NULL,
-      fare REAL NOT NULL,
-      status TEXT DEFAULT 'ASSIGNED',
-      rider_name TEXT DEFAULT 'Mohammed Suhail',
-      rider_phone TEXT DEFAULT '+91 98452 33412',
-      rider_vehicle TEXT DEFAULT 'TVS iQube Electric',
-      eta_minutes INTEGER DEFAULT 15,
-      created_at TEXT DEFAULT (datetime('now')),
-      updated_at TEXT DEFAULT (datetime('now'))
-    );
-
-    CREATE INDEX IF NOT EXISTS idx_courier_number ON courier_bookings(booking_number);
-    CREATE INDEX IF NOT EXISTS idx_courier_status ON courier_bookings(status);
-
     -- Wallet Transactions Table
     CREATE TABLE IF NOT EXISTS wallet_transactions (
       id TEXT PRIMARY KEY,

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   BEEGO PREMIUM ON-DEMAND DELIVERY & COURIER
+   BEEGO PREMIUM ON-DEMAND HALAL FOOD & PROVISIONS
    Theme: Light Cream & Dark Maroon (Refined, Standard, Non-AI Aesthetic)
    ========================================================================== */
 
@@ -1684,178 +1684,6 @@ img {
   margin-bottom: 20px;
 }
 
-/* ==========================================================================
-   PARCEL SERVICE / COURIER ESTIMATOR SECTION
-   ========================================================================== */
-.parcel-service-section {
-  padding: 70px 0;
-  background-color: var(--maroon-900);
-  color: var(--cream-100);
-}
-
-.parcel-card {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 56px;
-  align-items: center;
-}
-
-.parcel-left .kicker-small {
-  color: var(--gold-primary);
-}
-
-.parcel-desc {
-  font-size: 1.05rem;
-  color: #D7C7B7;
-  line-height: 1.6;
-  margin: 16px 0 28px 0;
-}
-
-.parcel-features-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.p-feat {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  font-size: 0.92rem;
-  color: var(--cream-100);
-}
-
-.p-feat svg {
-  color: var(--gold-primary);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.p-feat strong {
-  color: #FFFFFF;
-}
-
-/* Calculator Box */
-.calculator-box {
-  background-color: var(--surface-white);
-  border-radius: var(--radius-lg);
-  padding: 32px;
-  color: var(--text-main);
-  box-shadow: var(--shadow-modal);
-}
-
-.calc-title {
-  font-family: var(--font-heading);
-  font-size: 1.35rem;
-  color: var(--maroon-900);
-  margin-bottom: 20px;
-  border-bottom: 1px solid var(--cream-200);
-  padding-bottom: 12px;
-}
-
-.calc-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 16px;
-}
-
-.calc-group label {
-  font-size: 0.74rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-}
-
-.calc-group select {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid var(--cream-300);
-  border-radius: var(--radius-md);
-  font-size: 0.88rem;
-  color: var(--text-main);
-  background-color: var(--cream-50);
-  outline: none;
-}
-
-.package-size-buttons {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.pkg-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px 6px;
-  border: 1px solid var(--cream-300);
-  border-radius: var(--radius-md);
-  background-color: var(--cream-50);
-  transition: all var(--transition-fast);
-}
-
-.pkg-btn:hover {
-  border-color: var(--maroon-600);
-}
-
-.pkg-btn.active {
-  background-color: var(--maroon-100);
-  border-color: var(--maroon-700);
-}
-
-.pkg-name {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--maroon-900);
-}
-
-.pkg-sub {
-  font-size: 0.68rem;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-.calc-summary {
-  background-color: var(--cream-100);
-  border: 1px solid var(--cream-300);
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  margin: 20px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.calc-price-display {
-  display: flex;
-  flex-direction: column;
-}
-
-.calc-price-label {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.calc-price-num {
-  font-family: var(--font-heading);
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--maroon-900);
-  line-height: 1.1;
-}
-
-.calc-eta-badge {
-  font-size: 0.74rem;
-  color: var(--maroon-800);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  text-align: right;
-}
 
 /* ==========================================================================
    STANDARDS SECTION (SERVICE GUARANTEES)
@@ -2616,7 +2444,7 @@ img {
 .profile-stats-grid {
   flex-shrink: 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 

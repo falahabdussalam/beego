@@ -7,7 +7,7 @@ const merchantController = {
   /**
    * GET /api/merchants
    * Query params:
-   *  - category: 'all' | 'food' | 'grocery' | 'medicine' | 'beverages' | 'desserts' | 'courier'
+   *  - category: 'all' | 'food' | 'grocery' | 'medicine' | 'beverages' | 'desserts'
    *  - search: string
    *  - sort: 'rating' | 'deliveryTime' | 'name'
    */
@@ -155,8 +155,7 @@ const merchantController = {
         grocery: { title: 'Estate Spices & Grocery', icon: '🌶️', desc: 'Ponni rice, wild honey & black pepper' },
         medicine: { title: 'Pharmacy & Wellness', icon: '💊', desc: 'Mountain pain balms, first aid & care' },
         beverages: { title: 'Estate Coffee & Teas', icon: '☕', desc: 'Pure Arabica filter kaapi & sulaimani' },
-        desserts: { title: 'Bakes & Desserts', icon: '🧁', desc: 'Coorg honey tea cakes, falooda & sweets' },
-        courier: { title: 'Town Courier', icon: '⚡', desc: 'Express documents, tiffins & parcel logistics' }
+        desserts: { title: 'Bakes & Desserts', icon: '🧁', desc: 'Coorg honey tea cakes, falooda & sweets' }
       };
 
       const categories = rows.map(r => ({

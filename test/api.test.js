@@ -75,7 +75,7 @@ async function runTests() {
     });
 
     // 2. Merchants listing
-    await test('GET /api/merchants returns 9 merchants with items', async () => {
+    await test('GET /api/merchants returns active merchants with items', async () => {
       const res = await request('GET', '/api/merchants');
       assert.strictEqual(res.status, 200);
       assert.strictEqual(res.body.success, true);
@@ -112,34 +112,7 @@ async function runTests() {
       assert.ok(foodCat.count >= 2);
     });
 
-    // 6. Courier quote calculation
-    await test('POST /api/courier/quote calculates correct distance multiplier', async () => {
-      const res = await request('POST', '/api/courier/quote', {
-        origin: 'clock_tower',
-        dest: 'gonikoppal_rd',
-        packageType: 'document'
-      });
-      assert.strictEqual(res.status, 200);
-      assert.strictEqual(res.body.data.baseRate, 40);
-      assert.strictEqual(res.body.data.distanceMultiplier, 1.45);
-      assert.strictEqual(res.body.data.fare, 58); // 40 * 1.45 = 58
-    });
-
-    // 7. Courier booking
-    await test('POST /api/courier/book dispatches courier booking', async () => {
-      const res = await request('POST', '/api/courier/book', {
-        origin: 'clock_tower',
-        dest: 'malabar_rd',
-        packageType: 'tiffin',
-        senderName: 'Falah Abdulla'
-      });
-      assert.strictEqual(res.status, 201);
-      assert.strictEqual(res.body.success, true);
-      assert.ok(res.body.data.bookingNumber.startsWith('CR-'));
-      assert.strictEqual(res.body.data.rider.name, 'Mohammed Suhail');
-    });
-
-    // 8. Promo code validation
+    // 6. Promo code validation
     await test('POST /api/promos/validate calculates 10% discount for BEEGO10', async () => {
       const res = await request('POST', '/api/promos/validate', {
         code: 'BEEGO10',
@@ -245,14 +218,7 @@ async function runTests() {
       assert.strictEqual(res.status, 404);
     });
 
-    // 16. Courier listings
-    await test('GET /api/courier returns courier dispatches', async () => {
-      const res = await request('GET', '/api/courier');
-      assert.strictEqual(res.status, 200);
-      assert.ok(res.body.data.length >= 1);
-    });
-
-    // 17. Delete address
+    // 15. Delete address
     await test('DELETE /api/user/addresses/:id removes address', async () => {
       assert.ok(newAddressId);
       const res = await request('DELETE', `/api/user/addresses/${newAddressId}`);
@@ -290,7 +256,6 @@ async function runTests() {
     // Reset test artifacts to pristine clean database state
     try {
       db.prepare('DELETE FROM orders').run();
-      db.prepare('DELETE FROM courier_bookings').run();
       db.prepare('DELETE FROM wallet_transactions').run();
       db.prepare("UPDATE users SET name = 'Falah Abdulla', phone = '+91 98451 23456', email = 'falah.kodagu@gmail.com', avatar_url = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=180&q=80', location = 'Virajpet Town, Kodagu 571218', wallet_balance = 0.00 WHERE id = 'user_falah'").run();
     } catch (e) {}

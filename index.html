@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BEEGO</title>
   <meta name="description"
-    content="Virajpet's premier on-demand delivery platform. 100% Halal certified Kodagu dining, biryani, akki roti, estate coffee, pure honey, and express town courier service.">
+    content="Virajpet's premier on-demand delivery platform. 100% Halal certified Kodagu dining, biryani, akki roti, estate coffee, pure honey, and mountain essentials.">
 
   <!-- Google Fonts: Bricolage Grotesque -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,27 +40,6 @@
         </div>
       </a>
 
-      <!-- Delivery / Courier Mode Toggle -->
-      <nav class="mode-switcher" aria-label="Service Mode">
-        <button type="button" class="mode-btn active" data-mode="dining">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-            <line x1="6" y1="1" x2="6" y2="4" />
-            <line x1="10" y1="1" x2="10" y2="4" />
-            <line x1="14" y1="1" x2="14" y2="4" />
-          </svg>
-          <span>Halal Food</span>
-        </button>
-        <button type="button" class="mode-btn" data-mode="courier">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="16" y1="13" x2="8" y2="13"></line>
-            <line x1="16" y1="17" x2="8" y2="17"></line>
-          </svg>
-          <span>Town Courier</span>
-        </button>
-      </nav>
 
       <!-- Location Address Selector -->
       <div class="address-picker" id="address-trigger" role="button" tabindex="0"
@@ -139,8 +118,7 @@
         </div>
 
         <h1 class="hero-headline-neat">Virajpet's finest halal food, delivered in minutes.</h1>
-        <p class="hero-description-neat">Authentic Kodagu koli curry, Thalassery kaima biryani, estate coffee &amp; town
-          courier.</p>
+        <p class="hero-description-neat">Authentic Kodagu koli curry, Thalassery kaima biryani, estate coffee &amp; mountain essentials.</p>
 
         <!-- Hero Section Category Navigations -->
         <nav class="hero-nav-bar" id="hero-quick-nav" aria-label="Hero service categories">
@@ -244,7 +222,6 @@
                 <option value="medicine">Medicine &amp; Health (10–20 min)</option>
                 <option value="beverages">Estate Kaapi &amp; Tea (10–15 min)</option>
                 <option value="desserts">Desserts &amp; Bakes (15–20 min)</option>
-                <option value="courier">Town &amp; Estate Courier</option>
                 <option value="track">Track Live Telemetry</option>
               </select>
             </div>
@@ -296,12 +273,11 @@
               <div class="standby-text">
                 <span class="kicker-small">LIVE VIRAJPEE TELEMETRY • READY</span>
                 <h3 class="standby-heading">No Active Deliveries Right Now</h3>
-                <p class="standby-desc">Order authentic Kodagu halal dining or request a town courier to watch real-time GPS telemetry from rider Mohammed Suhail right here.</p>
+                <p class="standby-desc">Order authentic Kodagu halal dining to watch real-time GPS telemetry from rider Mohammed Suhail right here.</p>
               </div>
             </div>
             <div class="standby-actions">
               <a href="#categories-browse" class="btn btn-primary btn-sm">Browse Halal Menus</a>
-              <a href="#courier-service-section" class="btn btn-outline-maroon btn-sm">Book Town Courier</a>
             </div>
           </div>
         </div>
@@ -375,7 +351,7 @@
               </div>
             </div>
 
-            <!-- Simulated Real-time Map and Courier Details -->
+            <!-- Simulated Real-time Map and Delivery Rider Details -->
             <div class="tracking-map-row">
               <!-- Stylized Vector Map Component (Virajpet / Western Ghats Hill layout) -->
               <div class="map-simulation-container">
@@ -404,7 +380,7 @@
                     <span class="pin-popup">Kitchen / Merchant</span>
                   </div>
 
-                  <!-- Courier Vehicle Moving Marker (Current) -->
+                  <!-- Delivery Rider Vehicle Moving Marker (Current) -->
                   <div class="map-pin pin-courier" style="left: 10%; top: 73%;">
                     <div class="courier-halo"></div>
                     <div class="courier-vehicle-icon">
@@ -438,12 +414,12 @@
                 </div>
               </div>
 
-              <!-- Courier Card & Action buttons -->
+              <!-- Delivery Rider Card & Action buttons -->
               <div class="courier-profile-card">
                 <div class="courier-card-head">
                   <img
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80"
-                    alt="Courier Mohammed Suhail" class="courier-headshot">
+                    alt="Delivery Rider Mohammed Suhail" class="courier-headshot">
                   <div class="courier-meta">
                     <h3 class="courier-full-name">Mohammed Suhail</h3>
                     <div class="courier-stats">
@@ -509,7 +485,6 @@
             <button class="cat-pill" data-category="medicine" role="tab">Medicine &amp; Health</button>
             <button class="cat-pill" data-category="beverages" role="tab">Estate Kaapi &amp; Beverages</button>
             <button class="cat-pill" data-category="desserts" role="tab">Halal Desserts &amp; Bakes</button>
-            <button class="cat-pill" data-category="courier" role="tab">Town Courier</button>
           </div>
         </div>
 
@@ -533,109 +508,6 @@
       </div>
     </section>
 
-    <!-- SEND A PARCEL / COURIER ESTIMATOR SECTION -->
-    <section class="parcel-service-section" id="courier-service-section">
-      <div class="container">
-        <div class="parcel-card">
-          <div class="parcel-left">
-            <span class="kicker-small">BEEGO VIRAJPEE TOWN &amp; ESTATE COURIER</span>
-            <h2 class="section-heading-cream">Need an express courier across Virajpet?</h2>
-            <p class="parcel-desc">
-              From coffee estate documents and banking cheques to hot homemade lunch tiffins, fresh cakes, and spice
-              parcels sent to Gonikoppal or Ammathi. Trusted point-to-point delivery.
-            </p>
-
-            <div class="parcel-features-list">
-              <div class="p-feat">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-                <span><strong>Instant Dispatch:</strong> Rider at your gate in 5–8 minutes.</span>
-              </div>
-              <div class="p-feat">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-                <span><strong>Hot Tiffin &amp; Fragile Care:</strong> Kept upright in insulated boxes.</span>
-              </div>
-              <div class="p-feat">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-                <span><strong>Secure Delivery OTP:</strong> Handed over only upon recipient PIN check.</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="parcel-right">
-            <div class="calculator-box">
-              <h3 class="calc-title">Virajpet Courier Fare Estimator</h3>
-
-              <div class="calc-group">
-                <label>Pickup Location</label>
-                <select id="calc-origin">
-                  <option value="clock_tower">Clock Tower Circle (Town Center)</option>
-                  <option value="college_rd">College Road &amp; Kaveri Layout</option>
-                  <option value="malabar_rd">Malabar Road &amp; Meenupet</option>
-                  <option value="bittangala">Bittangala &amp; Arji Junction</option>
-                  <option value="gonikoppal_rd">Gonikoppal Road &amp; Estate Belt</option>
-                </select>
-              </div>
-
-              <div class="calc-group">
-                <label>Destination Location</label>
-                <select id="calc-dest">
-                  <option value="college_rd">College Road &amp; Kaveri Layout</option>
-                  <option value="clock_tower">Clock Tower Circle (Town Center)</option>
-                  <option value="malabar_rd">Malabar Road &amp; Meenupet</option>
-                  <option value="bittangala">Bittangala &amp; Arji Junction</option>
-                  <option value="gonikoppal_rd">Gonikoppal Road &amp; Estate Belt</option>
-                </select>
-              </div>
-
-              <div class="calc-group">
-                <label>Package Category</label>
-                <div class="package-size-buttons">
-                  <button type="button" class="pkg-btn active" data-type="doc" data-base="40">
-                    <span class="pkg-name">Documents</span>
-                    <span class="pkg-sub">Envelope / Papers</span>
-                  </button>
-                  <button type="button" class="pkg-btn" data-type="tiffin" data-base="60">
-                    <span class="pkg-name">Hot Tiffin</span>
-                    <span class="pkg-sub">Lunch Carrier</span>
-                  </button>
-                  <button type="button" class="pkg-btn" data-type="parcel" data-base="90">
-                    <span class="pkg-name">Spices/Coffee</span>
-                    <span class="pkg-sub">Up to 4 kg</span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="calc-summary">
-                <div class="calc-price-display">
-                  <span class="calc-price-label">Estimated Delivery Fare</span>
-                  <div class="calc-price-num" id="calc-total-fare">₹55</div>
-                </div>
-                <div class="calc-eta-badge">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                  <span>Pickup: <strong>5 mins</strong> • Drop: <strong>18 mins</strong></span>
-                </div>
-              </div>
-
-              <button class="btn btn-primary btn-full" id="btn-request-courier-modal">
-                <span>Book Courier Pickup</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- THE BEEGO VIRAJPEE STANDARDS -->
     <section class="standards-section">
@@ -760,8 +632,8 @@
             <span class="badge-gold">BEEGO VIRAJPEE ROYALE</span>
             <h2 class="membership-title">Your everyday Virajpet delivery companion</h2>
             <p class="membership-text">
-              Join BEEGO Royale Virajpet for unlimited free town deliveries on orders above ₹199, priority courier
-              dispatch during monsoon rains, and exclusive discounts on festive halal feasts.
+              Join BEEGO Royale Virajpet for unlimited free town deliveries on orders above ₹199, priority express
+              delivery during monsoon rains, and exclusive discounts on festive halal feasts.
             </p>
             <div class="app-badges-row">
               <button class="app-store-pill">
@@ -1031,10 +903,6 @@
           <span class="stat-label">Halal Orders</span>
         </div>
         <div class="profile-stat-box">
-          <span class="stat-number" id="profile-stat-couriers">0</span>
-          <span class="stat-label">Town Couriers</span>
-        </div>
-        <div class="profile-stat-box">
           <span class="stat-number" id="profile-stat-points">0</span>
           <span class="stat-label">BeePoints</span>
         </div>
@@ -1058,7 +926,7 @@
           <div class="empty-orders-view">
             <div class="empty-orders-icon">📦</div>
             <h4>No Orders Placed Yet</h4>
-            <p>Your ongoing halal food deliveries and town courier dispatches will be tracked here live.</p>
+            <p>Your ongoing halal food deliveries will be tracked here live.</p>
             <a href="#categories-browse" class="btn btn-sm btn-primary" id="btn-profile-explore-now">Explore Halal Menus</a>
           </div>
         </div>
@@ -1150,7 +1018,7 @@
             </div>
             <div class="pay-method-info">
               <strong>Cash / UPI on Handover</strong>
-              <span>Pay directly to courier rider upon OTP match</span>
+              <span>Pay directly to delivery rider upon OTP match</span>
             </div>
             <span class="pay-active-tag">Active</span>
           </div>
@@ -1250,7 +1118,7 @@
       <div class="promo-status-msg" id="promo-msg" style="display: none;"></div>
     </div>
 
-    <!-- Courier Tip Selector -->
+    <!-- Delivery Rider Tip Selector -->
     <div class="cart-tip-section">
       <span class="tip-label">Virajpet Delivery Partner Gratuity (100% to Rider):</span>
       <div class="tip-buttons">
@@ -1478,7 +1346,7 @@
           <span class="footer-brand-name">BEEGO VIRAJPEE</span>
         </div>
         <p class="footer-brand-desc">
-          Kodagu's dedicated 100% Halal food delivery and point-to-point courier network. Serving Virajpet town,
+          Kodagu's dedicated 100% Halal food delivery network. Serving Virajpet town,
           Gonikoppal Road, Bittangala, and surrounding coffee plantations.
         </p>
         <div class="footer-socials">
@@ -1514,7 +1382,7 @@
           <li><a href="#categories-browse">Kadambuttu &amp; Pepper Chicken</a></li>
           <li><a href="#categories-browse">Virajpet Estate Filter Kaapi</a></li>
           <li><a href="#categories-browse">Pure Coorg Wild Honey &amp; Pepper</a></li>
-          <li><a href="#courier-service-section">Hot Tiffin Estate Courier</a></li>
+          <li><a href="#categories-browse">Traditional Kodagu Rice Roti</a></li>
         </ul>
       </div>
 
@@ -1535,7 +1403,7 @@
         <ul>
           <li><a href="#">Register Halal Restaurant</a></li>
           <li><a href="#">BEEGO Virajpet Rider Fleet</a></li>
-          <li><a href="#">Coffee Estate Gifting &amp; Courier</a></li>
+          <li><a href="#">Coffee Estate Gift Hampers</a></li>
           <li><a href="#">Home Kitchen Halal Partner</a></li>
           <li><a href="#">FSSAI &amp; Halal Compliance</a></li>
           <li><a href="#">Contact Virajpet Hub</a></li>

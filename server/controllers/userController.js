@@ -19,9 +19,8 @@ const userController = {
       // Fetch saved addresses
       const addresses = db.prepare('SELECT * FROM addresses WHERE user_id = ? ORDER BY is_default DESC, created_at ASC').all(DEFAULT_USER_ID);
 
-      // Fetch recent orders & courier dispatches
-      const orders = db.prepare('SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 6').all(DEFAULT_USER_ID);
-      const couriers = db.prepare('SELECT * FROM courier_bookings WHERE user_id = ? ORDER BY created_at DESC LIMIT 6').all(DEFAULT_USER_ID);
+      // Fetch recent orders
+      const orders = db.prepare('SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 8').all(DEFAULT_USER_ID);
 
       const parsedOrders = orders.map(o => {
         let items = [];
@@ -34,26 +33,9 @@ const userController = {
           total: o.total,
           itemsCount: items.length,
           firstItemName: items[0]?.name || 'Halal Meal',
-          createdAt: o.created_at,
-          isCourier: false
+          createdAt: o.created_at
         };
       });
-
-      const parsedCouriers = couriers.map(c => ({
-        id: c.id,
-        orderNumber: c.booking_number,
-        merchantName: `Town Courier: ${c.origin_name} → ${c.dest_name}`,
-        status: c.status,
-        total: c.fare,
-        itemsCount: 1,
-        firstItemName: c.package_name || 'Town Courier Parcel',
-        createdAt: c.created_at,
-        isCourier: true
-      }));
-
-      const combinedActivity = [...parsedOrders, ...parsedCouriers]
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .slice(0, 8);
 
       res.json({
         success: true,
@@ -81,7 +63,7 @@ const userController = {
             preset: a.preset,
             isDefault: Boolean(a.is_default)
           })),
-          recentOrders: combinedActivity
+          recentOrders: parsedOrders
         }
       });
     } catch (error) {

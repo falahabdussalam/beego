@@ -11,7 +11,7 @@ const config = {
   app: {
     name: 'BEEGO Virajpet Edition',
     version: '1.0.0',
-    description: 'On-demand 100% Halal Food, Estate Coffee & Town Courier Server',
+    description: 'On-demand 100% Halal Food & Estate Coffee Server',
     location: 'Virajpet (Kodagu, Karnataka)',
     currency: 'INR',
     currencySymbol: '₹'

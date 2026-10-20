@@ -8,7 +8,6 @@ router.get('/', (req, res) => {
   // Query summary metrics
   const totalOrders = db.prepare('SELECT count(*) as c FROM orders').get().c;
   const activeOrders = db.prepare("SELECT count(*) as c FROM orders WHERE status NOT IN ('DELIVERED', 'CANCELLED')").get().c;
-  const totalCourier = db.prepare('SELECT count(*) as c FROM courier_bookings').get().c;
   const grossRevenue = db.prepare("SELECT COALESCE(SUM(total), 0) as rev FROM orders WHERE status != 'CANCELLED'").get().rev;
 
   // Recent 15 orders
@@ -18,9 +17,6 @@ router.get('/', (req, res) => {
     try { items = JSON.parse(o.items_json); } catch (e) {}
     return { ...o, items };
   });
-
-  // Recent 10 courier bookings
-  const couriers = db.prepare('SELECT * FROM courier_bookings ORDER BY created_at DESC LIMIT 10').all();
 
   res.send(`
 <!DOCTYPE html>
@@ -205,10 +201,6 @@ router.get('/', (req, res) => {
         <div class="stat-val" style="color: #2E7D32;">${activeOrders}</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Courier Dispatches</div>
-        <div class="stat-val" style="color: #1565C0;">${totalCourier}</div>
-      </div>
-      <div class="stat-card">
         <div class="stat-label">Gross Volume</div>
         <div class="stat-val">₹${grossRevenue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
       </div>
@@ -222,7 +214,6 @@ router.get('/', (req, res) => {
     <div class="quick-actions-bar">
       <span style="font-weight: 700; font-size: 14px; margin-right: 8px;">⚡ Dispatch Simulation Controls:</span>
       <button class="btn-primary-action" onclick="createMockOrder()">+ Generate Test Order</button>
-      <button class="btn-primary-action" style="background: #236B36;" onclick="createMockCourier()">+ Book Test Courier</button>
       <button class="btn-action" onclick="startRiderSim('BG-9482')">Simulate Rider Suhail on BG-9482</button>
       <button class="btn-action" onclick="window.location.reload()">Refresh Data</button>
     </div>
@@ -281,41 +272,6 @@ router.get('/', (req, res) => {
         </tbody>
       </table>
     </div>
-
-    <!-- Live Courier Bookings Table -->
-    <div class="section-title">
-      <span>📦 Town Courier & Express Logistics Bookings</span>
-    </div>
-
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Booking #</th>
-            <th>Package</th>
-            <th>Route (Pickup → Drop)</th>
-            <th>Fare</th>
-            <th>Status</th>
-            <th>Rider Assigned</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${couriers.length === 0 ? '<tr><td colspan="7" style="text-align:center; padding: 24px;">No courier bookings yet. Click "+ Book Test Courier" above.</td></tr>' : ''}
-          ${couriers.map(c => `
-            <tr>
-              <td><strong style="color: #1565C0; font-family: monospace;">#${c.booking_number}</strong></td>
-              <td><strong>${c.package_name}</strong></td>
-              <td>${c.origin_name} → <strong>${c.dest_name}</strong></td>
-              <td><strong>₹${c.fare.toFixed(2)}</strong></td>
-              <td><span class="status-pill status-${c.status}">${c.status}</span></td>
-              <td>${c.rider_name} (${c.rider_vehicle})</td>
-              <td style="color: var(--text-muted); font-size: 12px;">${c.created_at}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
   </div>
 
   <script>
@@ -366,30 +322,6 @@ router.get('/', (req, res) => {
       }
     }
 
-    async function createMockCourier() {
-      try {
-        const res = await fetch('/api/courier/book', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            origin: 'clock_tower',
-            dest: 'bittangala',
-            packageType: 'coffee_parcel',
-            senderName: 'Falah Abdulla',
-            recipientName: 'Bittangala Plantation House'
-          })
-        });
-        const data = await res.json();
-        if (data.success) {
-          window.location.reload();
-        } else {
-          alert('Error: ' + data.message);
-        }
-      } catch (err) {
-        alert('Failed: ' + err.message);
-      }
-    }
-
     async function startRiderSim(orderNumber) {
       alert('Rider Mohammed Suhail telemetry simulation triggered for Order #' + orderNumber + '! Check the live telemetry in the main site.');
       window.location.reload();
@@ -401,7 +333,7 @@ router.get('/', (req, res) => {
     ws.onmessage = (e) => {
       try {
         const msg = JSON.parse(e.data);
-        if (msg.type === 'new_order_placed' || msg.type === 'new_courier_dispatched' || msg.type === 'order_status_update') {
+        if (msg.type === 'new_order_placed' || msg.type === 'order_status_update') {
           console.log('[Real-time event received]', msg);
         }
       } catch (err) {}

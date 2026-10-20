@@ -17,7 +17,6 @@ const healthController = {
         merchants: db.prepare('SELECT count(*) as c FROM merchants').get().c,
         menuItems: db.prepare('SELECT count(*) as c FROM menu_items').get().c,
         orders: db.prepare('SELECT count(*) as c FROM orders').get().c,
-        courierBookings: db.prepare('SELECT count(*) as c FROM courier_bookings').get().c,
         users: db.prepare('SELECT count(*) as c FROM users').get().c
       };
 

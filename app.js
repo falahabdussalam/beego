@@ -1,6 +1,6 @@
 /**
  * BEEGO Virajpet Edition (Kodagu, Karnataka)
- * 100% Halal Food, Local Coffee & Spices, and Town Courier Platform
+ * 100% Halal Food, Local Coffee & Spices Platform
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -360,44 +360,6 @@ document.addEventListener('DOMContentLoaded', () => {
           image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=300&q=80'
         }
       ]
-    },
-    {
-      id: 'm7',
-      name: 'BEEGO Virajpet Express Courier',
-      category: 'courier',
-      cuisine: 'Town & Coffee Estate Rapid Two-Wheeler Logistics',
-      rating: 4.99,
-      reviewsCount: '5.2k+',
-      deliveryTime: '10–25 min',
-      deliveryFee: 40.00,
-      minOrder: 40.00,
-      featuredBadge: 'Rapid 5-Min Pickup',
-      image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=700&q=80',
-      bannerImage: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=1200&q=80',
-      location: 'Clock Tower Hub, Virajpet',
-      items: [
-        {
-          id: 'item_701',
-          name: 'Town Document / Bank Cheque / Legal Pouch',
-          price: 40.00,
-          desc: 'Secure weather-proof sealed envelope dispatch anywhere in Virajpet town within 20 minutes with recipient PIN verification.',
-          image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=300&q=80'
-        },
-        {
-          id: 'item_702',
-          name: 'Hot Tiffin Carrier / Estate Lunch Handover',
-          price: 60.00,
-          desc: 'Carefully transported upright in thermal carriers from town homes directly to plantation offices and estates.',
-          image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=300&q=80'
-        },
-        {
-          id: 'item_703',
-          name: 'Estate Coffee & Spices Parcel (Up to 4kg)',
-          price: 90.00,
-          desc: 'Same-day courier dispatch between Virajpet, Bittangala, Arji, and Gonikoppal junction.',
-          image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=300&q=80'
-        }
-      ]
     }
   ];
 
@@ -437,9 +399,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroServiceMode = document.getElementById('hero-service-mode');
   const heroBtnLabel = document.getElementById('hero-btn-label');
   const btnHeroExplore = document.getElementById('btn-hero-explore');
-
-  // Header Mode switcher
-  const modeButtons = document.querySelectorAll('.mode-btn');
 
   // Address picker
   const addressTrigger = document.getElementById('address-trigger');
@@ -524,13 +483,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const confAddressText = document.getElementById('conf-address-text');
   const confTotalPrice = document.getElementById('conf-total-price');
   const btnTrackNewOrder = document.getElementById('btn-track-new-order');
-
-  // Parcel Calculator Elements
-  const calcOrigin = document.getElementById('calc-origin');
-  const calcDest = document.getElementById('calc-dest');
-  const pkgButtons = document.querySelectorAll('.pkg-btn');
-  const calcTotalFare = document.getElementById('calc-total-fare');
-  const btnRequestCourierModal = document.getElementById('btn-request-courier-modal');
 
   // Toast Container
   const toastContainer = document.getElementById('toast-container');
@@ -978,117 +930,15 @@ document.addEventListener('DOMContentLoaded', () => {
     checkoutModal.style.display = 'none';
     document.body.style.overflow = '';
     document.getElementById('track-section').scrollIntoView({ behavior: 'smooth' });
-    showToast('Viewing live Virajpet courier telemetry.');
+    showToast('Viewing live Virajpet delivery telemetry.');
   });
 
   // =========================================================================
-  // 7. PARCEL QUOTE CALCULATOR (VIRAJPEE & SURROUNDINGS)
-  // =========================================================================
-  let basePackageRate = 40;
-
-  async function calculateParcelFare() {
-    const origin = calcOrigin.value;
-    const dest = calcDest.value;
-    
-    // Distance multiplier across Kodagu topography
-    let distMultiplier = 1.0;
-    if (origin !== dest) {
-      if ((origin === 'gonikoppal_rd' || dest === 'gonikoppal_rd') || (origin === 'bittangala' || dest === 'bittangala')) {
-        distMultiplier = 1.45;
-      } else {
-        distMultiplier = 1.25;
-      }
-    }
-
-    const calculated = Math.round(basePackageRate * distMultiplier);
-    calcTotalFare.textContent = `₹${calculated}`;
-
-    // Optionally sync with backend
-    try {
-      const activePkg = document.querySelector('.pkg-btn.active');
-      const pkgType = activePkg ? activePkg.getAttribute('data-type') || 'document' : 'document';
-      const res = await fetch('/api/courier/quote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ origin, dest, packageType: pkgType })
-      });
-      if (res.ok) {
-        const qData = await res.json();
-        if (qData.success && qData.data) {
-          calcTotalFare.textContent = `₹${qData.data.fare}`;
-        }
-      }
-    } catch (e) {}
-  }
-
-  calcOrigin.addEventListener('change', calculateParcelFare);
-  calcDest.addEventListener('change', calculateParcelFare);
-
-  pkgButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      pkgButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      basePackageRate = parseFloat(btn.getAttribute('data-base')) || 40;
-      calculateParcelFare();
-    });
-  });
-
-  btnRequestCourierModal.addEventListener('click', async () => {
-    showToast('Courier dispatch initiated. Assigning nearest Virajpet rider...');
-    
-    try {
-      const origin = calcOrigin.value;
-      const dest = calcDest.value;
-      const activePkg = document.querySelector('.pkg-btn.active');
-      const pkgType = activePkg ? activePkg.getAttribute('data-type') || 'document' : 'document';
-
-      const res = await fetch('/api/courier/book', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          origin,
-          dest,
-          packageType: pkgType,
-          senderName: 'Falah Abdulla'
-        })
-      });
-
-      if (res.ok) {
-        const cData = await res.json();
-        if (cData.success && cData.data) {
-          showActiveTracking(cData.data.bookingNumber, 'Courier Assigned', 'Mohammed Suhail');
-          if (window.beegoWs && window.beegoWs.readyState === 1) {
-            window.beegoWs.send(JSON.stringify({
-              type: 'subscribe',
-              channel: `courier:${cData.data.bookingNumber}`
-            }));
-          }
-          fetchUserProfile();
-          setTimeout(() => {
-            showToast(`Courier #${cData.data.bookingNumber} Assigned: Mohammed Suhail (TVS iQube). ETA 5 mins.`);
-            document.getElementById('track-section').scrollIntoView({ behavior: 'smooth' });
-          }, 800);
-          return;
-        }
-      }
-    } catch (e) {
-      console.warn('Backend offline, using fallback toast');
-    }
-
-    setTimeout(() => {
-      showToast('Rider Assigned: Mohammed Suhail (TVS iQube). ETA 5 mins.');
-      document.getElementById('track-section').scrollIntoView({ behavior: 'smooth' });
-    }, 1200);
-  });
-
-  // =========================================================================
-  // 8. HERO & BROWSE CATEGORY NAVIGATION & GLOBAL SEARCH
+  // 7. HERO & BROWSE CATEGORY NAVIGATION & GLOBAL SEARCH
   // =========================================================================
   function updateHeroBtnLabel(mode) {
     if (!heroBtnLabel) return;
-    if (mode === 'courier') {
-      heroBtnLabel.textContent = 'Book Town Courier';
-    } else if (mode === 'track') {
+    if (mode === 'track') {
       heroBtnLabel.textContent = 'Track Live Order';
     } else if (mode === 'grocery') {
       heroBtnLabel.textContent = 'Explore Fresh Grocery';
@@ -1141,7 +991,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Sync hero navigation pills
       heroNavItems.forEach(hn => hn.classList.toggle('active', hn.getAttribute('data-category') === cat));
 
-      if (heroServiceMode && ['food', 'grocery', 'medicine', 'beverages', 'desserts', 'courier'].includes(cat)) {
+      if (heroServiceMode && ['food', 'grocery', 'medicine', 'beverages', 'desserts'].includes(cat)) {
         heroServiceMode.value = cat;
         updateHeroBtnLabel(cat);
       }
@@ -1192,11 +1042,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnHeroExplore) {
     btnHeroExplore.addEventListener('click', () => {
       const mode = heroServiceMode ? heroServiceMode.value : 'food';
-      if (mode === 'courier') {
-        document.getElementById('courier-service-section').scrollIntoView({ behavior: 'smooth' });
-      } else if (mode === 'track') {
+      if (mode === 'track') {
         focusTrackingSection();
-        showToast('Viewing live Virajpet courier tracking.');
+        showToast('Viewing live Virajpet delivery tracking.');
       } else {
         state.currentCategory = mode;
         heroNavItems.forEach(hn => hn.classList.toggle('active', hn.getAttribute('data-category') === mode));
@@ -1697,24 +1545,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // =========================================================================
-  // 12. MODE SWITCHER IN HEADER
-  // =========================================================================
-  modeButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      modeButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const mode = btn.getAttribute('data-mode');
-
-      if (mode === 'dining') {
-        document.getElementById('categories-browse').scrollIntoView({ behavior: 'smooth' });
-      } else if (mode === 'courier') {
-        document.getElementById('courier-service-section').scrollIntoView({ behavior: 'smooth' });
-      } else if (mode === 'tracking') {
-        focusTrackingSection();
-      }
-    });
-  });
 
   // =========================================================================
   // 13. TOAST NOTIFICATION HELPER
@@ -1758,7 +1588,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const profileOrdersContainer = document.getElementById('profile-orders-container');
   const profileStatOrders = document.getElementById('profile-stat-orders');
-  const profileStatCouriers = document.getElementById('profile-stat-couriers');
   const profileStatPoints = document.getElementById('profile-stat-points');
   const profileStatSavings = document.getElementById('profile-stat-savings');
 
@@ -2276,13 +2105,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const orders = profile.recentOrders || [];
-        const foodOrders = orders.filter(o => !o.isCourier);
-        const courierOrders = orders.filter(o => o.isCourier);
 
-        if (profileStatOrders) profileStatOrders.textContent = foodOrders.length;
-        if (profileStatCouriers) profileStatCouriers.textContent = courierOrders.length;
-        if (profileStatPoints) profileStatPoints.textContent = (foodOrders.length * 25 + courierOrders.length * 15);
-        if (profileStatSavings) profileStatSavings.textContent = '₹' + ((foodOrders.length + courierOrders.length) * 35);
+        if (profileStatOrders) profileStatOrders.textContent = orders.length;
+        if (profileStatPoints) profileStatPoints.textContent = orders.length * 25;
+        if (profileStatSavings) profileStatSavings.textContent = '₹' + (orders.length * 35);
 
         // Check if there is an active order in transit
         const activeOrder = orders.find(o => ['PENDING', 'ACCEPTED', 'PREPARING', 'PICKED_UP', 'ON_THE_WAY'].includes(o.status));
@@ -2314,7 +2140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="empty-orders-view">
           <div class="empty-orders-icon">📦</div>
           <h4>No Orders Placed Yet</h4>
-          <p>Your ongoing halal food deliveries and town courier dispatches will be tracked here live.</p>
+          <p>Your ongoing halal food deliveries will be tracked here live.</p>
           <a href="#categories-browse" class="btn btn-sm btn-primary" id="btn-profile-explore-now">Explore Halal Menus</a>
         </div>
       `;
@@ -2494,6 +2320,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // =========================================================================
   renderMerchants();
   updateCartUI();
-  calculateParcelFare();
   initBackendIntegration();
 });

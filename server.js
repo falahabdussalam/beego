@@ -20,7 +20,7 @@ server.listen(config.port, config.host, () => {
   
   console.log('\n================================================================');
   console.log('  🚀 BEEGO — Virajpet Edition (Kodagu, Karnataka)');
-  console.log('  100% Halal Food, Estate Coffee & Express Courier Server');
+  console.log('  100% Halal Food & Estate Coffee Server');
   console.log('================================================================');
   console.log(`  🌐 Website URL:         ${hostUrl}`);
   console.log(`  📊 Admin Dispatcher:    ${hostUrl}/admin`);

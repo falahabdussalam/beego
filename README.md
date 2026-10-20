@@ -1,6 +1,6 @@
 # BEEGO — Virajpet Edition (Kodagu, Karnataka)
 
-A refined, human-designed frontend for a luxury on-demand delivery and express courier service based in **Virajpet (Virajpete), Kodagu**, featuring **100% Halal Certified** dining, local estate coffee, spices, pure honey, and town courier logistics.
+A refined, human-designed frontend for a luxury on-demand delivery platform based in **Virajpet (Virajpete), Kodagu**, featuring **100% Halal Certified** dining, local estate coffee, spices, pure honey, and mountain essentials.
 
 ---
 
@@ -74,11 +74,10 @@ Seamless single-line category switching directly in the hero header:
 
 ---
 
-## 📍 Virajpet Localities & Courier Network
+## 📍 Virajpet Localities & Delivery Fleet
 
 - **Local Landmarks & Hubs**: Clock Tower Circle (Gadiyara Kambha), College Road, Kaveri Layout, Malabar Road, Meenupet, Bittangala, Arji, and Gonikoppal Road.
 - **Delivery Partner**: Mohammed Suhail (TVS iQube / Ather EV Fleet, temperature-shielded container).
-- **Courier Routes**: Document/Court Deeds (₹40), Hot Tiffin / Estate Lunch (₹60), Coffee & Spices Parcels (₹90).
 
 ---
 
@@ -89,7 +88,7 @@ BEEGO features a dedicated, production-grade backend server tailored for Virajpe
 - **Server Engine**: Node.js + Express 5 with graceful shutdown (`SIGINT`/`SIGTERM`), rate limiting, request logging, and CORS.
 - **Embedded Database**: SQLite via `better-sqlite3` with Write-Ahead Logging (WAL mode), ACID transactions, and auto-seeding.
 - **Real-Time Telemetry**: Native WebSocket Gateway (`/ws`) broadcasting 1 Hz GPS coordinates, scooter speed, battery level, and timeline transitions for rider **Mohammed Suhail** across Virajpet landmarks (Clock Tower → College Road → Kaveri Layout → Malabar Road).
-- **Operations & Dispatcher Dashboard**: Live operations center at `/admin` for tracking orders, dispatching couriers, and inspecting system health.
+- **Operations & Dispatcher Dashboard**: Live operations center at `/admin` for tracking orders and inspecting system health.
 - **Interactive API Documentation & Explorer**: Interactive Swagger-style documentation portal at `/api` or `/docs`.
 
 ### 📡 API Endpoints
@@ -104,12 +103,6 @@ BEEGO features a dedicated, production-grade backend server tailored for Virajpe
 | `/api/orders` | `GET` | List orders with pagination & status filters |
 | `/api/orders/:id` | `GET` | Order details with 4-stage tracking timeline |
 | `/api/orders/:id/status` | `PATCH` | Update order status (`PREPARING`, `PICKED_UP`, `ON_THE_WAY`, `DELIVERED`) |
-| `/api/courier` | `GET` | List town courier bookings with pagination & status filters |
-| `/api/courier/quote` | `POST` | Calculate fare based on Virajpet distance multipliers & package weight |
-| `/api/courier/book` | `POST` | Book town courier dispatch (assigns Mohammed Suhail with live telemetry) |
-| `/api/courier/:id` | `GET` | Get courier booking details by booking number or ID |
-| `/api/courier/:id/status` | `PATCH` | Update courier status (`ASSIGNED`, `PICKED_UP`, `ON_THE_WAY`, `DELIVERED`) |
-| `/api/courier/localities` | `GET` | List supported Virajpet localities & GPS coordinates |
 | `/api/user/profile` | `GET` | User profile (Falah Abdulla), wallet balance, saved places, and unified activity feed |
 | `/api/user/preferences` | `PATCH` | Update spice level and eco-packaging preference |
 | `/api/user/wallet/topup` | `POST` | Wallet top-up via UPI with transaction ledger entry |
@@ -118,7 +111,7 @@ BEEGO features a dedicated, production-grade backend server tailored for Virajpe
 | `/api/user/addresses/:id` | `DELETE` | Remove a saved address from user profile |
 | `/api/user/addresses/:id/default` | `PATCH` | Set default active delivery address |
 | `/api/promos/validate` | `POST` | Validate coupon codes (`BEEGO10`, `BEEGOFIRST`, `FREEDEL`, `KODAGU50`) |
-| `/ws` | `WebSocket` | Real-time telemetry & order/courier event stream |
+| `/ws` | `WebSocket` | Real-time telemetry & order event stream |
 
 ---
 
