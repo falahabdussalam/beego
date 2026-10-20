@@ -348,6 +348,35 @@ async function runTests() {
       assert.strictEqual(delRes.status, 200);
     });
 
+    // 24. Admin Login with Mobile and Email
+    await test('POST /api/admin/login authenticates with valid email & mobile', async () => {
+      const res = await request('POST', '/api/admin/login', {
+        email: 'admin@beego.in',
+        phone: '+91 98451 23456'
+      });
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(res.body.success, true);
+      assert.ok(res.body.token);
+      assert.strictEqual(res.body.user.email, 'admin@beego.in');
+    });
+
+    // 25. Admin Login Rejection on Invalid Data
+    await test('POST /api/admin/login rejects invalid email format', async () => {
+      const res = await request('POST', '/api/admin/login', {
+        email: 'not-an-email',
+        phone: '9845123456'
+      });
+      assert.strictEqual(res.status, 400);
+      assert.strictEqual(res.body.success, false);
+    });
+
+    // 26. Admin Reset Demo Data
+    await test('POST /api/admin/reset-demo purges demo orders and test items', async () => {
+      const res = await request('POST', '/api/admin/reset-demo');
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(res.body.success, true);
+    });
+
   } finally {
     // Reset test artifacts to pristine clean database state
     try {

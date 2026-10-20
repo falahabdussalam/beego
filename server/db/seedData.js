@@ -442,6 +442,14 @@ function seedDatabase(options = {}) {
     db.prepare("UPDATE users SET name = 'Falah Abdulla', phone = '+91 98451 23456', email = 'falah.kodagu@gmail.com', location = 'Virajpet Town, Kodagu 571218' WHERE id = 'user_falah'").run();
   } catch (e) {}
 
+  // Ensure default admin user exists
+  try {
+    db.prepare(`
+      INSERT OR IGNORE INTO admin_users (id, name, email, phone, role)
+      VALUES ('admin_falah', 'Falah Abdulla', 'admin@beego.in', '+91 98451 23456', 'Platform & Store Admin')
+    `).run();
+  } catch (e) {}
+
   // Ensure legacy courier merchants and items are purged from existing database
   try {
     db.prepare("DELETE FROM menu_items WHERE merchant_id = 'm7'").run();

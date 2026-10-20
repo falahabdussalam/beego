@@ -4,6 +4,14 @@ const path = require('path');
 const adminController = require('../controllers/adminController');
 
 // ============================================================================
+// AUTHENTICATION & SESSION ROUTES
+// ============================================================================
+router.post('/login', adminController.login);
+router.get('/auth/me', adminController.getAuthSession);
+router.post('/logout', adminController.logout);
+router.post('/reset-demo', adminController.resetDemoData);
+
+// ============================================================================
 // REST API ENDPOINTS FOR STORE & PRODUCT MANAGEMENT
 // ============================================================================
 router.get('/stats', adminController.getStats);
@@ -20,8 +28,12 @@ router.put('/merchants/:id', adminController.updateMerchant);
 router.delete('/merchants/:id', adminController.deleteMerchant);
 
 // ============================================================================
-// ADMIN DASHBOARD HTML INTERFACE
+// HTML VIEWS
 // ============================================================================
+router.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/admin-login.html'));
+});
+
 router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../views/admin.html'));
 });

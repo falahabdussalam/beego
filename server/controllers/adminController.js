@@ -598,6 +598,155 @@ const adminController = {
     } catch (err) {
       next(err);
     }
+  },
+
+  /**
+   * POST /api/admin/login
+   * Authenticate admin using mobile number and email
+   */
+  login: (req, res, next) => {
+    try {
+      const { email, phone } = req.body;
+
+      if (!email || !phone) {
+        return res.status(400).json({
+          success: false,
+          error: 'ValidationError',
+          message: 'Both Email Address and Mobile Number are required to log into Admin Portal.'
+        });
+      }
+
+      const cleanEmail = email.trim().toLowerCase();
+      const cleanPhone = phone.replace(/[^0-9+]/g, '').trim();
+      const digitsOnly = cleanPhone.replace(/[^0-9]/g, '');
+
+      // Email format validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(cleanEmail)) {
+        return res.status(400).json({
+          success: false,
+          error: 'ValidationError',
+          message: 'Please provide a valid email address (e.g., admin@beego.in).'
+        });
+      }
+
+      // Mobile format validation (at least 10 digits)
+      if (digitsOnly.length < 10) {
+        return res.status(400).json({
+          success: false,
+          error: 'ValidationError',
+          message: 'Please provide a valid 10-digit mobile number.'
+        });
+      }
+
+      // Check if admin user exists by email or phone
+      let admin = db.prepare('SELECT * FROM admin_users WHERE LOWER(email) = ? OR phone LIKE ?').get(cleanEmail, `%${digitsOnly.slice(-10)}%`);
+
+      if (!admin) {
+        // Auto-provision store owner admin user
+        const newId = `admin_${Date.now()}`;
+        const namePart = cleanEmail.split('@')[0].replace(/[._]/g, ' ');
+        const name = namePart ? namePart.replace(/\b\w/g, l => l.toUpperCase()) : 'Store Owner';
+        
+        db.prepare(`
+          INSERT INTO admin_users (id, name, email, phone, role, last_login)
+          VALUES (@id, @name, @email, @phone, 'Store Partner & Manager', datetime('now'))
+        `).run({
+          id: newId,
+          name,
+          email: cleanEmail,
+          phone: cleanPhone
+        });
+
+        admin = db.prepare('SELECT * FROM admin_users WHERE id = ?').get(newId);
+      } else {
+        db.prepare("UPDATE admin_users SET last_login = datetime('now') WHERE id = ?").run(admin.id);
+      }
+
+      const token = `beego_adm_${Buffer.from(`${admin.id}:${Date.now()}`).toString('base64url')}`;
+
+      res.cookie('beego_admin_token', token, {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: false,
+        sameSite: 'lax',
+        path: '/'
+      });
+
+      res.json({
+        success: true,
+        message: `Welcome back, ${admin.name}! Authenticated to BEEGO Admin Portal.`,
+        token,
+        user: {
+          id: admin.id,
+          name: admin.name,
+          email: admin.email,
+          phone: admin.phone,
+          role: admin.role
+        }
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * GET /api/admin/auth/me
+   */
+  getAuthSession: (req, res, next) => {
+    try {
+      const admin = db.prepare('SELECT * FROM admin_users ORDER BY created_at ASC LIMIT 1').get();
+
+      res.json({
+        success: true,
+        authenticated: true,
+        user: admin ? {
+          id: admin.id,
+          name: admin.name,
+          email: admin.email,
+          phone: admin.phone,
+          role: admin.role
+        } : {
+          id: 'admin_falah',
+          name: 'Falah Abdulla',
+          email: 'admin@beego.in',
+          phone: '+91 98451 23456',
+          role: 'Platform & Store Admin'
+        }
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * POST /api/admin/logout
+   */
+  logout: (req, res) => {
+    res.clearCookie('beego_admin_token', { path: '/' });
+    res.json({
+      success: true,
+      message: 'Logged out of BEEGO Admin Portal.'
+    });
+  },
+
+  /**
+   * POST /api/admin/reset-demo
+   * Clear all demo orders, transactions, and test artifacts
+   */
+  resetDemoData: (req, res, next) => {
+    try {
+      db.prepare('DELETE FROM orders').run();
+      db.prepare('DELETE FROM wallet_transactions').run();
+      db.prepare("DELETE FROM menu_items WHERE id LIKE 'item_179%' OR id LIKE 'item_test%'").run();
+      db.prepare("UPDATE users SET wallet_balance = 0.00 WHERE id = 'user_falah'").run();
+
+      res.json({
+        success: true,
+        message: 'All demo orders and test products cleared. Admin dashboard reset to clean state.'
+      });
+    } catch (err) {
+      next(err);
+    }
   }
 };
 

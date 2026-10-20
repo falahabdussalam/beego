@@ -171,6 +171,19 @@ function initDatabase() {
     );
 
     CREATE INDEX IF NOT EXISTS idx_telemetry_ref ON telemetry_logs(reference_id);
+
+    -- Admin Users Table
+    CREATE TABLE IF NOT EXISTS admin_users (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      phone TEXT NOT NULL,
+      role TEXT DEFAULT 'Platform & Store Admin',
+      last_login TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_admin_email ON admin_users(email);
   `;
 
   db.exec(schema);

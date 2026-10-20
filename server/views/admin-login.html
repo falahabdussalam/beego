@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BEEGO Admin — Store Owner & Operations Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAF7F2;
+      --card-bg: #FFFFFF;
+      --maroon: #520D18;
+      --maroon-dark: #38070F;
+      --gold: #C08D38;
+      --gold-light: #FBF4E7;
+      --green: #236B36;
+      --text-main: #221614;
+      --text-muted: #6E5E5A;
+      --border: #E8DCCF;
+      --shadow-lg: 0 20px 48px rgba(45, 20, 15, 0.18);
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      background: radial-gradient(circle at 10% 20%, #F5ECE0 0%, #EFE5D5 90%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+    }
+
+    /* Ambient background decorations */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(192, 141, 56, 0.18) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -100px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(82, 13, 24, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .login-container {
+      max-width: 460px;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--maroon);
+      color: #FAF7F2;
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(82, 13, 24, 0.2);
+    }
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+    }
+
+    .login-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--maroon) 0%, var(--gold) 50%, var(--maroon) 100%);
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--maroon);
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 7px;
+      letter-spacing: 0.5px;
+    }
+    .input-wrap {
+      position: relative;
+    }
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+    .form-input {
+      width: 100%;
+      background: #FAF7F2;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px 12px 42px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.2s;
+    }
+    .form-input:focus {
+      background: #FFFFFF;
+      border-color: var(--maroon);
+      box-shadow: 0 0 0 4px rgba(82, 13, 24, 0.1);
+    }
+
+    .quick-chip {
+      background: var(--gold-light);
+      border: 1px dashed var(--gold);
+      color: #795213;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .quick-chip:hover {
+      background: #F4E5CC;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--maroon);
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(82, 13, 24, 0.25);
+    }
+    .btn-submit:hover {
+      background: var(--maroon-dark);
+      transform: translateY(-1px);
+    }
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .alert-box {
+      background: #FFEBEE;
+      color: #C62828;
+      border: 1px solid #FFCDD2;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .alert-box.alert-success {
+      background: #E8F5E9;
+      color: #2E7D32;
+      border-color: #C8E6C9;
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .login-footer a {
+      color: var(--maroon);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .login-footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div style="text-align: center;">
+      <div class="brand-badge">
+        <span class="brand-dot"></span>
+        <span>BEEGO VIRAJPEE • OPERATIONS COMMAND</span>
+      </div>
+    </div>
+
+    <div class="login-card">
+      <h1 class="card-title">Store & Admin Login</h1>
+      <p class="card-subtitle">Manage your Restaurant, Cafe, or Grocery store catalog, pricing, and live customer orders.</p>
+
+      <div class="alert-box" id="login-alert"></div>
+
+      <form id="admin-login-form" onsubmit="handleLogin(event)">
+        <!-- Email Input -->
+        <div class="form-group">
+          <label class="form-label">Email Address *</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="login-email" class="form-input" placeholder="admin@beego.in" required autofocus>
+          </div>
+        </div>
+
+        <!-- Mobile Number Input -->
+        <div class="form-group">
+          <label class="form-label">Mobile Number *</label>
+          <div class="input-wrap">
+            <span class="input-icon">📱</span>
+            <input type="tel" id="login-phone" class="form-input" placeholder="+91 98451 23456" required>
+          </div>
+        </div>
+
+        <!-- 1-Click Fast Fill -->
+        <div class="quick-chip" onclick="fillAdminCredentials()" title="Click to fill default admin credentials">
+          <span>👑</span>
+          <span>Click to fill: <strong>admin@beego.in</strong> / <strong>98451 23456</strong></span>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit" id="btn-login-submit">
+          <span>Enter Admin Dashboard</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <div>🔒 Encrypted Session • FSSAI Certified Network</div>
+        <div style="margin-top: 8px;">
+          <a href="/" target="_blank">← Return to Customer Storefront</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Auto redirect if already authenticated
+    try {
+      const stored = localStorage.getItem('beego_admin_session');
+      if (stored) {
+        const session = JSON.parse(stored);
+        if (session && session.token) {
+          // Verify with server or redirect directly
+          window.location.href = '/admin';
+        }
+      }
+    } catch (e) {}
+
+    function fillAdminCredentials() {
+      document.getElementById('login-email').value = 'admin@beego.in';
+      document.getElementById('login-phone').value = '+91 98451 23456';
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const phone = document.getElementById('login-phone').value.trim();
+      const alertBox = document.getElementById('login-alert');
+      const btn = document.getElementById('btn-login-submit');
+
+      alertBox.style.display = 'none';
+      btn.disabled = true;
+      btn.innerHTML = '<span>Verifying credentials...</span>';
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, phone })
+        });
+        const json = await res.json();
+
+        if (json.success) {
+          alertBox.className = 'alert-box alert-success';
+          alertBox.innerText = json.message || 'Login successful! Redirecting to Dashboard...';
+          alertBox.style.display = 'block';
+
+          // Save session
+          localStorage.setItem('beego_admin_session', JSON.stringify({
+            token: json.token,
+            user: json.user,
+            loggedInAt: new Date().toISOString()
+          }));
+
+          setTimeout(() => {
+            window.location.href = '/admin';
+          }, 600);
+        } else {
+          btn.disabled = false;
+          btn.innerHTML = '<span>Enter Admin Dashboard</span>';
+          alertBox.className = 'alert-box';
+          alertBox.innerText = json.message || 'Login failed. Please check your details.';
+          alertBox.style.display = 'block';
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Enter Admin Dashboard</span>';
+        alertBox.className = 'alert-box';
+        alertBox.innerText = 'Network error: ' + err.message;
+        alertBox.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
