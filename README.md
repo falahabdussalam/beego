@@ -111,6 +111,12 @@ BEEGO features a dedicated, production-grade backend server tailored for Virajpe
 | `/api/user/addresses/:id` | `DELETE` | Remove a saved address from user profile |
 | `/api/user/addresses/:id/default` | `PATCH` | Set default active delivery address |
 | `/api/promos/validate` | `POST` | Validate coupon codes (`BEEGO10`, `BEEGOFIRST`, `FREEDEL`, `KODAGU50`) |
+| `/api/admin/stats` | `GET` | Aggregated dashboard stats (orders, volume, items, in-stock rate, stores) |
+| `/api/admin/items` | `GET`, `POST` | Manage menu products (search, filter by store/category, add new item) |
+| `/api/admin/items/:id` | `GET`, `PUT`, `DELETE` | View, edit (price/category/name/desc/image), or remove product |
+| `/api/admin/items/:id/availability` | `PATCH` | Quick-toggle product In-Stock / Out-of-Stock status |
+| `/api/admin/merchants` | `GET`, `POST` | List and register new restaurants, cafes, or grocery stores |
+| `/api/admin/merchants/:id` | `PUT`, `DELETE` | Edit store details (name, cuisine, delivery fee, min order) or delete store |
 | `/ws` | `WebSocket` | Real-time telemetry & order event stream |
 
 ---

@@ -252,6 +252,102 @@ async function runTests() {
       assert.strictEqual(res.body.error, 'InvalidName');
     });
 
+    // 17. Admin Stats
+    await test('GET /api/admin/stats returns aggregate metrics', async () => {
+      const res = await request('GET', '/api/admin/stats');
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(res.body.success, true);
+      assert.ok(res.body.data.totalMerchants >= 8);
+      assert.ok(res.body.data.totalItems >= 20);
+      assert.ok(res.body.data.inStockRate >= 0);
+    });
+
+    // 18. Admin Items Listing
+    await test('GET /api/admin/items returns items with merchant details', async () => {
+      const res = await request('GET', '/api/admin/items');
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(res.body.success, true);
+      assert.ok(res.body.data.length >= 20);
+      assert.ok(res.body.data[0].merchant_name);
+    });
+
+    // 19. Admin Add Product
+    let createdItemId = null;
+    await test('POST /api/admin/items adds a new dish with category & price', async () => {
+      const res = await request('POST', '/api/admin/items', {
+        merchant_id: 'm1',
+        name: 'Coorg Bamboo Shoot Stew (Baimbale)',
+        price: 195.00,
+        category: 'Kodagu Curries',
+        description: 'Tender monsoon bamboo shoots simmered in spiced coconut gravy.',
+        image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80',
+        is_available: 1
+      });
+      assert.strictEqual(res.status, 201);
+      assert.strictEqual(res.body.success, true);
+      assert.strictEqual(res.body.data.name, 'Coorg Bamboo Shoot Stew (Baimbale)');
+      assert.strictEqual(res.body.data.price, 195.00);
+      assert.strictEqual(res.body.data.category, 'Kodagu Curries');
+      createdItemId = res.body.data.id;
+    });
+
+    // 20. Admin Edit Product
+    await test('PUT /api/admin/items/:id updates price and category', async () => {
+      assert.ok(createdItemId);
+      const res = await request('PUT', `/api/admin/items/${createdItemId}`, {
+        price: 210.00,
+        category: 'Estate Specials'
+      });
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(res.body.success, true);
+      assert.strictEqual(res.body.data.price, 210.00);
+      assert.strictEqual(res.body.data.category, 'Estate Specials');
+    });
+
+    // 21. Admin Toggle Stock Availability
+    await test('PATCH /api/admin/items/:id/availability toggles stock', async () => {
+      assert.ok(createdItemId);
+      const res = await request('PATCH', `/api/admin/items/${createdItemId}/availability`, {
+        is_available: 0
+      });
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(res.body.success, true);
+      assert.strictEqual(res.body.is_available, 0);
+    });
+
+    // 22. Admin Delete Product
+    await test('DELETE /api/admin/items/:id removes product from catalog', async () => {
+      assert.ok(createdItemId);
+      const res = await request('DELETE', `/api/admin/items/${createdItemId}`);
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(res.body.success, true);
+
+      // Verify deletion
+      const checkRes = await request('GET', `/api/admin/items/${createdItemId}`);
+      assert.strictEqual(checkRes.status, 404);
+    });
+
+    // 23. Admin Merchants Management
+    await test('POST /api/admin/merchants registers a new cafe/restaurant', async () => {
+      const res = await request('POST', '/api/admin/merchants', {
+        name: 'Coorg Artisan Honey & Kaapi Cafe',
+        category: 'beverages',
+        cuisine: 'Single Origin Espresso & Wildflower Infusions',
+        delivery_time: '15-20 min',
+        delivery_fee: 15.00,
+        min_order: 80.00,
+        location: 'Madikeri Road, Virajpet'
+      });
+      assert.strictEqual(res.status, 201);
+      assert.strictEqual(res.body.success, true);
+      assert.strictEqual(res.body.data.name, 'Coorg Artisan Honey & Kaapi Cafe');
+
+      // Clean up test merchant
+      const testId = res.body.data.id;
+      const delRes = await request('DELETE', `/api/admin/merchants/${testId}`);
+      assert.strictEqual(delRes.status, 200);
+    });
+
   } finally {
     // Reset test artifacts to pristine clean database state
     try {

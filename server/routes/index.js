@@ -6,6 +6,7 @@ const orderRoutes = require('./orderRoutes');
 const userRoutes = require('./userRoutes');
 const promoRoutes = require('./promoRoutes');
 const healthRoutes = require('./healthRoutes');
+const adminRoutes = require('./adminRoutes');
 
 // Mount Sub-routers
 router.use('/health', healthRoutes);
@@ -13,6 +14,7 @@ router.use('/merchants', merchantRoutes);
 router.use('/orders', orderRoutes);
 router.use('/user', userRoutes);
 router.use('/promos', promoRoutes);
+router.use('/admin', adminRoutes);
 
 // Interactive API Explorer & Live Documentation UI
 router.get('/', (req, res) => {
@@ -32,6 +34,9 @@ router.get('/', (req, res) => {
         walletTopup: '/api/user/wallet/topup',
         walletTransactions: '/api/user/wallet/transactions',
         promoValidate: '/api/promos/validate',
+        adminStats: '/api/admin/stats',
+        adminItems: '/api/admin/items',
+        adminMerchants: '/api/admin/merchants',
         websocket: '/ws'
       }
     });
