@@ -4,1434 +4,966 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BEEGO</title>
+  <title>BeeGo + | Metropolitan White-Glove On-Demand Delivery</title>
   <meta name="description"
-    content="Virajpet's premier on-demand delivery platform. 100% Halal certified Kodagu dining, biryani, akki roti, estate coffee, pure honey, and mountain essentials.">
+    content="Artisan food, organic farm grocery, Parisian desserts, cold-pressed beverages & 24/7 verified pharmacy essentials delivered in minutes via WhatsApp Concierge.">
 
-  <!-- Google Fonts: Bricolage Grotesque -->
+  <!-- Google Fonts: Playfair Display (Serif Headlines) + Plus Jakarta Sans & Inter (UI) + JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&display=swap"
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
-  <!-- Leaflet Map CSS for Google Maps Picker -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
 
 <body>
 
-  <!-- Main Navigation Header -->
-  <header class="site-header" id="header">
-    <div class="container header-inner">
+  <!-- ========================================================================= -->
+  <!-- 1. TOP ANNOUNCEMENT TICKER (BLACK BAR) -->
+  <!-- ========================================================================= -->
+  <aside class="top-announcement-bar" aria-label="Service status ticker">
+    <div class="container announcement-inner">
+      <div class="announcement-left">
+        <span class="live-dot-green"></span>
+        <span class="announcement-text">
+          <strong>Express Delivery in 15–25 Mins</strong> • Instant Order Forwarding to WhatsApp Concierge
+        </span>
+      </div>
+      <div class="announcement-right">
+        <span class="announcement-pill">
+          <span class="courier-fleet-dot"></span>
+          Courier Fleet Live
+        </span>
+        <span class="announcement-sep">|</span>
+        <span class="announcement-pill">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          HIPAA-Compliant Cold-Chain
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================================================= -->
+  <!-- 2. MAIN HEADER NAVIGATION -->
+  <!-- ========================================================================= -->
+  <header class="site-header" id="site-header">
+    <div class="container header-container">
+      
       <!-- Brand Logo -->
-      <a href="#" class="brand-logo" aria-label="BEEGO Virajpet Home">
-        <div class="logo-symbol">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+      <a href="/" class="brand-logo" aria-label="BeeGo Plus Home">
+        <span class="brand-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect width="24" height="24" rx="6" fill="#C59B27"/>
+            <path d="M7 12h10M12 7v10" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
-        </div>
-        <div class="logo-text">
-          <span class="logo-title">BEEGO</span>
-          <span class="logo-sub">VIRAJPEE • KODAGU</span>
-        </div>
+        </span>
+        <span class="brand-name">BeeGo <span class="brand-plus">+</span></span>
       </a>
 
-
-      <!-- Location Address Selector -->
-      <div class="address-picker" id="address-trigger" role="button" tabindex="0"
-        title="Click to change delivery location">
-        <div class="pin-icon">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-            <circle cx="12" cy="10" r="3"></circle>
-          </svg>
-        </div>
-        <div class="address-content">
-          <span class="address-label">Delivering in Virajpet</span>
-          <span class="address-current" id="current-address-text">Clock Tower Circle, Virajpet</span>
-        </div>
-        <svg class="chevron-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2">
-          <polyline points="6 9 12 15 18 9"></polyline>
+      <!-- Deliver To Location Pill -->
+      <button type="button" class="deliver-location-pill" id="btn-change-location" aria-label="Change delivery location" title="Click to change delivery address">
+        <svg class="loc-pin-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
         </svg>
+        <span class="deliver-label">Deliver to:</span>
+        <span class="deliver-address-text" id="header-address-display">Indiranagar 100ft Rd, Bengaluru</span>
+        <span class="deliver-eta-badge" id="header-eta-display">15 mins</span>
+        <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+
+      <!-- Global Search Bar -->
+      <div class="header-search-wrap">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="global-search-input" class="search-input" placeholder="Search delicacies, organic milk, tarts, medicines..." aria-label="Search all products">
+        <span class="search-shortcut-badge">⌘K</span>
       </div>
 
-      <!-- Action Utilities -->
+      <!-- Action Buttons -->
       <div class="header-actions">
-        <!-- Live Search Trigger -->
-        <div class="search-input-wrapper">
-          <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <!-- Order via WhatsApp Primary Header CTA -->
+        <button type="button" class="btn-whatsapp-header" id="btn-header-whatsapp" title="Send current order to WhatsApp Concierge">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.02L7.55 18.84L4.44 19.66L5.27 16.62L5.07 16.31C4.26 15.01 3.81 13.49 3.81 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/>
           </svg>
-          <input type="text" id="global-search-input" placeholder="Search halal biryani, koli curry..."
-            aria-label="Search">
-          <button type="button" class="clear-search-btn" id="clear-search" aria-label="Clear search"
-            style="display: none;">&times;</button>
-        </div>
-
-        <!-- Track Action Pill (Hidden until real active order exists) -->
-        <button type="button" class="btn-track-pill" id="track-modal-trigger" title="Track Live Order" style="display: none;">
-          <span class="pulsing-dot"></span>
-          <span id="track-modal-trigger-text">Track Order</span>
+          <span>Order via WhatsApp</span>
+          <span class="header-cart-badge" id="header-cart-count" style="display: none;">0</span>
         </button>
 
-        <!-- Cart Drawer Button -->
-        <button type="button" class="cart-trigger-btn" id="cart-drawer-trigger" aria-label="View basket">
-          <div class="cart-icon-wrap">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            <span class="cart-badge" id="cart-badge-count" style="display: none;">0</span>
+        <!-- User Profile Pill -->
+        <a href="/admin" class="user-profile-pill" id="user-profile-pill" title="Store & Operations Management (/admin)">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80" alt="Falah" class="profile-thumb">
+          <div class="profile-meta">
+            <span class="user-name">Falah</span>
+            <span class="user-role">LR Member Active</span>
           </div>
-          <span class="cart-total-text" id="cart-header-total" style="display: none;">₹0</span>
-        </button>
-
-        <!-- User Profile Trigger Button -->
-        <button type="button" class="btn-profile-trigger" id="profile-trigger" aria-label="Open User Profile" title="Falah Abdulla (My Account)">
-          <div class="profile-avatar-thumb">
-            <img id="header-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80" alt="Falah Abdulla">
-            <span class="profile-status-dot" title="Royale Member Active"></span>
-          </div>
-          <span class="profile-name-text" id="header-profile-name">Falah</span>
-          <svg class="profile-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
-        </button>
+        </a>
       </div>
+
     </div>
   </header>
 
   <main>
-    <!-- HERO SECTION -->
-    <!-- HERO SECTION (NEAT, CLEAN, ALL-IN-ONE-LINE DESIGN) -->
-    <section class="hero-section">
-      <div class="container hero-container-neat">
-        <div class="hero-tag">
-          <span class="hero-tag-gem"></span>
-          <span>100% Halal Certified • Virajpet, Kodagu</span>
-        </div>
+    <!-- ========================================================================= -->
+    <!-- 3. HERO SHOWCASE SECTION -->
+    <!-- ========================================================================= -->
+    <section class="hero-showcase" id="hero-section">
+      <div class="container hero-grid">
+        
+        <!-- Left Hero Copy & Actions -->
+        <div class="hero-copy-col">
+          <div class="hero-kicker-badge">
+            <span class="kicker-dot"></span>
+            <span>METROPOLITAN WHITE-GLOVE DISPATCH</span>
+          </div>
 
-        <h1 class="hero-headline-neat">Virajpet's finest halal food, delivered in minutes.</h1>
-        <p class="hero-description-neat">Authentic Kodagu koli curry, Thalassery kaima biryani, estate coffee &amp; mountain essentials.</p>
+          <h1 class="hero-main-title">
+            Everything You Crave &amp; Need, <span class="highlight-green">Delivered in Minutes.</span>
+          </h1>
 
-        <!-- Hero Section Category Navigations -->
-        <nav class="hero-nav-bar" id="hero-quick-nav" aria-label="Hero service categories">
-          <button type="button" class="hero-nav-item active" data-category="food">
-            <span class="hero-nav-icon">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-                <line x1="6" y1="1" x2="6" y2="4" />
-                <line x1="10" y1="1" x2="10" y2="4" />
-                <line x1="14" y1="1" x2="14" y2="4" />
-              </svg>
-            </span>
-            <span class="hero-nav-label">Food</span>
-          </button>
+          <p class="hero-subtext">
+            Artisan food, organic farm grocery, Parisian desserts, cold-pressed beverages &amp; 24/7 verified pharmacy essentials. Curate your cart and effortlessly broadcast your order directly to our dedicated WhatsApp dispatch desk.
+          </p>
 
-          <button type="button" class="hero-nav-item" data-category="grocery">
-            <span class="hero-nav-icon">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          <div class="hero-action-buttons">
+            <a href="#marketplace-sections" class="btn btn-dark-hero" id="btn-explore-hero">
+              <span>Explore Marketplace</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </a>
+            <button type="button" class="btn btn-green-hero" id="btn-open-bag-hero">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/>
               </svg>
-            </span>
-            <span class="hero-nav-label">Grocery</span>
-          </button>
-
-          <button type="button" class="hero-nav-item" data-category="medicine">
-            <span class="hero-nav-icon">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="18" height="18" rx="4" />
-                <line x1="12" y1="8" x2="12" y2="16" />
-                <line x1="8" y1="12" x2="16" y2="12" />
-              </svg>
-            </span>
-            <span class="hero-nav-label">Medicine</span>
-          </button>
-
-          <button type="button" class="hero-nav-item" data-category="beverages">
-            <span class="hero-nav-icon">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
-                <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
-                <line x1="6" y1="2" x2="6" y2="4" />
-                <line x1="10" y1="2" x2="10" y2="4" />
-                <line x1="14" y1="2" x2="14" y2="4" />
-              </svg>
-            </span>
-            <span class="hero-nav-label">Beverages</span>
-          </button>
-
-          <button type="button" class="hero-nav-item" data-category="desserts">
-            <span class="hero-nav-icon">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path
-                  d="M12 2a4 4 0 0 0-4 4c0 1.25.57 2.37 1.46 3.1A6 6 0 0 0 3 15v1a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-1a6 6 0 0 0-6.46-5.9A4 4 0 0 0 16 6a4 4 0 0 0-4-4Z" />
-              </svg>
-            </span>
-            <span class="hero-nav-label">Desserts</span>
-          </button>
-        </nav>
-
-        <!-- All-in-One-Line Action Bar -->
-        <div class="hero-oneline-bar">
-          <div class="oneline-segment segment-location" id="hero-location-segment" role="button" tabindex="0"
-            title="Click to pick location on Google Map">
-            <div class="segment-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-            </div>
-            <div class="segment-field">
-              <label for="delivery-location-input">Location (Map Select)</label>
-              <input type="text" id="delivery-location-input" value="Clock Tower Circle, Virajpet"
-                placeholder="Select location on Google Map..." readonly>
-            </div>
-            <button type="button" class="btn-map-shortcut" id="btn-hero-open-map" title="Open Google Map Pin Picker">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-                <line x1="8" y1="2" x2="8" y2="18"></line>
-                <line x1="16" y1="6" x2="16" y2="22"></line>
-              </svg>
-              <span>Map</span>
+              <span>Open WhatsApp Cart (<span id="hero-bag-qty">3</span>)</span>
             </button>
           </div>
 
-          <div class="oneline-divider"></div>
-
-          <div class="oneline-segment segment-service">
-            <div class="segment-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
+          <!-- 3 Micro Value Badges -->
+          <div class="hero-trust-row">
+            <div class="trust-badge-card">
+              <div class="trust-icon-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="trust-texts">
+                <strong>Verified Rx</strong>
+                <span>Licensed Pharmacists</span>
+              </div>
             </div>
-            <div class="segment-field">
-              <label for="hero-service-mode">Service</label>
-              <select id="hero-service-mode">
-                <option value="food">Halal Food (15–25 min)</option>
-                <option value="grocery">Grocery &amp; Spices (15–25 min)</option>
-                <option value="medicine">Medicine &amp; Health (10–20 min)</option>
-                <option value="beverages">Estate Kaapi &amp; Tea (10–15 min)</option>
-                <option value="desserts">Desserts &amp; Bakes (15–20 min)</option>
-                <option value="track">Track Live Telemetry</option>
-              </select>
+
+            <div class="trust-badge-card">
+              <div class="trust-icon-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93"/></svg>
+              </div>
+              <div class="trust-texts">
+                <strong>Cold-Chain</strong>
+                <span>Active 4°C Isolation</span>
+              </div>
+            </div>
+
+            <div class="trust-badge-card">
+              <div class="trust-icon-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              </div>
+              <div class="trust-texts">
+                <strong>Instant Chat</strong>
+                <span>&lt; 30s Agent Response</span>
+              </div>
             </div>
           </div>
-
-          <button type="button" class="btn btn-primary oneline-btn" id="btn-hero-explore">
-            <span id="hero-btn-label">Explore Halal Menus</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </button>
         </div>
 
-        <!-- Single-Line Proof Strip -->
-        <div class="hero-proof-line">
-          <div class="proof-pill">
-            <span class="proof-dot"></span>
-            <span><strong>20m</strong> Avg Town Delivery</span>
-          </div>
-          <span class="proof-sep">•</span>
-          <div class="proof-pill">
-            <span>🍗 <strong>100% Halal</strong> Certified</span>
-          </div>
-          <span class="proof-sep">•</span>
-          <div class="proof-pill">
-            <span>⭐ <strong>4.96★</strong> (18k+ Orders)</span>
-          </div>
-          <span class="proof-sep">•</span>
-          <div class="proof-pill">
-            <span>🛵 <strong>18 Riders</strong> Live in Virajpet</span>
+        <!-- Right Hero Visual Showcase Card -->
+        <div class="hero-visual-col">
+          <div class="hero-tamper-card">
+            <div class="tamper-card-tag">
+              <span class="live-dot-green"></span>
+              <span>Discreet Tamper-Evident Bagging</span>
+            </div>
+
+            <div class="tamper-image-wrap">
+              <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=85" 
+                   alt="Gourmet dining, artisanal desserts and cold chain delivery" 
+                   class="tamper-food-photo">
+            </div>
+
+            <!-- Floating Active Courier Telemetry Widget -->
+            <div class="hero-courier-assigned-widget">
+              <div class="courier-vehicle-avatar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6h-5a2 2 0 0 0-2 2v6h11l-2-6h-2z"/><path d="M12 18v-4"/></svg>
+              </div>
+              <div class="courier-assigned-info">
+                <div class="courier-assigned-header">
+                  <strong>Courier Assigned</strong>
+                  <span class="courier-badge-active">Active</span>
+                </div>
+                <div class="courier-eta-text">
+                  Delivery Partner: <strong>LR Bros (ETA: 14 mins)</strong>
+                </div>
+              </div>
+              <div class="courier-signal-bars">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+
           </div>
         </div>
+
       </div>
     </section>
 
-    <!-- LIVE TRACKING INTERACTIVE BANNER / SECTION -->
-    <section class="tracking-drawer-section" id="track-section">
-      <div class="container">
-        <!-- STANDBY VIEW: When no delivery is active -->
-        <div class="tracking-card tracking-standby" id="tracking-standby-view">
-          <div class="standby-content">
-            <div class="standby-left">
-              <div class="standby-icon-badge">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-                </svg>
-              </div>
-              <div class="standby-text">
-                <span class="kicker-small">LIVE VIRAJPEE TELEMETRY • READY</span>
-                <h3 class="standby-heading">No Active Deliveries Right Now</h3>
-                <p class="standby-desc">Order authentic Kodagu halal dining to watch real-time GPS telemetry from rider Mohammed Suhail right here.</p>
-              </div>
-            </div>
-            <div class="standby-actions">
-              <a href="#categories-browse" class="btn btn-primary btn-sm">Browse Halal Menus</a>
-            </div>
-          </div>
-        </div>
+    <!-- ========================================================================= -->
+    <!-- 4. HORIZONTAL CATEGORY NAVIGATION BAR -->
+    <!-- ========================================================================= -->
+    <nav class="category-filter-strip" id="category-filter-strip" aria-label="Category navigation">
+      <div class="container category-pill-container">
+        <button type="button" class="cat-pill active" data-category="all">
+          <span class="cat-emoji">🔥</span>
+          <span class="cat-name">All Essentials</span>
+          <span class="cat-count-badge">79</span>
+        </button>
+        <button type="button" class="cat-pill" data-category="gourmet-food">
+          <span class="cat-emoji">🍽️</span>
+          <span class="cat-name">Gourmet Food</span>
+          <span class="cat-count-badge">42</span>
+        </button>
+        <button type="button" class="cat-pill" data-category="fresh-grocery">
+          <span class="cat-emoji">🥗</span>
+          <span class="cat-name">Fresh Grocery &amp; Organic</span>
+          <span class="cat-count-badge">65</span>
+        </button>
+        <button type="button" class="cat-pill" data-category="artisanal-desserts">
+          <span class="cat-emoji">🧁</span>
+          <span class="cat-name">Artisanal Desserts &amp; Pastry</span>
+          <span class="cat-count-badge">14</span>
+        </button>
+        <button type="button" class="cat-pill" data-category="cold-pressed">
+          <span class="cat-emoji">🧃</span>
+          <span class="cat-name">Cold-Pressed &amp; Beverages</span>
+          <span class="cat-count-badge">35</span>
+        </button>
+        <button type="button" class="cat-pill" data-category="pharmacy-medicine">
+          <span class="cat-emoji">💊</span>
+          <span class="cat-name">24/7 Pharmacy &amp; Medicine</span>
+          <span class="cat-count-badge">18</span>
+        </button>
+      </div>
+    </nav>
 
-        <!-- ACTIVE VIEW: Revealed dynamically when an order is placed -->
-        <div class="tracking-card tracking-active" id="tracking-active-view" style="display: none;">
-          <div class="tracking-top-bar">
-            <div class="tracking-title-wrap">
-              <div class="tracking-pulsing-icon">
-                <span class="pulse-ring"></span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-                </svg>
-              </div>
-              <div>
-                <span class="kicker-small">LIVE VIRAJPEE TELEMETRY</span>
-                <h2 class="tracking-heading" id="tracking-heading-text">Active Delivery: Order</h2>
-              </div>
-            </div>
+    <!-- ========================================================================= -->
+    <!-- 5. MARKETPLACE TWO-COLUMN LAYOUT (LEFT: CATALOG, RIGHT: WHATSAPP BAG) -->
+    <!-- ========================================================================= -->
+    <section class="marketplace-body" id="marketplace-sections">
+      <div class="container marketplace-columns-grid">
 
-            <div class="tracking-controls">
-              <span class="badge-status-live" id="live-tracking-badge">Assigning Rider...</span>
-              <button class="btn-sm btn-outline-maroon" id="btn-toggle-tracking-details">
-                <span id="toggle-tracking-text">Hide Live Map</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="18 15 12 9 6 15"></polyline>
-                </svg>
-              </button>
-            </div>
-          </div>
+        <!-- =================================================================== -->
+        <!-- LEFT COLUMN: PRODUCT SECTIONS -->
+        <!-- =================================================================== -->
+        <div class="catalog-column" id="catalog-products-container">
 
-          <div class="tracking-content-body" id="tracking-body">
-            <!-- Timeline Steps -->
-            <div class="tracking-timeline-grid">
-              <div class="timeline-step completed">
-                <div class="step-dot">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </div>
-                <div class="step-info">
-                  <span class="step-title">Order Placed</span>
-                  <span class="step-time">Kitchen Verified</span>
+          <!-- SECTION 1: GOURMET FOOD -->
+          <section class="product-category-block" id="sec-gourmet-food" data-cat="gourmet-food">
+            <div class="block-header">
+              <div class="block-title-row">
+                <span class="block-icon">🍽️</span>
+                <div class="block-headings">
+                  <h2 class="block-title">Gourmet Food</h2>
+                  <p class="block-subtitle">Inspired by Michelin-alumni kitchens • Insulated heat-retentive dispatch</p>
                 </div>
               </div>
-
-              <div class="timeline-step active-step">
-                <div class="step-dot dot-pulsing">
-                  <div class="inner-dot"></div>
-                </div>
-                <div class="step-info">
-                  <span class="step-title">Freshly Prepared</span>
-                  <span class="step-time">Thermal Sealed</span>
-                </div>
-              </div>
-
-              <div class="timeline-step pending">
-                <div class="step-dot"></div>
-                <div class="step-info">
-                  <span class="step-title">Rider On The Way</span>
-                  <span class="step-time">Mohammed Suhail</span>
-                </div>
-              </div>
-
-              <div class="timeline-step pending">
-                <div class="step-dot"></div>
-                <div class="step-info">
-                  <span class="step-title">OTP Handover</span>
-                  <span class="step-time">Contactless Sign-off</span>
-                </div>
-              </div>
+              <span class="block-meta-count">42 Specialties</span>
             </div>
 
-            <!-- Simulated Real-time Map and Delivery Rider Details -->
-            <div class="tracking-map-row">
-              <!-- Stylized Vector Map Component (Virajpet / Western Ghats Hill layout) -->
-              <div class="map-simulation-container">
-                <div class="map-canvas-mock">
-                  <!-- Street Lines Grid -->
-                  <div class="map-grid-lines"></div>
-                  <!-- Coffee estate green zone & local stream -->
-                  <div class="map-waterway"></div>
-                  <div class="map-park"
-                    style="background-color: rgba(144, 190, 109, 0.45); width: 180px; height: 110px;"></div>
-
-                  <!-- Route Polyline SVG -->
-                  <svg class="map-route-svg" viewBox="0 0 600 240" preserveAspectRatio="none">
-                    <path class="route-bg" d="M 60,180 C 140,180 180,120 280,110 C 360,100 420,150 520,70" />
-                    <path class="route-active" d="M 60,180 C 140,180 180,120 280,110 C 360,100 420,150 520,70" />
-                  </svg>
-
-                  <!-- Store Marker (Start - Clock Tower Circle) -->
-                  <div class="map-pin pin-store" style="left: 10%; top: 73%;">
-                    <div class="pin-marker">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                      </svg>
-                    </div>
-                    <span class="pin-popup">Kitchen / Merchant</span>
-                  </div>
-
-                  <!-- Delivery Rider Vehicle Moving Marker (Current) -->
-                  <div class="map-pin pin-courier" style="left: 10%; top: 73%;">
-                    <div class="courier-halo"></div>
-                    <div class="courier-vehicle-icon">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <circle cx="18.5" cy="17.5" r="3.5" />
-                        <circle cx="5.5" cy="17.5" r="3.5" />
-                        <circle cx="15" cy="5" r="1" />
-                        <path d="M12 17.5V14l-3-3 4-3 2 3h2" />
-                      </svg>
-                    </div>
-                    <span class="pin-popup pin-courier-popup">Suhail (Rider) • Assigning Route</span>
-                  </div>
-
-                  <!-- Destination Marker (End) -->
-                  <div class="map-pin pin-dest" style="left: 86%; top: 25%;">
-                    <div class="pin-marker dest-marker">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                      </svg>
-                    </div>
-                    <span class="pin-popup">Your Residence</span>
-                  </div>
-
-                  <div class="map-controls-overlay">
-                    <span class="map-status-pill">● Virajpet Telemetry Active (1 Hz)</span>
-                    <span class="map-speed-pill">Speed: 0 km/h • Electric Smart Scooter</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Delivery Rider Card & Action buttons -->
-              <div class="courier-profile-card">
-                <div class="courier-card-head">
-                  <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80"
-                    alt="Delivery Rider Mohammed Suhail" class="courier-headshot">
-                  <div class="courier-meta">
-                    <h3 class="courier-full-name">Mohammed Suhail</h3>
-                    <div class="courier-stats">
-                      <span class="star-rating">★ 4.99</span>
-                      <span class="dot-sep">•</span>
-                      <span>1,840 Virajpet Deliveries</span>
-                    </div>
-                    <span class="courier-badge-tag">Certified Halal Delivery Fleet</span>
-                  </div>
-                </div>
-
-                <div class="courier-bag-specs">
-                  <div class="spec-row">
-                    <span class="spec-label">Transport Unit</span>
-                    <span class="spec-val">TVS iQube (Thermal Box)</span>
-                  </div>
-                  <div class="spec-row">
-                    <span class="spec-label">Delivery Note</span>
-                    <span class="spec-val">"Ring bell or leave at front door"</span>
-                  </div>
-                  <div class="spec-row">
-                    <span class="spec-label">Handover Code</span>
-                    <span class="spec-val font-mono"><strong>Share OTP with rider</strong></span>
-                  </div>
-                </div>
-
-                <div class="courier-actions">
-                  <button class="btn btn-secondary btn-full" id="btn-call-courier">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path
-                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                    </svg>
-                    <span>Contact Rider</span>
-                  </button>
-                  <button class="btn btn-outline-maroon btn-full" id="btn-tip-courier-now">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path
-                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                      </path>
-                    </svg>
-                    <span>Add Rider Tip</span>
+            <div class="product-cards-grid">
+              <!-- Item 1: Truffle Wild Mushroom Risotto -->
+              <article class="product-card" data-id="gf_1" data-name="Truffle Wild Mushroom Risotto" data-price="680" data-cat="Gourmet Food">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1633964913295-ceb43826e7c9?auto=format&fit=crop&w=600&q=80" alt="Truffle Wild Mushroom Risotto" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-gold">Chef Recommended</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('gf_1')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
                   </button>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CATEGORY NAVIGATION & SERVICE SELECTOR -->
-    <section class="categories-section" id="categories-browse">
-      <div class="container">
-        <div class="section-header-row">
-          <div>
-            <span class="kicker-small">100% HALAL SPECIALTIES &amp; KODAGU PROVISIONS</span>
-            <h2 class="section-heading">Explore Virajpet Offerings</h2>
-          </div>
-          <div class="category-filter-pills" id="category-pills" role="tablist">
-            <button class="cat-pill active" data-category="all" role="tab">All Selections</button>
-            <button class="cat-pill" data-category="food" role="tab">Halal Food</button>
-            <button class="cat-pill" data-category="grocery" role="tab">Grocery &amp; Spices</button>
-            <button class="cat-pill" data-category="medicine" role="tab">Medicine &amp; Health</button>
-            <button class="cat-pill" data-category="beverages" role="tab">Estate Kaapi &amp; Beverages</button>
-            <button class="cat-pill" data-category="desserts" role="tab">Halal Desserts &amp; Bakes</button>
-          </div>
-        </div>
-
-        <!-- Curated Merchants Grid -->
-        <div class="merchants-grid" id="merchants-grid">
-          <!-- Populated dynamically via app.js -->
-        </div>
-
-        <div class="empty-results-state" id="empty-search-state" style="display: none;">
-          <div class="empty-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </div>
-          <h3>No halal merchants found</h3>
-          <p>We couldn't find matches for "<span id="empty-search-query"></span>". Try another Kodagu delicacy or clear
-            filter.</p>
-          <button class="btn btn-secondary" id="btn-reset-search">Reset Search</button>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- THE BEEGO VIRAJPEE STANDARDS -->
-    <section class="standards-section">
-      <div class="container">
-        <div class="section-title-center">
-          <span class="kicker-small">OUR VIRAJPEE PROMISE</span>
-          <h2 class="section-heading">Why Kodagu Trusts BEEGO</h2>
-          <p class="section-subtext">Punctual, strictly halal, and engineered for Kodagu's hill terrain.</p>
-        </div>
-
-        <div class="standards-grid">
-          <div class="standard-card">
-            <div class="standard-icon-wrap">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-            </div>
-            <h3 class="standard-title">100% Halal Certified</h3>
-            <p class="standard-text">
-              Every partnered restaurant, cloud kitchen, and meat item is strictly Zabiha Halal verified with zero
-              compromises.
-            </p>
-          </div>
-
-          <div class="standard-card">
-            <div class="standard-icon-wrap">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
-              </svg>
-            </div>
-            <h3 class="standard-title">Thermal-Shielded Delivery</h3>
-            <p class="standard-text">
-              Akki roti, koli curry, and biryanis stay boiling hot even through chilly Kodagu evening mist and monsoon
-              rain.
-            </p>
-          </div>
-
-          <div class="standard-card">
-            <div class="standard-icon-wrap">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 14 10"></polyline>
-              </svg>
-            </div>
-            <h3 class="standard-title">Local Town Navigators</h3>
-            <p class="standard-text">
-              Our riders are local Virajpet residents who know every lane from Clock Tower to Kakotuparambu without
-              needing directions.
-            </p>
-          </div>
-
-          <div class="standard-card">
-            <div class="standard-icon-wrap">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-            </div>
-            <h3 class="standard-title">Clean Handover Guarantee</h3>
-            <p class="standard-text">
-              No spillage, no missing items. If your order isn't in pristine condition, we replace it immediately or
-              refund your payment.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CLIENT TESTIMONIALS & REVIEWS -->
-    <section class="testimonials-section">
-      <div class="container">
-        <div class="section-title-center">
-          <span class="kicker-small">LOCAL VOICES</span>
-          <h2 class="section-heading">Loved Across Virajpet &amp; South Kodagu</h2>
-        </div>
-
-        <div class="testimonials-grid">
-          <div class="testimonial-card">
-            <div class="stars-row">★★★★★</div>
-            <p class="testimonial-quote">
-              "Finally, a dependable delivery service in Virajpet! The koli curry and akki roti from Al-Bait reached our
-              house in Kaveri Layout steaming hot in under 20 minutes."
-            </p>
-            <div class="testimonial-author">
-              <div class="author-name">Fathima Zohra</div>
-              <div class="author-location">Kaveri Layout, Virajpet • Verified Local Resident</div>
-            </div>
-          </div>
-
-          <div class="testimonial-card">
-            <div class="stars-row">★★★★★</div>
-            <p class="testimonial-quote">
-              "Knowing that every single restaurant on BEEGO Virajpet is 100% Halal certified gives our family complete
-              peace of mind. The Thalassery mutton dum biryani was outstanding."
-            </p>
-            <div class="testimonial-author">
-              <div class="author-name">Abdul Rauf</div>
-              <div class="author-location">Malabar Road, Virajpet • Coffee Planter</div>
-            </div>
-          </div>
-
-          <div class="testimonial-card">
-            <div class="stars-row">★★★★★</div>
-            <p class="testimonial-quote">
-              "We regularly use BEEGO to send freshly packed roasted estate coffee and spice jars to our relatives near
-              Gonikoppal. Prompt pickup and very polite riders."
-            </p>
-            <div class="testimonial-author">
-              <div class="author-name">K. B. Somanna</div>
-              <div class="author-location">Bittangala, Kodagu • Estate Owner</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MOBILE APPLICATION & MEMBERSHIP BANNER -->
-    <section class="membership-section">
-      <div class="container">
-        <div class="membership-banner">
-          <div class="membership-content">
-            <span class="badge-gold">BEEGO VIRAJPEE ROYALE</span>
-            <h2 class="membership-title">Your everyday Virajpet delivery companion</h2>
-            <p class="membership-text">
-              Join BEEGO Royale Virajpet for unlimited free town deliveries on orders above ₹199, priority express
-              delivery during monsoon rains, and exclusive discounts on festive halal feasts.
-            </p>
-            <div class="app-badges-row">
-              <button class="app-store-pill">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path
-                    d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.93.04-2.02.63-2.65 1.37-.56.64-1.04 1.7-0.91 2.74 1.05.08 2.08-.54 2.64-1.24z" />
-                </svg>
-                <div>
-                  <span class="app-sub">Download on the</span>
-                  <span class="app-name">Apple App Store</span>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text">★ 4.9 <span class="rating-count">(184)</span></span>
+                    <span class="prep-text">18–22 mins prep</span>
+                  </div>
+                  <h3 class="card-product-name">Truffle Wild Mushroom...</h3>
+                  <p class="card-description">Carnaroli rice, shaved black winter truffle, foraged porcini &amp; chanterelles.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹680</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('gf_1')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('gf_1')">Send</button>
+                    </div>
+                  </div>
                 </div>
-              </button>
+              </article>
 
-              <button class="app-store-pill">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path
-                    d="M3 20.5v-17c0-.83.67-1.5 1.5-1.5.3 0 .58.09.82.25l13.5 8.5c.62.39.81 1.21.42 1.83-.11.18-.27.32-.42.42l-13.5 8.5c-.24.16-.52.25-.82.25-.83 0-1.5-.67-1.5-1.5z" />
-                </svg>
-                <div>
-                  <span class="app-sub">Get it on</span>
-                  <span class="app-name">Google Play</span>
+              <!-- Item 2: Wagyu Smash Burger -->
+              <article class="product-card" data-id="gf_2" data-name="Wagyu Smash Burger" data-price="520" data-cat="Gourmet Food">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" alt="Wagyu Smash Burger" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-dark">Top Seller</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('gf_2')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
                 </div>
-              </button>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text">★ 4.8 <span class="rating-count">(312)</span></span>
+                    <span class="prep-text">15–18 mins prep</span>
+                  </div>
+                  <h3 class="card-product-name">Wagyu Smash Burger</h3>
+                  <p class="card-description">Dual Miyazaki A5 patties, lauren remoulade, brioche, vintage Gruyère.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹520</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('gf_2')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('gf_2')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 3: Woodfired Burrata Pizza -->
+              <article class="product-card" data-id="gf_3" data-name="Woodfired Burrata Pizza" data-price="650" data-cat="Gourmet Food">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" alt="Woodfired Burrata Pizza" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-green">Artisanal</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('gf_3')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text">★ 5.0 <span class="rating-count">(94)</span></span>
+                    <span class="prep-text">16–20 mins prep</span>
+                  </div>
+                  <h3 class="card-product-name">Woodfired Burrata Pizza</h3>
+                  <p class="card-description">72-hour sourdough, fresh Puglia burrata, organic DOP San Marzano.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹650</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('gf_3')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('gf_3')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
             </div>
-          </div>
-          <div class="membership-graphic">
-            <div class="card-mockup">
-              <div class="card-logo-row">
-                <span class="card-brand">BEEGO</span>
-                <span class="card-tier">VIRAJPEE SELECT</span>
+          </section>
+
+          <!-- SECTION 2: FRESH GROCERY & ORGANIC FARM -->
+          <section class="product-category-block" id="sec-fresh-grocery" data-cat="fresh-grocery">
+            <div class="block-header">
+              <div class="block-title-row">
+                <span class="block-icon">🥗</span>
+                <div class="block-headings">
+                  <h2 class="block-title">Fresh Grocery &amp; Organic Farm</h2>
+                  <p class="block-subtitle">Daily morning harvest from partner biodynamic farms • Zero pesticides</p>
+                </div>
               </div>
-              <div class="card-chip"></div>
-              <div class="card-number">•••• •••• •••• 5712</div>
-              <div class="card-bottom">
-                <span>VIRAJPEE MEMBER</span>
-                <span>PINCODE: 571218</span>
-              </div>
+              <span class="block-meta-count">65 Items in Stock</span>
             </div>
-          </div>
+
+            <div class="product-cards-grid">
+              <!-- Item 1: Organic Hass Avocados -->
+              <article class="product-card" data-id="gr_1" data-name="Organic Hass Avocados" data-price="240" data-cat="Fresh Grocery">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?auto=format&fit=crop&w=600&q=80" alt="Organic Hass Avocados" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-green">Organic 100%</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('gr_1')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text">★ 4.9 <span class="rating-count">(420)</span></span>
+                    <span class="prep-text">Ready-to-eat</span>
+                  </div>
+                  <h3 class="card-product-name">Organic Hass Avocados</h3>
+                  <p class="card-description">Pack of 2 ripe imported hass avocados, sustainably harvested in Kodaikanal.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹240</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('gr_1')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('gr_1')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 2: A2 Whole Farm Milk -->
+              <article class="product-card" data-id="gr_2" data-name="A2 Whole Farm Milk" data-price="110" data-cat="Fresh Grocery">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=600&q=80" alt="A2 Whole Farm Milk" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-dark">1L Glass Bottle</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('gr_2')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text">★ 4.8 <span class="rating-count">(85)</span></span>
+                    <span class="prep-text">Cold-Chain &lt;3°C</span>
+                  </div>
+                  <h3 class="card-product-name">A2 Whole Farm Milk</h3>
+                  <p class="card-description">100% pasture-fed Desi cows, non-homogenized, rich golden creamline.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹110</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('gr_2')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('gr_2')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 3: Sourdough Artisan Loaf -->
+              <article class="product-card" data-id="gr_3" data-name="Sourdough Artisan Loaf" data-price="180" data-cat="Fresh Grocery">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?auto=format&fit=crop&w=600&q=80" alt="Sourdough Artisan Loaf" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-dark">Baked 6:00 AM</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('gr_3')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text">★ 4.9 <span class="rating-count">(190)</span></span>
+                    <span class="prep-text">Wild Fermentation</span>
+                  </div>
+                  <h3 class="card-product-name">Sourdough Artisan Loaf</h3>
+                  <p class="card-description">Heritage wheat flours, 36-hour slow cold ferment, blistered caramelized crust.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹180</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('gr_3')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('gr_3')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- SECTION 3: ARTISANAL DESSERTS & PASTRY -->
+          <section class="product-category-block" id="sec-artisanal-desserts" data-cat="artisanal-desserts">
+            <div class="block-header">
+              <div class="block-title-row">
+                <span class="block-icon">🧁</span>
+                <div class="block-headings">
+                  <h2 class="block-title">Artisanal Desserts &amp; Pastry</h2>
+                  <p class="block-subtitle">Handcrafted in micro-batches • French butter &amp; Valrhona cocoa</p>
+                </div>
+              </div>
+              <span class="block-meta-count">14 Creations</span>
+            </div>
+
+            <div class="product-cards-grid">
+              <!-- Item 1: Pistachio Raspberry Tart -->
+              <article class="product-card" data-id="de_1" data-name="Pistachio Raspberry Tart" data-price="320" data-cat="Desserts">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=600&q=80" alt="Pistachio Raspberry Tart" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-green">Parisian Chef</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('de_1')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text">★ 4.9 <span class="rating-count">(125)</span></span>
+                    <span class="prep-text">Or-Dome Casing</span>
+                  </div>
+                  <h3 class="card-product-name">Pistachio Raspberry Tart</h3>
+                  <p class="card-description">Bronte pistachio frangipane, wild raspberry compote, sweet sablé pastry.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹320</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('de_1')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('de_1')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 2: Dark Chocolate Lava Soufflé -->
+              <article class="product-card" data-id="de_2" data-name="Dark Chocolate Lava Soufflé" data-price="350" data-cat="Desserts">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80" alt="Dark Chocolate Lava Soufflé" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-dark">70% Guanaja</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('de_2')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text">★ 5.0 <span class="rating-count">(278)</span></span>
+                    <span class="prep-text">Thermal Pouch</span>
+                  </div>
+                  <h3 class="card-product-name">Dark Chocolate Lava Soufflé</h3>
+                  <p class="card-description">Valrhona single-origin chocolate with Molten salted caramel core.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹350</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('de_2')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('de_2')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 3: Matcha Mille Crepe -->
+              <article class="product-card" data-id="de_3" data-name="Matcha Mille Crepe" data-price="380" data-cat="Desserts">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1579372786545-d24232daf58c?auto=format&fit=crop&w=600&q=80" alt="Matcha Mille Crepe" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-green">Kyoto Matcha</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('de_3')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text">★ 4.7 <span class="rating-count">(112)</span></span>
+                    <span class="prep-text">20 Layers</span>
+                  </div>
+                  <h3 class="card-product-name">Matcha Mille Crepe</h3>
+                  <p class="card-description">Ceremonial grade Uji green tea folded into Madagascar vanilla bean cream.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹380</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('de_3')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('de_3')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- SECTION 4: COLD-PRESSED & BEVERAGES -->
+          <section class="product-category-block" id="sec-cold-pressed" data-cat="cold-pressed">
+            <div class="block-header">
+              <div class="block-title-row">
+                <span class="block-icon">🧃</span>
+                <div class="block-headings">
+                  <h2 class="block-title">Cold-Pressed &amp; Beverages</h2>
+                  <p class="block-subtitle">Raw, unpasteurized high-pressure processed • Single-origin roasts</p>
+                </div>
+              </div>
+              <span class="block-meta-count">35 Refreshments</span>
+            </div>
+
+            <div class="product-cards-grid">
+              <!-- Item 1: Immunity Citrus Juice -->
+              <article class="product-card" data-id="bv_1" data-name="Immunity Citrus Juice" data-price="180" data-cat="Beverages">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=600&q=80" alt="Immunity Citrus Juice" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-green">Raw Cold-Pressed</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('bv_1')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text">★ 4.9 <span class="rating-count">(312)</span></span>
+                    <span class="prep-text">No Added Sugar</span>
+                  </div>
+                  <h3 class="card-product-name">Immunity Citrus Juice</h3>
+                  <p class="card-description">Valencia oranges, organic turmeric, ginger rhizome, black pepper essence.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹180</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('bv_1')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('bv_1')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 2: Nitro Cold Brew Can -->
+              <article class="product-card" data-id="bv_2" data-name="Nitro Cold Brew Can" data-price="220" data-cat="Beverages">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=600&q=80" alt="Nitro Cold Brew Can" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-dark">Ethiopian Guji</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('bv_2')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text">★ 4.8 <span class="rating-count">(192)</span></span>
+                    <span class="prep-text">Zero Fluid Bitterness</span>
+                  </div>
+                  <h3 class="card-product-name">Nitro Cold Brew Can</h3>
+                  <p class="card-description">20-hour steep infused with pure nitrogen for a creamy draft texture.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹220</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('bv_2')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('bv_2')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 3: Sparkling Botanical Tonic -->
+              <article class="product-card" data-id="bv_3" data-name="Sparkling Botanical Tonic" data-price="150" data-cat="Beverages">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=600&q=80" alt="Sparkling Botanical Tonic" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-dark">Cinchona Bark</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('bv_3')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text">★ 4.7 <span class="rating-count">(76)</span></span>
+                    <span class="prep-text">Low Calorie</span>
+                  </div>
+                  <h3 class="card-product-name">Sparkling Botanical Tonic</h3>
+                  <p class="card-description">Infused with wild juniper, Mediterranean sea salt, distilled herbs.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹150</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('bv_3')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('bv_3')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- SECTION 5: 24/7 PHARMACY & MEDICINE -->
+          <section class="product-category-block" id="sec-pharmacy-medicine" data-cat="pharmacy-medicine">
+            <div class="block-header">
+              <div class="block-title-row">
+                <span class="block-icon">💊</span>
+                <div class="block-headings">
+                  <h2 class="block-title">24/7 Pharmacy &amp; Medicine</h2>
+                  <p class="block-subtitle">Regulated OTC &amp; Prescription Rx • Direct pharmacist chat verification</p>
+                </div>
+              </div>
+              <span class="block-meta-count">18+ Verified SKUs</span>
+            </div>
+
+            <div class="product-cards-grid">
+              <!-- Item 1: Paracetamol 500mg -->
+              <article class="product-card" data-id="ph_1" data-name="Paracetamol 500mg" data-price="45" data-cat="Pharmacy">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80" alt="Paracetamol 500mg" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-blue">Rx Verified</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('ph_1')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text"><span class="badge-tag-mini">Certified OTC</span></span>
+                    <span class="prep-text">20 Fast Caplets</span>
+                  </div>
+                  <h3 class="card-product-name">Paracetamol 500mg</h3>
+                  <p class="card-description">Rapid pain &amp; analgesia relief for mild to moderate pain or fever.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹45</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('ph_1')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('ph_1')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 2: Vitamin C 1000mg + Zinc -->
+              <article class="product-card" data-id="ph_2" data-name="Vitamin C 1000mg + Zinc" data-price="95" data-cat="Pharmacy">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1550572017-edd951aa8f72?auto=format&fit=crop&w=600&q=80" alt="Vitamin C 1000mg + Zinc" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-green">+ Zinc B12</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('ph_2')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text"><span class="badge-tag-mini">Pharma Grade</span></span>
+                    <span class="prep-text">20 Tabs</span>
+                  </div>
+                  <h3 class="card-product-name">Vitamin C 1000mg + Zinc</h3>
+                  <p class="card-description">High-bioavailability cellular immune defense with citrus bioflavonoids.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹95</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('ph_2')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('ph_2')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 3: First-Aid Sterile Kit -->
+              <article class="product-card" data-id="ph_3" data-name="First-Aid Sterile Kit" data-price="499" data-cat="Pharmacy">
+                <div class="card-thumb-wrap">
+                  <img src="https://images.unsplash.com/photo-1603398938378-e54eab446dde?auto=format&fit=crop&w=600&q=80" alt="First-Aid Sterile Kit" class="card-thumb" loading="lazy">
+                  <span class="card-badge-pill badge-dark">Home Emergency</span>
+                  <button type="button" class="card-quick-send-btn" title="Quick WhatsApp Order" onclick="quickSendItem('ph_3')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="card-rating-prep">
+                    <span class="rating-text"><span class="badge-tag-mini">Hospital Spec</span></span>
+                    <span class="prep-text">32 Pieces</span>
+                  </div>
+                  <h3 class="card-product-name">First-Aid Sterile Kit</h3>
+                  <p class="card-description">Antiseptic swabs, medical tape, sterile pads, burn gel, precision scissors.</p>
+                  <div class="card-price-action-row">
+                    <span class="product-price">₹499</span>
+                    <div class="card-btns-wrap">
+                      <button type="button" class="btn-card-add" onclick="addItemToBag('ph_3')">+ Add</button>
+                      <button type="button" class="btn-card-send" onclick="quickSendItem('ph_3')">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
         </div>
+
+        <!-- =================================================================== -->
+        <!-- RIGHT COLUMN: STICKY WHATSAPP BAG (CONCIERGE DESK) -->
+        <!-- =================================================================== -->
+        <aside class="bag-sidebar-col" id="whatsapp-bag-sidebar">
+          <div class="sticky-bag-card">
+            
+            <!-- Bag Header -->
+            <div class="bag-card-header">
+              <div class="bag-header-left">
+                <span class="bag-header-icon">🟢</span>
+                <div>
+                  <h3 class="bag-title">WhatsApp Bag</h3>
+                  <p class="bag-subtitle">Concierge Direct Forwarding</p>
+                </div>
+              </div>
+              <span class="bag-items-count-badge" id="sidebar-bag-count">3 items</span>
+            </div>
+
+            <!-- Prescription Notice Box -->
+            <div class="prescription-notice-box">
+              <div class="notice-icon">🛡️</div>
+              <div class="notice-content">
+                <strong>PRESCRIPTION ORDERS</strong>
+                <p>Prescription photographs supported directly in chat after forwarding.</p>
+              </div>
+            </div>
+
+            <!-- Interactive Items List -->
+            <div class="bag-items-scrollable" id="bag-items-list">
+              <!-- Dynamically populated via app.js -->
+            </div>
+
+            <!-- Live WhatsApp Message Preview Box (Authentic WhatsApp Bubble) -->
+            <div class="wa-preview-container">
+              <div class="wa-preview-label">LIVE WHATSAPP MESSAGE PREVIEW</div>
+              <div class="wa-message-bubble">
+                <div class="wa-message-text" id="wa-preview-text">
+                  <!-- Formatted WhatsApp text -->
+                </div>
+                <div class="wa-message-meta">
+                  <span id="wa-preview-time">14:22</span>
+                  <span class="wa-double-check">✓✓</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Primary Send Order Button -->
+            <div class="bag-action-footer">
+              <button type="button" class="btn-send-whatsapp-order" id="btn-send-whatsapp-primary" onclick="broadcastOrderToWhatsApp()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/>
+                </svg>
+                <span>Send Order to WhatsApp</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+              </button>
+              <div class="bag-auto-reply-note">
+                Immediate auto-reply &amp; courier live tracking link in WhatsApp.
+              </div>
+            </div>
+
+            <!-- Sommelier / Concierge Tailoring Box -->
+            <div class="sommelier-tailoring-card">
+              <div class="tailoring-left">
+                <span class="tailoring-icon">🎧</span>
+                <div>
+                  <strong>Need special tailoring?</strong>
+                  <p>Speak directly to on-duty sommelier or apothecary.</p>
+                </div>
+              </div>
+              <button type="button" class="btn-chat-now" onclick="openConciergeChatModal()">Chat Now</button>
+            </div>
+
+          </div>
+        </aside>
+
       </div>
     </section>
   </main>
 
-  <!-- STORE & PRODUCT DETAILS MODAL -->
-  <div class="modal-backdrop" id="merchant-modal" style="display: none;">
-    <div class="modal-dialog modal-lg">
-      <button class="modal-close-btn" id="btn-close-merchant-modal" aria-label="Close modal">&times;</button>
-
-      <div class="merchant-modal-banner" id="modal-banner-img">
-        <div class="merchant-modal-overlay"></div>
-        <div class="merchant-modal-headline">
-          <span class="badge-store-tag" id="modal-tag">100% Halal Kitchen</span>
-          <h2 id="modal-store-name">Al-Bait Kodagu Halal Kitchen</h2>
-          <div class="merchant-quick-meta" id="modal-meta-row">
-            <span>★ 4.97 (1.4k+ reviews)</span>
-            <span>•</span>
-            <span>15–25 min delivery</span>
-            <span>•</span>
-            <span>Clock Tower Circle, Virajpet</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="merchant-modal-content">
-        <div class="menu-filter-bar">
-          <h3 class="menu-heading">Featured Halal Offerings</h3>
-          <span class="menu-notice">Prepared fresh with authentic Kodagu estate spices</span>
-        </div>
-
-        <div class="menu-items-list" id="modal-menu-list">
-          <!-- Populated dynamically via app.js -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- GOOGLE MAP MANUAL LOCATION PICKER MODAL -->
-  <div class="modal-backdrop" id="address-modal" style="display: none;">
-    <div class="modal-dialog modal-map">
-      <button class="modal-close-btn" id="btn-close-address-modal" aria-label="Close modal">&times;</button>
-
-      <div class="map-modal-header">
-        <div class="map-modal-title-wrap">
-          <div class="map-modal-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-          </div>
-          <div>
-            <h3 class="modal-title">Select Delivery Location on Google Map</h3>
-            <p class="modal-sub">Drag the map or pin manually to pinpoint your exact doorstep in Virajpet</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Map Container with Overlays -->
-      <div class="map-picker-viewport-wrap">
-        <!-- Floating Search & Quick Chips on Top of Map -->
-        <div class="map-floating-search-bar">
-          <div class="map-search-input-box">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="text" id="map-search-input" placeholder="Search street, landmark, or area in Virajpet..."
-              autocomplete="off">
-            <button type="button" id="map-clear-search-btn" class="map-clear-btn"
-              style="display: none;">&times;</button>
-          </div>
-          <div class="map-search-suggestions" id="map-search-suggestions" style="display: none;"></div>
-
-          <!-- Quick Landmark Chips -->
-          <div class="map-quick-landmarks" id="map-quick-landmarks">
-            <button type="button" class="map-chip active" data-lat="12.2015" data-lng="75.8034"
-              data-title="Clock Tower Circle, Main Road">📍 Clock Tower</button>
-            <button type="button" class="map-chip" data-lat="12.2052" data-lng="75.8068"
-              data-title="Kaveri Layout, College Road">📍 Kaveri Layout</button>
-            <button type="button" class="map-chip" data-lat="12.1985" data-lng="75.8012"
-              data-title="Malabar Road, Near Mosque">📍 Malabar Road</button>
-            <button type="button" class="map-chip" data-lat="12.2080" data-lng="75.8090"
-              data-title="College Road, Near Kaveri Campus">📍 College Road</button>
-            <button type="button" class="map-chip" data-lat="12.1950" data-lng="75.7980"
-              data-title="Meenupet, Fish Market Road">📍 Meenupet</button>
-            <button type="button" class="map-chip" data-lat="12.1998" data-lng="75.8028"
-              data-title="KSRTC Bus Stand Area">📍 Bus Stand</button>
-          </div>
-        </div>
-
-        <!-- The Leaflet Google Map Container -->
-        <div id="google-picker-map" class="google-picker-map-canvas"></div>
-
-        <!-- Center Pin Overlay (Bouncing delivery pin positioned in center of map) -->
-        <div class="map-center-pin-overlay" id="map-center-pin">
-          <div class="center-pin-tooltip" id="map-pin-tooltip">Move map to place pin</div>
-          <div class="center-pin-marker">
-            <svg width="36" height="46" viewBox="0 0 36 46" fill="none">
-              <path d="M18 0C8.06 0 0 8.06 0 18c0 13.5 18 28 18 28s18-14.5 18-28C36 8.06 27.94 0 18 0z"
-                fill="#520D18" />
-              <circle cx="18" cy="18" r="8" fill="#FAF7F2" />
-              <circle cx="18" cy="18" r="4" fill="#C08D38" />
-            </svg>
-          </div>
-          <div class="center-pin-shadow"></div>
-        </div>
-
-        <!-- Floating Map Controls (GPS Locate + Layer Toggle) -->
-        <div class="map-floating-actions">
-          <button type="button" class="map-action-icon-btn" id="btn-map-locate-me"
-            aria-label="Use My Current GPS Location" title="Use My Current GPS Location">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-            </svg>
-          </button>
-          <button type="button" class="map-action-icon-btn" id="btn-map-layer-toggle"
-            aria-label="Toggle Google Satellite / Road View" title="Toggle Google Satellite / Road View">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-              <polyline points="2 17 12 22 22 17"></polyline>
-              <polyline points="2 12 12 17 22 12"></polyline>
-            </svg>
-          </button>
-        </div>
-
-        <div class="map-badge-coords" id="map-badge-coords">
-          12.2015° N, 75.8034° E • Google Maps
-        </div>
-      </div>
-
-      <!-- Address Details & Manual Edit Bottom Section -->
-      <div class="map-address-details-panel">
-        <div class="map-selected-address-box">
-          <div class="map-address-icon-wrap">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-          </div>
-          <div class="map-address-text-group">
-            <div class="map-address-primary-row">
-              <h4 class="map-address-primary" id="map-picked-title">Clock Tower Circle, Virajpet</h4>
-              <span class="map-verified-tag">Pin Placed</span>
-            </div>
-            <p class="map-address-secondary" id="map-picked-subtext">Main Road, Beside Jamia Masjid, Virajpet, Kodagu,
-              Karnataka 571218</p>
-          </div>
-        </div>
-
-        <div class="map-address-extra-inputs">
-          <div class="map-input-col">
-            <label for="input-map-flat">Flat / House No. / Building (Optional):</label>
-            <input type="text" id="input-map-flat" placeholder="e.g. House #14, 1st Floor, Near Green Gate">
-          </div>
-          <div class="map-input-col">
-            <label for="input-map-landmark">Nearby Landmark / Delivery Note (Optional):</label>
-            <input type="text" id="input-map-landmark" placeholder="e.g. Opposite Jamia Masjid, Call upon arrival">
-          </div>
-        </div>
-
-        <!-- Saved / Quick Presets -->
-        <div class="map-saved-presets-row">
-          <span class="preset-label">Save As / Quick Tag:</span>
-          <button type="button" class="preset-tag active" data-tag="Home">🏠 Home</button>
-          <button type="button" class="preset-tag" data-tag="Work">💼 Work</button>
-          <button type="button" class="preset-tag" data-tag="Estate">🌿 Estate</button>
-          <button type="button" class="preset-tag" data-tag="Other">📍 Other</button>
-        </div>
-
-        <div class="modal-actions-row map-modal-footer">
-          <button type="button" class="btn btn-secondary" id="btn-cancel-address">Cancel</button>
-          <button type="button" class="btn btn-primary btn-confirm-map" id="btn-confirm-address">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-            <span>Confirm Location &amp; Deliver Here</span>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- SLIDE-OVER USER PROFILE DRAWER -->
-  <div class="cart-backdrop" id="profile-drawer-backdrop" style="display: none;"></div>
-  <aside class="profile-drawer" id="profile-drawer" aria-label="User Profile and Account">
-    <!-- Drawer Header -->
-    <div class="profile-drawer-header">
-      <div class="profile-header-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        <h3>My Account</h3>
-      </div>
-      <button class="profile-close-btn" id="btn-close-profile" aria-label="Close profile">&times;</button>
-    </div>
-
-    <div class="profile-drawer-scrollable">
-      <!-- User Profile Card -->
-      <div class="profile-user-card">
-        <div class="profile-avatar-large-wrap" id="profile-avatar-wrap" title="Click to change profile picture">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=180&q=80" alt="Falah Abdulla" class="profile-avatar-large" id="profile-avatar-img">
-          <button type="button" class="btn-avatar-camera-overlay" id="btn-change-avatar" title="Change Profile Picture" aria-label="Change Profile Picture">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-          </button>
-          <span class="royale-crown-badge" title="Royale Gold Member">👑</span>
-        </div>
-        <div class="profile-main-meta">
-          <div class="profile-name-row">
-            <h4 class="profile-user-name" id="profile-display-name">Falah Abdulla</h4>
-            <span class="badge-royale-pill" id="profile-membership-pill">ROYALE GOLD</span>
-            <button type="button" class="btn-edit-profile-trigger" id="btn-open-edit-profile" title="Edit Profile Details">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-              <span>Edit</span>
-            </button>
-          </div>
-          <p class="profile-user-location" id="profile-display-location">📍 Virajpet Town, Kodagu 571218</p>
-          <div class="profile-contact-chips">
-            <span class="profile-contact-pill" id="profile-display-phone">📞 +91 98451 23456</span>
-            <span class="profile-contact-pill" id="profile-display-email">✉️ falah.kodagu@gmail.com</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Metrics Row (Live synced) -->
-      <div class="profile-stats-grid">
-        <div class="profile-stat-box">
-          <span class="stat-number" id="profile-stat-orders">0</span>
-          <span class="stat-label">Halal Orders</span>
-        </div>
-        <div class="profile-stat-box">
-          <span class="stat-number" id="profile-stat-points">0</span>
-          <span class="stat-label">BeePoints</span>
-        </div>
-        <div class="profile-stat-box">
-          <span class="stat-number" id="profile-stat-savings">₹0</span>
-          <span class="stat-label">Total Saved</span>
-        </div>
-      </div>
-
-      <!-- Profile Tabs -->
-      <div class="profile-tab-nav" role="tablist">
-        <button type="button" class="profile-tab-btn active" data-tab="tab-orders">📦 Orders</button>
-        <button type="button" class="profile-tab-btn" data-tab="tab-addresses">📍 Places</button>
-        <button type="button" class="profile-tab-btn" data-tab="tab-wallet">💳 Wallet</button>
-        <button type="button" class="profile-tab-btn" data-tab="tab-preferences">⚙️ Preferences</button>
-      </div>
-
-      <!-- Tab Content: Orders & Activity (Real Live History) -->
-      <div class="profile-tab-pane" id="tab-orders">
-        <div class="profile-orders-list" id="profile-orders-container" style="width: 100%;">
-          <div class="empty-orders-view">
-            <div class="empty-orders-icon">📦</div>
-            <h4>No Orders Placed Yet</h4>
-            <p>Your ongoing halal food deliveries will be tracked here live.</p>
-            <a href="#categories-browse" class="btn btn-sm btn-primary" id="btn-profile-explore-now">Explore Halal Menus</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tab Content: Saved Places -->
-      <div class="profile-tab-pane" id="tab-addresses" style="display: none;">
-        <div class="saved-places-list">
-          <div class="profile-place-card active" data-addr="Clock Tower Circle, Main Road, Virajpet 571218">
-            <div class="place-icon-badge">🏠</div>
-            <div class="place-details">
-              <div class="place-title-row">
-                <span class="place-title">Home (Town Center)</span>
-                <span class="place-active-pill">Active Delivery</span>
-              </div>
-              <p class="place-sub">Clock Tower Circle, Main Road, Virajpet 571218</p>
-              <span class="place-note">Landmark: Beside Jamia Masjid road</span>
-            </div>
-          </div>
-
-          <div class="profile-place-card" data-addr="House 42, Kaveri Layout, College Road, Virajpet 571218">
-            <div class="place-icon-badge">💼</div>
-            <div class="place-details">
-              <div class="place-title-row">
-                <span class="place-title">Kaveri Layout Residence</span>
-                <button type="button" class="btn-use-address-chip">Select</button>
-              </div>
-              <p class="place-sub">House 42, Kaveri Layout, College Road, Virajpet 571218</p>
-              <span class="place-note">Landmark: Green gate near Kaveri school</span>
-            </div>
-          </div>
-
-          <div class="profile-place-card" data-addr="Estate Bungalow, Malabar Road, Near Meenupet, Virajpet">
-            <div class="place-icon-badge">🌿</div>
-            <div class="place-details">
-              <div class="place-title-row">
-                <span class="place-title">Malabar Road Estate</span>
-                <button type="button" class="btn-use-address-chip">Select</button>
-              </div>
-              <p class="place-sub">Estate Bungalow, Malabar Road, Near Meenupet, Virajpet</p>
-              <span class="place-note">Landmark: Coffee drying yard entrance</span>
-            </div>
-          </div>
-        </div>
-
-        <button type="button" class="btn-add-new-address-map" id="btn-profile-add-address-map">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
-          <span>Pin New Address on Google Map</span>
-        </button>
-      </div>
-
-      <!-- Tab Content: Wallet & Payments -->
-      <div class="profile-tab-pane" id="tab-wallet" style="display: none;">
-        <div class="wallet-balance-card">
-          <div class="wallet-balance-header">
-            <div>
-              <span class="wallet-kicker">BEEGO WALLET BALANCE</span>
-              <div class="wallet-amount-row">
-                <span class="wallet-currency">₹</span>
-                <span class="wallet-amount-val" id="profile-wallet-balance">0.00</span>
-              </div>
-            </div>
-            <div class="wallet-coin-icon">🪙</div>
-          </div>
-          <div class="wallet-quick-add-row">
-            <span class="quick-add-label">Quick Top Up:</span>
-            <button type="button" class="wallet-add-chip" data-amount="200">+₹200</button>
-            <button type="button" class="wallet-add-chip" data-amount="500">+₹500</button>
-            <button type="button" class="wallet-add-chip" data-amount="1000">+₹1,000</button>
-          </div>
-        </div>
-
-        <div class="payment-methods-box">
-          <h5 class="pay-methods-title">Saved Payment Options</h5>
-          <div class="pay-method-item">
-            <div class="pay-method-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-            </div>
-            <div class="pay-method-info">
-              <strong>Google Pay / PhonePe UPI</strong>
-              <span>falah.abdulla@okaxis • Verified</span>
-            </div>
-            <span class="pay-default-tag">Primary</span>
-          </div>
-
-          <div class="pay-method-item">
-            <div class="pay-method-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-            </div>
-            <div class="pay-method-info">
-              <strong>Cash / UPI on Handover</strong>
-              <span>Pay directly to delivery rider upon OTP match</span>
-            </div>
-            <span class="pay-active-tag">Active</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tab Content: Halal & Preferences -->
-      <div class="profile-tab-pane" id="tab-preferences" style="display: none;">
-        <div class="prefs-group">
-          <h5 class="prefs-heading">Halal Certification &amp; Standards</h5>
-          <div class="pref-toggle-item">
-            <div>
-              <strong>Strict 100% Halal Guarantee</strong>
-              <p>Filter only 100% verified halal kitchens in Virajpet</p>
-            </div>
-            <span class="pref-badge-enforced">Always Enforced</span>
-          </div>
-
-          <div class="pref-toggle-item">
-            <div>
-              <strong>Spice Customization</strong>
-              <p>Preferred Kodagu spice blend level</p>
-            </div>
-            <select class="pref-select" id="pref-spice-level">
-              <option value="medium" selected>Medium Kodagu Hot (Pepper Roasted)</option>
-              <option value="mild">Mild (Low Chili)</option>
-              <option value="extra">Extra Spicy (Handi Roasted Ghost Pepper)</option>
-            </select>
-          </div>
-
-          <div class="pref-toggle-item">
-            <div>
-              <strong>Eco Packaging (Areca Nut Plates)</strong>
-              <p>Zero plastic cutlery, traditional banana leaf packaging</p>
-            </div>
-            <input type="checkbox" id="pref-eco-pack" checked style="accent-color: var(--maroon-700);">
-          </div>
-        </div>
-      </div>
-
-      <!-- Footer Quick Utilities -->
-      <div class="profile-footer-actions">
-        <a href="/admin" target="_blank" class="btn btn-outline-maroon btn-full" style="text-decoration: none; justify-content: center; margin-bottom: 10px; font-weight: 700; font-size: 13px;">
-          🏬 Store Owner & Operations Dashboard
-        </a>
-
-        <button type="button" class="btn-profile-help" id="btn-profile-support">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-          <span>Virajpet 24x7 Helpdesk (08274-256789)</span>
-        </button>
-
-        <button type="button" class="btn-profile-logout" id="btn-profile-logout">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-          <span>Log Out</span>
-        </button>
-      </div>
-    </div>
-  </aside>
-
-  <!-- SLIDE-OVER BASKET (CART) DRAWER -->
-  <div class="cart-backdrop" id="cart-drawer-backdrop" style="display: none;"></div>
-  <aside class="cart-drawer" id="cart-drawer">
-    <div class="cart-drawer-header">
-      <div class="cart-drawer-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-        </svg>
-        <h3>Your Halal Basket</h3>
-      </div>
-      <button class="cart-close-btn" id="btn-close-cart" aria-label="Close basket">&times;</button>
-    </div>
-
-    <!-- Active Delivery Store info (Hidden until items added) -->
-    <div class="cart-merchant-banner" id="cart-merchant-info" style="display: none;">
-      <div class="cart-store-tag">Delivering From (100% Halal)</div>
-      <div class="cart-store-name" id="cart-store-name">No Kitchen Selected</div>
-      <div class="cart-store-eta">Estimated delivery: 15–25 min</div>
-    </div>
-
-    <!-- Basket Items Body -->
-    <div class="cart-items-body" id="cart-items-container">
-      <div class="empty-cart-view">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-        </svg>
-        <h4>Your Halal Basket is Empty</h4>
-        <p>Explore authentic Kodagu koli curries, Thalassery biryanis, and estate coffee to begin your order.</p>
-      </div>
-    </div>
-
-    <!-- Promo code input -->
-    <div class="cart-promo-section">
-      <div class="promo-input-row">
-        <input type="text" id="promo-code-input" placeholder="Promo code (try 'BEEGO10')" aria-label="Promo code">
-        <button type="button" class="btn btn-sm btn-outline-maroon" id="btn-apply-promo">Apply</button>
-      </div>
-      <div class="promo-status-msg" id="promo-msg" style="display: none;"></div>
-    </div>
-
-    <!-- Delivery Rider Tip Selector -->
-    <div class="cart-tip-section">
-      <span class="tip-label">Virajpet Delivery Partner Gratuity (100% to Rider):</span>
-      <div class="tip-buttons">
-        <button class="tip-btn" data-tip="15">₹15</button>
-        <button class="tip-btn" data-tip="30">₹30</button>
-        <button class="tip-btn" data-tip="50">₹50</button>
-        <button class="tip-btn active" data-tip="0">None</button>
-      </div>
-    </div>
-
-    <!-- Order Summary Financials -->
-    <div class="cart-summary-footer">
-      <div class="summary-line">
-        <span>Item Subtotal</span>
-        <span id="summary-subtotal">₹0.00</span>
-      </div>
-      <div class="summary-line">
-        <span>Thermal Sealed Delivery</span>
-        <span id="summary-delivery">FREE</span>
-      </div>
-      <div class="summary-line">
-        <span>Packaging &amp; Town Service</span>
-        <span id="summary-service">₹0.00</span>
-      </div>
-      <div class="summary-line text-success" id="summary-discount-row" style="display: none;">
-        <span>Promo Discount</span>
-        <span id="summary-discount">-₹0.00</span>
-      </div>
-      <div class="summary-line">
-        <span>Rider Gratuity</span>
-        <span id="summary-tip">₹0.00</span>
-      </div>
-      <div class="summary-divider"></div>
-      <div class="summary-total-line">
-        <span>Final Total</span>
-        <span class="total-amount" id="summary-total">₹0.00</span>
-      </div>
-
-      <button class="btn btn-primary btn-full btn-checkout" id="btn-checkout" disabled style="opacity: 0.6; cursor: not-allowed;">
-        <span>Confirm Halal Order</span>
-        <span class="checkout-price" id="btn-checkout-amount">₹0.00</span>
-      </button>
-
-      <div class="checkout-guarantee">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        </svg>
-        <span>BEEGO Guarantee • 100% Halal Certified • UPI / Cash on Delivery</span>
-      </div>
-    </div>
-  </aside>
-
-  <!-- ORDER SUCCESS / CHECKOUT CONFIRMATION MODAL -->
-  <div class="modal-backdrop" id="checkout-modal" style="display: none;">
-    <div class="modal-dialog modal-md">
-      <button class="modal-close-btn" id="btn-close-checkout-modal">&times;</button>
-      <div class="checkout-success-body">
-        <div class="success-icon-wrap">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </div>
-        <h3 class="modal-title">Order Confirmed!</h3>
-        <p class="modal-sub">
-          Your halal order <strong>#BG-<span id="confirmed-order-id">----</span></strong> has been sent to the Virajpet
-          kitchen.
-        </p>
-
-        <div class="confirmed-summary-box">
-          <div class="conf-row">
-            <span>Delivering To:</span>
-            <strong id="conf-address-text">Clock Tower Circle, Virajpet</strong>
-          </div>
-          <div class="conf-row">
-            <span>Estimated Arrival:</span>
-            <strong class="text-maroon">15–25 minutes</strong>
-          </div>
-          <div class="conf-row">
-            <span>Payment Mode:</span>
-            <strong>UPI (GPay / PhonePe / Cash on Delivery)</strong>
-          </div>
-          <div class="conf-row">
-            <span>Total Paid:</span>
-            <strong id="conf-total-price">₹665.00</strong>
-          </div>
-        </div>
-
-        <div class="modal-actions-row">
-          <button class="btn btn-primary btn-full" id="btn-track-new-order">
-            <span>View Live Rider Tracking</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- EDIT PROFILE & PROFILE IMAGE MODAL -->
-  <div class="modal-backdrop" id="edit-profile-modal" style="display: none;">
-    <div class="modal-dialog modal-md edit-profile-modal-dialog">
-      <div class="modal-header">
-        <div class="modal-title-with-icon">
-          <div class="modal-icon-badge">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          </div>
-          <div>
-            <h3 class="modal-title">Edit Profile &amp; Photo</h3>
-            <p class="modal-subtitle">Update your personal account details and avatar picture</p>
-          </div>
-        </div>
-        <button type="button" class="modal-close-btn" id="btn-close-edit-profile" aria-label="Close edit profile">&times;</button>
-      </div>
-
-      <form id="edit-profile-form" class="edit-profile-form">
-        <!-- Avatar Change Section -->
-        <div class="edit-avatar-section">
-          <div class="avatar-preview-wrap">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=180&q=80" alt="Avatar Preview" id="edit-avatar-preview" class="edit-avatar-preview-img">
-            <label for="edit-profile-file-input" class="btn-avatar-camera-floating" title="Upload Photo from Device">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-            </label>
-            <input type="file" id="edit-profile-file-input" accept="image/png, image/jpeg, image/webp, image/gif" style="display: none;">
-          </div>
-
-          <div class="avatar-controls-col">
-            <div class="avatar-actions-row">
-              <button type="button" class="btn-avatar-choice" id="btn-trigger-file-upload">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                <span>Upload Device Photo</span>
-              </button>
-            </div>
-
-            <div class="avatar-presets-wrap">
-              <span class="avatar-presets-label">Choose a preset avatar:</span>
-              <div class="avatar-presets-row" id="avatar-presets-container">
-                <button type="button" class="avatar-preset-btn active" data-url="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=180&q=80" title="Selected Avatar">
-                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=90&h=90&q=80" alt="Preset 1">
-                </button>
-                <button type="button" class="avatar-preset-btn" data-url="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=180&h=180&q=80" title="Kodagu Gentleman">
-                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=90&h=90&q=80" alt="Preset 2">
-                </button>
-                <button type="button" class="avatar-preset-btn" data-url="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=180&h=180&q=80" title="Estate Coffee Maker">
-                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=90&h=90&q=80" alt="Preset 3">
-                </button>
-                <button type="button" class="avatar-preset-btn" data-url="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=180&h=180&q=80" title="Coorg Native">
-                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=90&h=90&q=80" alt="Preset 4">
-                </button>
-                <button type="button" class="avatar-preset-btn" data-url="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=180&h=180&q=80" title="Modern Professional">
-                  <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=90&h=90&q=80" alt="Preset 5">
-                </button>
-                <button type="button" class="avatar-preset-btn" data-url="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=180&h=180&q=80" title="Virajpet Foodie">
-                  <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=90&h=90&q=80" alt="Preset 6">
-                </button>
-              </div>
-            </div>
-
-            <div class="avatar-url-input-wrap">
-              <label for="edit-profile-avatar-url" class="avatar-url-label">Or Image Link / URL:</label>
-              <input type="url" id="edit-profile-avatar-url" class="form-control form-control-sm" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=180&h=180&q=80">
-            </div>
-          </div>
-        </div>
-
-        <!-- Personal Info Form Fields -->
-        <div class="edit-profile-fields-grid">
-          <div class="form-group">
-            <label for="edit-profile-name" class="form-label">Full Name <span class="required-star">*</span></label>
-            <div class="input-with-icon">
-              <span class="field-icon">👤</span>
-              <input type="text" id="edit-profile-name" class="form-control" required placeholder="e.g. Falah Abdulla" value="Falah Abdulla">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-profile-phone" class="form-label">Phone Number <span class="required-star">*</span></label>
-            <div class="input-with-icon">
-              <span class="field-icon">📞</span>
-              <input type="tel" id="edit-profile-phone" class="form-control" required placeholder="+91 98451 23456" value="+91 98451 23456">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-profile-email" class="form-label">Email Address <span class="required-star">*</span></label>
-            <div class="input-with-icon">
-              <span class="field-icon">✉️</span>
-              <input type="email" id="edit-profile-email" class="form-control" required placeholder="falah.kodagu@gmail.com" value="falah.kodagu@gmail.com">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="edit-profile-location" class="form-label">Default Delivery Area / Town</label>
-            <div class="input-with-icon">
-              <span class="field-icon">📍</span>
-              <input type="text" id="edit-profile-location" class="form-control" placeholder="e.g. Virajpet Town, Kodagu 571218" value="Virajpet Town, Kodagu 571218">
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-footer-actions">
-          <button type="button" class="btn btn-outline-maroon" id="btn-cancel-edit-profile">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="btn-save-profile">
-            <span>Save Profile Changes</span>
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- TOAST NOTIFICATION CONTAINER -->
-  <div class="toast-container" id="toast-container" aria-live="polite"></div>
-
-  <!-- SITE FOOTER -->
+  <!-- ========================================================================= -->
+  <!-- 6. SITE FOOTER (DARK MODERN DESIGN) -->
+  <!-- ========================================================================= -->
   <footer class="site-footer">
-    <div class="container footer-top">
-      <div class="footer-brand-col">
-        <div class="footer-logo">
-          <div class="logo-symbol-light">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+    <div class="container footer-grid">
+      
+      <!-- Brand & Mission Column -->
+      <div class="footer-col-brand">
+        <div class="footer-brand-title">
+          <span class="brand-icon-wrap" style="width: 24px; height: 24px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect width="24" height="24" rx="6" fill="#C59B27"/>
+              <path d="M7 12h10M12 7v10" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
             </svg>
-          </div>
-          <span class="footer-brand-name">BEEGO VIRAJPEE</span>
+          </span>
+          <span class="brand-text">BeeGo <span class="brand-plus">+</span></span>
+          <span class="footer-we-deliver-badge">WE DELIVER YOU</span>
         </div>
         <p class="footer-brand-desc">
-          Kodagu's dedicated 100% Halal food delivery network. Serving Virajpet town,
-          Gonikoppal Road, Bittangala, and surrounding coffee plantations.
+          White-glove curation of artisanal epicurean staples and discreet immediate cold-chain pharmaceuticals delivered in minutes.
         </p>
-        <div class="footer-socials">
-          <a href="#" aria-label="Instagram">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-            </svg>
-          </a>
-          <a href="#" aria-label="LinkedIn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-              <rect x="2" y="9" width="4" height="12"></rect>
-              <circle cx="4" cy="4" r="2"></circle>
-            </svg>
-          </a>
-          <a href="#" aria-label="Twitter">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path
-                d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
-              </path>
-            </svg>
-          </a>
-        </div>
       </div>
 
-      <div class="footer-links-col">
-        <h4 class="footer-heading">Halal Specialties</h4>
-        <ul>
-          <li><a href="#categories-browse">Kodagu Koli Curry &amp; Akki Oti</a></li>
-          <li><a href="#categories-browse">Thalassery Mutton Dum Biryani</a></li>
-          <li><a href="#categories-browse">Kadambuttu &amp; Pepper Chicken</a></li>
-          <li><a href="#categories-browse">Virajpet Estate Filter Kaapi</a></li>
-          <li><a href="#categories-browse">Pure Coorg Wild Honey &amp; Pepper</a></li>
-          <li><a href="#categories-browse">Traditional Kodagu Rice Roti</a></li>
+      <!-- Marketplace Column -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">Marketplace</h4>
+        <ul class="footer-links">
+          <li><a href="#sec-gourmet-food">Gourmet Provisions</a></li>
+          <li><a href="#sec-fresh-grocery">Artisanal Bakery &amp; Dairy</a></li>
+          <li><a href="#sec-cold-pressed">Cellar &amp; Reserve Spirits</a></li>
+          <li><a href="#sec-artisanal-desserts">Imported Specialties</a></li>
         </ul>
       </div>
 
-      <div class="footer-links-col">
-        <h4 class="footer-heading">Virajpet Coverage</h4>
-        <ul>
-          <li><a href="#">Clock Tower (Gadiyara Kambha)</a></li>
-          <li><a href="#">College Road &amp; Kaveri Layout</a></li>
-          <li><a href="#">Malabar Road &amp; Meenupet</a></li>
-          <li><a href="#">Bittangala &amp; Arji Junction</a></li>
-          <li><a href="#">Gonikoppal Road &amp; Ammathi</a></li>
-          <li><a href="#">Kakotuparambu &amp; Ponnampet</a></li>
+      <!-- QuickCare Rx Column -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">QuickCare Rx</h4>
+        <ul class="footer-links">
+          <li><a href="#sec-pharmacy-medicine">Discreet Prescription Dispatch</a></li>
+          <li><a href="#sec-pharmacy-medicine">Cold-Chain Therapeutics</a></li>
+          <li><a href="javascript:void(0)" onclick="openConciergeChatModal()">Licensed Pharmacist Chat</a></li>
+          <li><a href="#sec-pharmacy-medicine">Emergency First-Aid Kits</a></li>
         </ul>
       </div>
 
-      <div class="footer-links-col">
-        <h4 class="footer-heading">Partner With Us</h4>
-        <ul>
-          <li><a href="/admin" target="_blank" style="color: #F0D9B5; font-weight: 700;">🏬 Store Owner Portal (/admin)</a></li>
-          <li><a href="/admin" target="_blank">Register Halal Restaurant</a></li>
-          <li><a href="#">BEEGO Virajpet Rider Fleet</a></li>
-          <li><a href="#">Coffee Estate Gift Hampers</a></li>
-          <li><a href="#">Home Kitchen Halal Partner</a></li>
-          <li><a href="#">FSSAI &amp; Halal Compliance</a></li>
-          <li><a href="#">Contact Virajpet Hub</a></li>
+      <!-- Concierge Direct Column -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">Concierge Direct</h4>
+        <ul class="footer-links">
+          <li><a href="javascript:void(0)" onclick="broadcastOrderToWhatsApp()">WhatsApp Instant Re-order</a></li>
+          <li><a href="javascript:void(0)" onclick="openConciergeChatModal()">Voice Note Sommelier</a></li>
+          <li><a href="/admin" target="_blank">Merchant Management</a></li>
+          <li><a href="/admin/login" target="_blank">Fleet Live Status</a></li>
         </ul>
       </div>
+
     </div>
 
-    <div class="container footer-bottom">
-      <div class="footer-copy">
-        &copy; 2026 BEEGO Virajpet Delivery Technologies (Kodagu, Karnataka). All rights reserved. 100% Halal Verified.
+    <!-- Bottom Copyright & Legal Strip -->
+    <div class="container footer-bottom-strip">
+      <div class="footer-copyright">
+        &copy; 2026 BeeGo + We Deliver You. All rights reserved.
       </div>
       <div class="footer-legal-links">
-        <a href="#">Halal Verification Standards</a>
-        <a href="#">Privacy Policy</a>
-        <a href="#">FSSAI Kodagu License</a>
-        <a href="#">Terms of Delivery</a>
+        <a href="#">Privacy &amp; HIPAA Notice</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cold-Chain Protocol</a>
       </div>
     </div>
   </footer>
 
-  <!-- Leaflet Map JS for Google Maps Picker -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- ========================================================================= -->
+  <!-- 7. LOCATION ADDRESS MODAL -->
+  <!-- ========================================================================= -->
+  <div class="modal-overlay" id="location-modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>📍 Select Delivery Location</h3>
+        <button type="button" class="modal-close" onclick="closeLocationModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-sub">Choose your delivery hub in Bengaluru for instant 15-minute white-glove dispatch.</p>
+        
+        <div class="address-input-group">
+          <label class="form-label">Delivery Address Line</label>
+          <input type="text" id="modal-address-input" class="form-control" value="Flat 402, Prestige Palms, Indiranagar 100ft Rd, Bengaluru - 560038">
+        </div>
+
+        <div class="location-preset-chips">
+          <button type="button" class="preset-chip active" onclick="setPresetLocation('Indiranagar 100ft Rd, Bengaluru', '15 mins')">
+            📍 Indiranagar 100ft Rd (15m)
+          </button>
+          <button type="button" class="preset-chip" onclick="setPresetLocation('Koramangala 4th Block, Bengaluru', '18 mins')">
+            📍 Koramangala 4th Block (18m)
+          </button>
+          <button type="button" class="preset-chip" onclick="setPresetLocation('Lavelle Road, Central Bengaluru', '12 mins')">
+            📍 Lavelle Road (12m)
+          </button>
+          <button type="button" class="preset-chip" onclick="setPresetLocation('Sadashivanagar, Bengaluru', '20 mins')">
+            📍 Sadashivanagar (20m)
+          </button>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" onclick="closeLocationModal()">Cancel</button>
+        <button type="button" class="btn btn-dark" onclick="saveLocationSelection()">Confirm Location</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 8. CONCIERGE & SOMMELIER CHAT MODAL -->
+  <!-- ========================================================================= -->
+  <div class="modal-overlay" id="concierge-chat-modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>🎧 On-Duty Sommelier &amp; Apothecary Chat</h3>
+        <button type="button" class="modal-close" onclick="closeConciergeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-sub">Need personalized dietary pairing, vintage recommendations, or prescription medication verification?</p>
+        
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Your Inquiry / Prescription Note</label>
+          <textarea id="concierge-inquiry-text" class="form-control" rows="3" placeholder="e.g. Can you suggest a vintage pairing for the Miyazaki Wagyu, or verify cold-chain insulin delivery?"></textarea>
+        </div>
+
+        <div class="chat-options-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="concierge-attach-cart" checked>
+            <span>Attach my current WhatsApp Bag for immediate review</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" onclick="closeConciergeModal()">Close</button>
+        <button type="button" class="btn btn-green-hero" onclick="sendConciergeInquiry()">
+          <span>Chat on WhatsApp</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2Z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-stack" id="toast-stack"></div>
+
+  <!-- Main JavaScript Logic -->
   <script src="app.js"></script>
 </body>
 
