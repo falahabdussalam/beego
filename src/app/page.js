@@ -161,7 +161,7 @@ export default async function HomePage() {
           </div>
           <h3 className="text-sm font-bold text-[#380611]">Honest Pricing &amp; Transparent Fees</h3>
           <p className="text-xs text-[#7A162D]/80 leading-relaxed">
-            Exact store prices, ₹35 standard delivery fee, zero hidden charges, and convenient WhatsApp ordering.
+            Exact store prices, ₹35 standard delivery fee, zero hidden charges, and fast doorstep delivery in Virajpete.
           </p>
         </div>
       </section>

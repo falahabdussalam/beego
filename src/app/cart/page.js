@@ -359,7 +359,7 @@ export default function CartPage() {
             Your Cart is Empty
           </h1>
           <p className="text-xs text-[#7E6569] max-w-sm mx-auto">
-            Select items from local Virajpete stores, groceries, or restaurants, and order directly on WhatsApp.
+            Select items from local Virajpete stores, groceries, or restaurants to place your order.
           </p>
         </div>
         <Link
@@ -383,7 +383,7 @@ export default function CartPage() {
             Delivery Cart ({itemCount} {itemCount === 1 ? 'item' : 'items'})
           </h1>
           <p className="text-xs text-[#7E6569] mt-0.5">
-            Order by WhatsApp from <strong className="text-[#380611]">{store?.name || 'Local Merchant'}</strong>
+            Fulfilling from <strong className="text-[#380611]">{store?.name || 'Local Merchant'}</strong>
           </p>
         </div>
         <button
