@@ -48,6 +48,10 @@ export function formatWhatsAppOrderMessage({
     lines.push(`📌 *Landmark:* ${address.landmark}`);
   }
 
+  if (address?.lat && address?.lng) {
+    lines.push(`🗺️ *Google Maps Pin:* https://maps.google.com/?q=${address.lat},${address.lng}`);
+  }
+
   lines.push(
     `----------------------------------------`,
     `🛒 *ITEMS ORDERED:*`

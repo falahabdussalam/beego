@@ -18,7 +18,9 @@ import {
   Phone,
   User,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  ExternalLink,
+  Compass
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useLocation } from '../../context/LocationContext';
@@ -48,6 +50,7 @@ export default function CartPage() {
   );
   const [house, setHouse] = useState(currentLocation?.house || '');
   const [street, setStreet] = useState(currentLocation?.street || '');
+  const [area, setArea] = useState(currentLocation?.area || 'Clock Tower & Main Market');
   const [landmark, setLandmark] = useState(currentLocation?.landmark || '');
   const [notes, setNotes] = useState('');
   const [rxAcknowledged, setRxAcknowledged] = useState(false);
@@ -68,6 +71,7 @@ export default function CartPage() {
     if (currentLocation) {
       if (!house && currentLocation.house) setHouse(currentLocation.house);
       if (!street && currentLocation.street) setStreet(currentLocation.street);
+      if (currentLocation.area) setArea(currentLocation.area);
       if (!landmark && currentLocation.landmark) setLandmark(currentLocation.landmark);
       if (!customerPhone && currentLocation.phone) setCustomerPhone(currentLocation.phone);
     }
@@ -84,13 +88,16 @@ export default function CartPage() {
   // Serviceability check
   const lat = currentLocation?.lat || VIRAJPET_CENTER_COORDS.lat;
   const lng = currentLocation?.lng || VIRAJPET_CENTER_COORDS.lng;
-  const distanceKm = calculateDistanceKm(
-    VIRAJPET_CENTER_COORDS.lat,
-    VIRAJPET_CENTER_COORDS.lng,
-    lat,
-    lng
+  const distanceKm = Number(
+    calculateDistanceKm(
+      VIRAJPET_CENTER_COORDS.lat,
+      VIRAJPET_CENTER_COORDS.lng,
+      lat,
+      lng
+    ).toFixed(2)
   );
-  const isServiceable = distanceKm <= 5.0;
+  const isCoreDelivery = distanceKm <= 5.0;
+  const isServiceable = distanceKm <= 8.0;
 
   // Server pricing validation
   useEffect(() => {
@@ -178,17 +185,22 @@ export default function CartPage() {
     }
 
     if (!house.trim()) {
-      setValidationError('Please specify your House / Flat / Building name or number.');
+      setValidationError('Please specify your House / Flat / Building or Estate name.');
       return;
     }
 
     if (!street.trim()) {
-      setValidationError('Please specify your Street or Road name in Virajpete.');
+      setValidationError('Please specify your Street or Road name.');
+      return;
+    }
+
+    if (!area.trim()) {
+      setValidationError('Please select or specify your Area / Locality in or surrounding Virajpet.');
       return;
     }
 
     if (!isServiceable) {
-      setValidationError(`Selected address (${distanceKm} km away) is outside the 5 km Virajpete delivery boundary.`);
+      setValidationError(`Selected address (${distanceKm} km away) is beyond our Virajpet delivery boundary (Maximum 8 km).`);
       return;
     }
 
@@ -206,8 +218,8 @@ export default function CartPage() {
       const deliveryAddress = {
         house: house.trim(),
         street: street.trim(),
+        area: area.trim() || currentLocation?.area || 'Virajpet Town',
         landmark: landmark.trim(),
-        area: currentLocation.area || 'Virajpete Town',
         contactName: customerName.trim(),
         contactPhone: cleanPhone,
         lat,
@@ -500,38 +512,57 @@ export default function CartPage() {
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-[#380611]">Delivery &amp; Contact Details</h2>
-                  <p className="text-[11px] text-[#7E6569]">Sent directly to WhatsApp for order delivery</p>
+                  <p className="text-[11px] text-[#7E6569]">Sent directly to WhatsApp with Google Map pin for delivery</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsLocationModalOpen(true)}
-                className="text-xs font-bold text-[#58111E] hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#58111E] hover:text-[#7A162D] hover:underline bg-[#FAF5EC] hover:bg-[#F0E6D6] px-3 py-1.5 rounded-xl border border-[#F0E6D6] transition-colors"
               >
-                Change Map Pin
+                <Compass className="w-3.5 h-3.5 text-[#58111E]" />
+                <span>Change Pin on Map</span>
               </button>
             </div>
 
-            {/* Serviceability banner */}
-            <div className={`p-3 rounded-xl border text-xs flex items-center justify-between ${
-              isServiceable ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-rose-50 border-rose-200 text-rose-900'
-            }`}>
-              <div className="flex items-center gap-2">
-                {isServiceable ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                ) : (
-                  <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
-                )}
-                <span>
-                  {isServiceable
-                    ? `Within Virajpete 5 km delivery boundary (${distanceKm} km from clock tower)`
-                    : `Outside delivery boundary (${distanceKm} km from clock tower. Max 5 km).`}
-                </span>
+            {/* Google Maps Location Preview Card */}
+            <div className="p-3.5 bg-[#FAF5EC] rounded-2xl border border-[#F0E6D6] flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-start gap-2.5">
+                <div className="p-1.5 bg-[#58111E] text-[#FDFBF7] rounded-lg mt-0.5">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold text-xs text-[#380611]">{area || 'Virajpet Area'}</p>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                      isCoreDelivery
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                        : isServiceable
+                        ? 'bg-amber-100 text-amber-900 border border-amber-200'
+                        : 'bg-rose-100 text-rose-800 border border-rose-200'
+                    }`}>
+                      {isCoreDelivery ? 'Standard Zone (Within 5 km)' : isServiceable ? 'Extended Surrounding Zone' : 'Outside Boundary'}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[#7E6569] mt-0.5 font-mono">
+                    GPS: {lat?.toFixed(4)}, {lng?.toFixed(4)} ({distanceKm} km from Clock Tower)
+                  </p>
+                </div>
               </div>
+
+              <a
+                href={`https://maps.google.com/?q=${lat},${lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] font-bold text-[#58111E] hover:underline flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-[#F0E6D6]"
+              >
+                <span>View on Google Map</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
             </div>
 
             {/* Inputs Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
               <div>
                 <label className="block text-[11px] font-bold text-[#380611] uppercase tracking-wider mb-1">
                   Your Full Name *
@@ -543,7 +574,7 @@ export default function CartPage() {
                     placeholder="e.g. Rahul Bopanna"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full text-xs p-2.5 pl-8 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden"
+                    className="w-full text-xs p-2.5 pl-8 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden text-[#380611] placeholder:text-[#7E6569]"
                   />
                   <User className="w-3.5 h-3.5 text-[#7E6569] absolute left-2.5 top-1/2 -translate-y-1/2" />
                 </div>
@@ -561,7 +592,7 @@ export default function CartPage() {
                     placeholder="10-digit WhatsApp number"
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value.replace(/\D/g, ''))}
-                    className="w-full text-xs p-2.5 pl-8 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden font-mono"
+                    className="w-full text-xs p-2.5 pl-8 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden font-mono text-[#380611] placeholder:text-[#7E6569]"
                   />
                   <Phone className="w-3.5 h-3.5 text-[#7E6569] absolute left-2.5 top-1/2 -translate-y-1/2" />
                 </div>
@@ -569,7 +600,7 @@ export default function CartPage() {
 
               <div>
                 <label className="block text-[11px] font-bold text-[#380611] uppercase tracking-wider mb-1">
-                  House / Flat / Building *
+                  House / Flat / Estate Name *
                 </label>
                 <input
                   type="text"
@@ -577,13 +608,13 @@ export default function CartPage() {
                   placeholder="e.g. No. 12, Coffee View Estate"
                   value={house}
                   onChange={(e) => setHouse(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden"
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden text-[#380611] placeholder:text-[#7E6569]"
                 />
               </div>
 
               <div>
                 <label className="block text-[11px] font-bold text-[#380611] uppercase tracking-wider mb-1">
-                  Street / Area in Virajpete *
+                  Street / Road Name *
                 </label>
                 <input
                   type="text"
@@ -591,20 +622,34 @@ export default function CartPage() {
                   placeholder="e.g. Main Clock Tower Road, Telugubedha"
                   value={street}
                   onChange={(e) => setStreet(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden"
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden text-[#380611] placeholder:text-[#7E6569]"
                 />
               </div>
 
-              <div className="sm:col-span-2">
+              <div>
+                <label className="block text-[11px] font-bold text-[#380611] uppercase tracking-wider mb-1">
+                  Area / Surrounding Locality *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Kakotuparambu / Arasikatte / Murnad Rd"
+                  value={area}
+                  onChange={(e) => setArea(e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden text-[#380611] placeholder:text-[#7E6569]"
+                />
+              </div>
+
+              <div>
                 <label className="block text-[11px] font-bold text-[#380611] uppercase tracking-wider mb-1">
                   Landmark (Optional)
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Near St. Anne's Church or Government Hospital"
+                  placeholder="e.g. Near St. Anne's Church or Govt Hospital"
                   value={landmark}
                   onChange={(e) => setLandmark(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden"
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden text-[#380611] placeholder:text-[#7E6569]"
                 />
               </div>
 

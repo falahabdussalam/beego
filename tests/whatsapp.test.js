@@ -13,6 +13,8 @@ test('WhatsApp order message formatting includes all items, totals, and Virajpet
       street: 'Clock Tower Main Road',
       area: 'Virajpete Town',
       landmark: 'Near Govt Hospital',
+      lat: 12.2039,
+      lng: 75.8037,
     },
     items: [
       { name: 'Pandi Curry with Akki Roti', quantity: 2, price: 260, unit: 'Meal' },
@@ -38,6 +40,7 @@ test('WhatsApp order message formatting includes all items, totals, and Virajpet
   assert.ok(message.includes('TOTAL PAYABLE:* ₹853'));
   assert.ok(message.includes('Clock Tower Main Road'));
   assert.ok(message.includes('Virajpete'));
+  assert.ok(message.includes('Google Maps Pin:* https://maps.google.com/?q=12.2039,75.8037'));
 });
 
 test('WhatsApp URL generation encodes message properly with country code', () => {
