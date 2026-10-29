@@ -73,8 +73,8 @@ export default function ProductDetailClient({ product }) {
           className={`flex-1 py-3 px-6 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md ${
             addedSuccess
               ? 'bg-emerald-600 text-white shadow-emerald-600/20'
-              : 'bg-amber-500 hover:bg-amber-600 text-slate-950 shadow-amber-500/25 hover:scale-[1.01] active:scale-[0.99]'
-          } disabled:opacity-40 disabled:hover:scale-100 disabled:bg-slate-200 disabled:text-slate-500`}
+              : 'bg-[#58111E] hover:bg-[#7A162D] text-[#FDFBF7] shadow-[#58111E]/25 hover:scale-[1.01] active:scale-[0.99]'
+          } disabled:opacity-40 disabled:hover:scale-100 disabled:bg-[#FAF5EC] disabled:text-[#7E6569]`}
         >
           {addedSuccess ? (
             <>

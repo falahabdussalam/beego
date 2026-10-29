@@ -32,16 +32,16 @@ export default function CategoryGrid() {
     <section className="my-10">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-black text-[#380611] tracking-tight">
             Explore Categories
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-[#7E6569] mt-0.5">
             Everything you need in Virajpete delivered from trusted merchants
           </p>
         </div>
         <Link
           href="/categories"
-          className="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 group"
+          className="text-xs font-bold text-[#58111E] hover:text-[#7A162D] flex items-center gap-1 group"
         >
           <span>View All</span>
           <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -55,17 +55,17 @@ export default function CategoryGrid() {
             <Link
               key={cat.id}
               href={`/categories/${cat.id}`}
-              className={`bg-white rounded-2xl p-3.5 border border-slate-200/90 shadow-2xs hover-lift transition-all flex flex-col justify-between ${cat.borderColor} group`}
+              className="bg-white rounded-2xl p-3.5 border border-[#F0E6D6] hover:border-[#58111E]/50 hover:bg-[#FAF5EC]/40 shadow-2xs hover-lift transition-all flex flex-col justify-between group"
             >
               {/* Image & Badge */}
-              <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-100 mb-3">
+              <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-[#FAF5EC] mb-3">
                 <img
                   src={cat.image}
                   alt={cat.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   loading="lazy"
                 />
-                <span className="absolute top-1.5 left-1.5 bg-slate-900/80 backdrop-blur-xs text-amber-300 text-[9px] font-bold px-1.5 py-0.5 rounded">
+                <span className="absolute top-1.5 left-1.5 bg-[#380611]/85 backdrop-blur-xs text-[#FAF5EC] text-[9px] font-bold px-1.5 py-0.5 rounded">
                   {cat.badge}
                 </span>
               </div>
@@ -76,7 +76,7 @@ export default function CategoryGrid() {
                   <div className={`p-1 rounded-md bg-gradient-to-br ${cat.color}`}>
                     <Icon className="w-3.5 h-3.5" />
                   </div>
-                  <h3 className="text-xs font-bold text-slate-900 group-hover:text-amber-600 transition-colors line-clamp-1">
+                  <h3 className="text-xs font-bold text-[#380611] group-hover:text-[#58111E] transition-colors line-clamp-1">
                     {cat.name}
                   </h3>
                 </div>

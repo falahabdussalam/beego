@@ -18,8 +18,7 @@ import {
   Phone,
   User,
   CheckCircle2,
-  AlertTriangle,
-  RotateCcw
+  AlertTriangle
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useLocation } from '../../context/LocationContext';
@@ -230,7 +229,7 @@ export default function CartPage() {
           }),
         });
       } catch (e) {
-        // Continue even if local DB is offline
+        // Fallback gracefully
         console.warn('Server order logging fallback:', e);
       }
 
@@ -291,30 +290,30 @@ export default function CartPage() {
           <span className="text-xs font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
             Order Initiated via WhatsApp
           </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#380611] tracking-tight">
             Order Sent to BeeGo Virajpete!
           </h1>
-          <p className="text-xs text-slate-500 max-w-md mx-auto">
-            Order ID: <strong className="font-mono text-slate-800 font-bold">{submittedOrder.orderId}</strong>
+          <p className="text-xs text-[#7E6569] max-w-md mx-auto">
+            Order ID: <strong className="font-mono text-[#380611] font-bold">{submittedOrder.orderId}</strong>
           </p>
         </div>
 
-        <div className="p-6 bg-white rounded-3xl border border-slate-200 shadow-xs text-left space-y-4 max-w-md mx-auto text-xs text-slate-600">
-          <div className="flex justify-between pb-3 border-b border-slate-100">
-            <span className="text-slate-400">Customer</span>
-            <strong className="text-slate-900">{submittedOrder.customerName} ({submittedOrder.customerPhone})</strong>
+        <div className="p-6 bg-white rounded-3xl border border-[#F0E6D6] shadow-xs text-left space-y-4 max-w-md mx-auto text-xs text-[#2C0C12]">
+          <div className="flex justify-between pb-3 border-b border-[#F0E6D6]">
+            <span className="text-[#7E6569]">Customer</span>
+            <strong className="text-[#380611]">{submittedOrder.customerName} ({submittedOrder.customerPhone})</strong>
           </div>
-          <div className="flex justify-between pb-3 border-b border-slate-100">
-            <span className="text-slate-400">Delivery Address</span>
-            <span className="font-medium text-slate-800 text-right max-w-[200px] truncate">
+          <div className="flex justify-between pb-3 border-b border-[#F0E6D6]">
+            <span className="text-[#7E6569]">Delivery Address</span>
+            <span className="font-medium text-[#380611] text-right max-w-[200px] truncate">
               {submittedOrder.address.house}, {submittedOrder.address.street}
             </span>
           </div>
-          <div className="flex justify-between pb-3 border-b border-slate-100">
-            <span className="text-slate-400">Total Items</span>
-            <strong className="text-slate-900">{submittedOrder.items.length} items</strong>
+          <div className="flex justify-between pb-3 border-b border-[#F0E6D6]">
+            <span className="text-[#7E6569]">Total Items</span>
+            <strong className="text-[#380611]">{submittedOrder.items.length} items</strong>
           </div>
-          <div className="flex justify-between pt-1 text-sm font-black text-slate-900">
+          <div className="flex justify-between pt-1 text-sm font-black text-[#380611]">
             <span>Total Payable on Delivery</span>
             <span className="text-emerald-700 text-base">₹{Number(submittedOrder.total).toFixed(0)}</span>
           </div>
@@ -335,13 +334,13 @@ export default function CartPage() {
 
           <Link
             href="/"
-            className="block w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition-colors"
+            className="block w-full py-3 bg-[#FAF5EC] hover:bg-[#F0E6D6] text-[#58111E] font-bold text-xs rounded-xl transition-colors border border-[#F0E6D6]"
           >
             Order More from Virajpete Stores
           </Link>
         </div>
 
-        <p className="text-[11px] text-slate-400">
+        <p className="text-[11px] text-[#7E6569]">
           Our Virajpete delivery hub will confirm your delivery time and rider details on WhatsApp.
         </p>
       </div>
@@ -352,20 +351,20 @@ export default function CartPage() {
   if (cartItems.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center space-y-5">
-        <div className="w-20 h-20 rounded-3xl bg-amber-100 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto">
+        <div className="w-20 h-20 rounded-3xl bg-[#FAF5EC] border border-[#F0E6D6] text-[#58111E] flex items-center justify-center mx-auto">
           <ShoppingCart className="w-10 h-10" />
         </div>
         <div className="space-y-1">
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-black text-[#380611] tracking-tight">
             Your Cart is Empty
           </h1>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+          <p className="text-xs text-[#7E6569] max-w-sm mx-auto">
             Select items from local Virajpete stores, groceries, or restaurants, and order directly on WhatsApp.
           </p>
         </div>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-md transition-all hover:scale-[1.02]"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[#58111E] hover:bg-[#7A162D] text-[#FDFBF7] font-bold text-xs rounded-xl shadow-md shadow-[#58111E]/20 transition-all hover:scale-[1.02]"
         >
           <span>Explore Virajpete Stores</span>
           <ArrowRight className="w-4 h-4" />
@@ -380,16 +379,16 @@ export default function CartPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-black text-[#380611] tracking-tight">
             Delivery Cart ({itemCount} {itemCount === 1 ? 'item' : 'items'})
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Order by WhatsApp from <strong className="text-slate-800">{store?.name || 'Local Merchant'}</strong>
+          <p className="text-xs text-[#7E6569] mt-0.5">
+            Order by WhatsApp from <strong className="text-[#380611]">{store?.name || 'Local Merchant'}</strong>
           </p>
         </div>
         <button
           onClick={clearCart}
-          className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-rose-600 font-semibold transition-colors"
+          className="flex items-center gap-1.5 text-xs text-[#7E6569] hover:text-rose-600 font-semibold transition-colors"
         >
           <Trash2 className="w-3.5 h-3.5" />
           <span>Clear Cart</span>
@@ -409,14 +408,14 @@ export default function CartPage() {
         <div className="lg:col-span-8 space-y-6">
           
           {/* Store Pill */}
-          <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between">
+          <div className="p-4 bg-white rounded-2xl border border-[#F0E6D6] shadow-2xs flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
-                <Store className="w-5 h-5 text-amber-600" />
+              <div className="w-10 h-10 rounded-xl bg-[#FAF5EC] text-[#58111E] flex items-center justify-center font-bold">
+                <Store className="w-5 h-5 text-[#58111E]" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900">{store?.name}</h3>
-                <p className="text-[11px] text-slate-400">Virajpete hyperlocal fulfillment</p>
+                <h3 className="text-sm font-bold text-[#380611]">{store?.name}</h3>
+                <p className="text-[11px] text-[#7E6569]">Virajpete hyperlocal fulfillment</p>
               </div>
             </div>
             <span className="text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">
@@ -425,13 +424,13 @@ export default function CartPage() {
           </div>
 
           {/* Cart Items List */}
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-xs divide-y divide-slate-100 overflow-hidden">
+          <div className="bg-white rounded-3xl border border-[#F0E6D6] shadow-xs divide-y divide-[#F0E6D6] overflow-hidden">
             {cartItems.map((item) => (
               <div key={item.id} className="p-4 sm:p-5 flex items-center justify-between gap-4">
                 
                 {/* Thumbnail & Info */}
                 <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="w-16 h-16 rounded-xl bg-slate-100 overflow-hidden shrink-0 border border-slate-200/60">
+                  <div className="w-16 h-16 rounded-xl bg-[#FAF5EC] overflow-hidden shrink-0 border border-[#F0E6D6]">
                     <img
                       src={item.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=200&q=80'}
                       alt={item.name}
@@ -439,10 +438,10 @@ export default function CartPage() {
                     />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                    <h4 className="text-xs sm:text-sm font-bold text-[#380611] truncate">
                       {item.name}
                     </h4>
-                    <p className="text-[11px] text-slate-400 font-mono">
+                    <p className="text-[11px] text-[#7E6569] font-mono">
                       ₹{item.price} • {item.unit || '1 unit'}
                     </p>
                     {item.isPrescriptionRequired && (
@@ -455,33 +454,33 @@ export default function CartPage() {
 
                 {/* Stepper & Price */}
                 <div className="flex items-center gap-4 shrink-0">
-                  <div className="flex items-center bg-slate-100 rounded-xl p-1 border border-slate-200">
+                  <div className="flex items-center bg-[#FAF5EC] rounded-xl p-1 border border-[#F0E6D6]">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-white text-slate-700 transition-colors"
+                      className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-white text-[#380611] transition-colors"
                     >
                       <Minus className="w-3 h-3" />
                     </button>
-                    <span className="w-8 text-center text-xs font-bold text-slate-900">
+                    <span className="w-8 text-center text-xs font-bold text-[#380611]">
                       {item.quantity}
                     </span>
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-white text-slate-700 transition-colors"
+                      className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-white text-[#380611] transition-colors"
                     >
                       <Plus className="w-3 h-3" />
                     </button>
                   </div>
 
                   <div className="w-16 text-right">
-                    <span className="text-xs sm:text-sm font-black text-slate-900">
+                    <span className="text-xs sm:text-sm font-black text-[#380611]">
                       ₹{(item.price * item.quantity).toFixed(0)}
                     </span>
                   </div>
 
                   <button
                     onClick={() => removeItem(item.id)}
-                    className="text-slate-400 hover:text-rose-500 transition-colors"
+                    className="text-[#7E6569] hover:text-rose-600 transition-colors"
                     title="Remove item"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -493,21 +492,21 @@ export default function CartPage() {
           </div>
 
           {/* Delivery & Contact Details Form */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-2xs space-y-4">
+          <div className="bg-white rounded-3xl p-6 border border-[#F0E6D6] shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
-                  <MapPin className="w-4 h-4 text-amber-600" />
+                <div className="w-8 h-8 rounded-xl bg-[#FAF5EC] text-[#58111E] flex items-center justify-center font-bold">
+                  <MapPin className="w-4 h-4 text-[#58111E]" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-slate-900">Delivery &amp; Contact Details</h2>
-                  <p className="text-[11px] text-slate-500">Sent directly to WhatsApp for order delivery</p>
+                  <h2 className="text-sm font-bold text-[#380611]">Delivery &amp; Contact Details</h2>
+                  <p className="text-[11px] text-[#7E6569]">Sent directly to WhatsApp for order delivery</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsLocationModalOpen(true)}
-                className="text-xs font-bold text-amber-600 hover:underline"
+                className="text-xs font-bold text-[#58111E] hover:underline"
               >
                 Change Map Pin
               </button>
@@ -534,7 +533,7 @@ export default function CartPage() {
             {/* Inputs Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-bold text-[#380611] uppercase tracking-wider mb-1">
                   Your Full Name *
                 </label>
                 <div className="relative">
@@ -544,14 +543,14 @@ export default function CartPage() {
                     placeholder="e.g. Rahul Bopanna"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full text-xs p-2.5 pl-8 rounded-xl border border-slate-200 focus:border-amber-500 outline-hidden"
+                    className="w-full text-xs p-2.5 pl-8 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden"
                   />
-                  <User className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <User className="w-3.5 h-3.5 text-[#7E6569] absolute left-2.5 top-1/2 -translate-y-1/2" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-bold text-[#380611] uppercase tracking-wider mb-1">
                   WhatsApp / Phone Number *
                 </label>
                 <div className="relative">
@@ -562,14 +561,14 @@ export default function CartPage() {
                     placeholder="10-digit WhatsApp number"
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value.replace(/\D/g, ''))}
-                    className="w-full text-xs p-2.5 pl-8 rounded-xl border border-slate-200 focus:border-amber-500 outline-hidden font-mono"
+                    className="w-full text-xs p-2.5 pl-8 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden font-mono"
                   />
-                  <Phone className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <Phone className="w-3.5 h-3.5 text-[#7E6569] absolute left-2.5 top-1/2 -translate-y-1/2" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-bold text-[#380611] uppercase tracking-wider mb-1">
                   House / Flat / Building *
                 </label>
                 <input
@@ -578,12 +577,12 @@ export default function CartPage() {
                   placeholder="e.g. No. 12, Coffee View Estate"
                   value={house}
                   onChange={(e) => setHouse(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-amber-500 outline-hidden"
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-bold text-[#380611] uppercase tracking-wider mb-1">
                   Street / Area in Virajpete *
                 </label>
                 <input
@@ -592,12 +591,12 @@ export default function CartPage() {
                   placeholder="e.g. Main Clock Tower Road, Telugubedha"
                   value={street}
                   onChange={(e) => setStreet(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-amber-500 outline-hidden"
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-bold text-[#380611] uppercase tracking-wider mb-1">
                   Landmark (Optional)
                 </label>
                 <input
@@ -605,12 +604,12 @@ export default function CartPage() {
                   placeholder="e.g. Near St. Anne's Church or Government Hospital"
                   value={landmark}
                   onChange={(e) => setLandmark(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-amber-500 outline-hidden"
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-bold text-[#380611] uppercase tracking-wider mb-1">
                   Delivery Notes / Special Instructions (Optional)
                 </label>
                 <input
@@ -618,7 +617,7 @@ export default function CartPage() {
                   placeholder="e.g. Call before reaching, ring doorbell, leave at gate"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-amber-500 outline-hidden"
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden"
                 />
               </div>
             </div>
@@ -651,9 +650,9 @@ export default function CartPage() {
         <div className="lg:col-span-4 space-y-4">
           
           {/* Promo Code Card */}
-          <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-2xs space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-              <Tag className="w-3.5 h-3.5 text-amber-500" />
+          <div className="bg-white rounded-3xl p-5 border border-[#F0E6D6] shadow-2xs space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#380611] flex items-center gap-1.5">
+              <Tag className="w-3.5 h-3.5 text-[#58111E]" />
               <span>Apply Promo Code</span>
             </h3>
 
@@ -683,12 +682,12 @@ export default function CartPage() {
                     placeholder="e.g. BEEGO50"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value)}
-                    className="flex-1 text-xs uppercase font-mono px-3 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 outline-hidden"
+                    className="flex-1 text-xs uppercase font-mono px-3 py-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] outline-hidden"
                   />
                   <button
                     type="submit"
                     disabled={couponLoading || !couponInput.trim()}
-                    className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors disabled:opacity-40"
+                    className="px-4 py-2.5 bg-[#58111E] hover:bg-[#7A162D] text-[#FDFBF7] font-bold text-xs rounded-xl transition-colors disabled:opacity-40"
                   >
                     {couponLoading ? 'Checking...' : 'Apply'}
                   </button>
@@ -699,23 +698,23 @@ export default function CartPage() {
                     <span>{couponError}</span>
                   </p>
                 )}
-                <div className="text-[10px] text-slate-400">
-                  Try promo: <strong className="text-amber-600">BEEGO50</strong> (₹50 off &gt; ₹199) or <strong className="text-amber-600">FREESHIP</strong>
+                <div className="text-[10px] text-[#7E6569]">
+                  Try promo: <strong className="text-[#58111E]">BEEGO50</strong> (₹50 off &gt; ₹199) or <strong className="text-[#58111E]">FREESHIP</strong>
                 </div>
               </form>
             )}
           </div>
 
           {/* Bill Summary Card */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+          <div className="bg-white rounded-3xl p-6 border border-[#F0E6D6] shadow-xs space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#380611]">
               Bill Summary
             </h3>
 
-            <div className="space-y-2.5 text-xs text-slate-600">
+            <div className="space-y-2.5 text-xs text-[#2C0C12]">
               <div className="flex items-center justify-between">
                 <span>Items Subtotal</span>
-                <span className="font-semibold text-slate-900">₹{subtotal.toFixed(2)}</span>
+                <span className="font-semibold text-[#380611]">₹{subtotal.toFixed(2)}</span>
               </div>
 
               <div className="flex items-center justify-between">
@@ -727,7 +726,7 @@ export default function CartPage() {
                     </span>
                   )}
                 </div>
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-[#380611]">
                   {deliveryFee === 0 ? (
                     <strong className="text-emerald-600">FREE</strong>
                   ) : (
@@ -738,7 +737,7 @@ export default function CartPage() {
 
               <div className="flex items-center justify-between">
                 <span>Estimated Taxes (GST 5%)</span>
-                <span className="font-semibold text-slate-900">₹{taxAmount.toFixed(2)}</span>
+                <span className="font-semibold text-[#380611]">₹{taxAmount.toFixed(2)}</span>
               </div>
 
               {discount > 0 && (
@@ -748,7 +747,7 @@ export default function CartPage() {
                 </div>
               )}
 
-              <div className="pt-3 border-t border-slate-200 flex items-baseline justify-between text-base font-black text-slate-950">
+              <div className="pt-3 border-t border-[#F0E6D6] flex items-baseline justify-between text-base font-black text-[#380611]">
                 <span>To Pay on Delivery</span>
                 <span className="text-xl">₹{total.toFixed(2)}</span>
               </div>
@@ -771,7 +770,7 @@ export default function CartPage() {
               </span>
             </button>
 
-            <div className="pt-2 text-[10px] text-center text-slate-400 space-y-1">
+            <div className="pt-2 text-[10px] text-center text-[#7E6569] space-y-1">
               <p className="flex items-center justify-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Cash / UPI on Delivery in Virajpete</span>

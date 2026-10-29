@@ -25,7 +25,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased selection:bg-amber-400 selection:text-slate-950">
+      <body className="min-h-screen flex flex-col bg-[#FDFBF7] text-[#2C0C12] font-sans antialiased selection:bg-[#58111E] selection:text-[#FDFBF7]">
         <AuthProvider>
           <LocationProvider>
             <CartProvider>

@@ -30,54 +30,54 @@ export default async function StoreDetailPage({ params }) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-xs text-slate-500">
-        <Link href="/" className="hover:text-slate-900 transition-colors">
+      <div className="flex items-center gap-2 text-xs text-[#7A162D]/70">
+        <Link href="/" className="hover:text-[#380611] transition-colors">
           Home
         </Link>
         <span>/</span>
-        <Link href="/search?type=stores" className="hover:text-slate-900 transition-colors">
+        <Link href="/search?type=stores" className="hover:text-[#380611] transition-colors">
           Stores
         </Link>
         <span>/</span>
-        <span className="font-bold text-slate-900">{store.name}</span>
+        <span className="font-bold text-[#380611]">{store.name}</span>
       </div>
 
       {/* Store Header Banner */}
-      <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden">
-        <div className="relative aspect-21/9 sm:aspect-28/9 bg-slate-900 overflow-hidden">
+      <div className="bg-[#FAF5EC] rounded-3xl border border-[#F0E6D6] shadow-xs overflow-hidden">
+        <div className="relative aspect-21/9 sm:aspect-28/9 bg-[#380611] overflow-hidden">
           <img
             src={store.image || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80'}
             alt={store.name}
             className="w-full h-full object-cover opacity-75"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#380611] via-[#380611]/50 to-transparent" />
           
-          <div className="absolute bottom-6 left-6 right-6 text-white space-y-2">
+          <div className="absolute bottom-6 left-6 right-6 text-[#FDFBF7] space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-md">
+              <span className="bg-[#58111E] text-[#FDFBF7] text-[10px] font-bold px-2.5 py-0.5 rounded-md border border-[#7A162D]">
                 Open for Delivery
               </span>
-              <span className="bg-slate-900/80 backdrop-blur-xs text-amber-400 text-xs font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
-                <Star className="w-3.5 h-3.5 fill-amber-400" />
+              <span className="bg-[#380611]/80 backdrop-blur-xs text-[#FAF5EC] text-xs font-bold px-2 py-0.5 rounded-md flex items-center gap-1 border border-[#58111E]">
+                <Star className="w-3.5 h-3.5 fill-[#FAF5EC]" />
                 {store.rating} Rating
               </span>
-              <span className="bg-slate-900/80 backdrop-blur-xs text-slate-200 text-xs px-2 py-0.5 rounded-md flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-amber-400" />
+              <span className="bg-[#380611]/80 backdrop-blur-xs text-[#FAF5EC] text-xs px-2 py-0.5 rounded-md flex items-center gap-1 border border-[#58111E]">
+                <Clock className="w-3.5 h-3.5 text-[#FAF5EC]" />
                 {store.deliveryTimeMinutes} mins delivery
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-black tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-[#FDFBF7]">
               {store.name}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-300">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-[#FAF5EC]/80">
               <span className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-amber-400" />
+                <MapPin className="w-3.5 h-3.5 text-[#FAF5EC]" />
                 {store.address}
               </span>
               <span className="flex items-center gap-1">
-                <Phone className="w-3.5 h-3.5 text-amber-400" />
+                <Phone className="w-3.5 h-3.5 text-[#FAF5EC]" />
                 {store.phone}
               </span>
             </div>
@@ -85,8 +85,8 @@ export default async function StoreDetailPage({ params }) {
         </div>
 
         {/* Operating policy notice */}
-        <div className="p-4 bg-amber-50 border-t border-amber-200/60 flex items-center gap-3 text-xs text-amber-900">
-          <Info className="w-4 h-4 text-amber-700 shrink-0" />
+        <div className="p-4 bg-[#FAF5EC] border-t border-[#F0E6D6] flex items-center gap-3 text-xs text-[#380611]">
+          <Info className="w-4 h-4 text-[#58111E] shrink-0" />
           <span>
             <strong>Single-Merchant Policy:</strong> Items from this store will be fulfilled and delivered directly by dedicated BeeGo delivery partners.
           </span>
@@ -97,17 +97,17 @@ export default async function StoreDetailPage({ params }) {
       <div>
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="text-xl font-bold text-[#380611]">
               Store Catalog ({products.length} Products)
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-[#7A162D]/70">
               Fresh stock ready for dispatch in Virajpete
             </p>
           </div>
         </div>
 
         {products.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-xs text-slate-500">
+          <div className="bg-[#FAF5EC] rounded-2xl border border-[#F0E6D6] p-12 text-center text-xs text-[#7A162D]/70">
             No products currently listed from this store.
           </div>
         ) : (
@@ -122,4 +122,3 @@ export default async function StoreDetailPage({ params }) {
     </div>
   );
 }
-

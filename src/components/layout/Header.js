@@ -38,7 +38,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
+    <header className="sticky top-0 z-40 bg-[#FDFBF7]/95 backdrop-blur-md border-b border-[#F0E6D6] shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-4">
           
@@ -49,21 +49,21 @@ export default function Header() {
             {/* Location Selector Pill */}
             <button
               onClick={() => setIsLocationModalOpen(true)}
-              className="hidden md:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 transition-colors border border-slate-200 text-left max-w-[240px]"
+              className="hidden md:flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-[#FAF5EC] hover:bg-[#F0E6D6] transition-colors border border-[#F0E6D6] text-left max-w-[240px]"
               title="Change Delivery Location"
             >
-              <div className="w-7 h-7 rounded-full bg-amber-400/20 text-amber-700 flex items-center justify-center shrink-0">
-                <MapPin className="w-4 h-4 text-amber-600" />
+              <div className="w-7 h-7 rounded-full bg-[#58111E]/10 text-[#58111E] flex items-center justify-center shrink-0">
+                <MapPin className="w-4 h-4 text-[#58111E]" />
               </div>
               <div className="truncate text-xs">
-                <span className="block font-bold text-slate-900 truncate">
+                <span className="block font-bold text-[#380611] truncate">
                   {currentLocation.area || currentLocation.name || 'Virajpete'}
                 </span>
-                <span className="block text-[11px] text-slate-500 truncate">
+                <span className="block text-[11px] text-[#7E6569] truncate">
                   {currentLocation.formattedAddress || 'Virajpete, Kodagu'}
                 </span>
               </div>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <ChevronDown className="w-3.5 h-3.5 text-[#7E6569] shrink-0" />
             </button>
           </div>
 
@@ -75,9 +75,9 @@ export default function Header() {
                 placeholder="Search food, groceries, pharmacy, dairy..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-100 focus:bg-white text-sm text-slate-900 pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all outline-hidden"
+                className="w-full bg-[#FAF5EC] focus:bg-white text-sm text-[#380611] pl-10 pr-4 py-2.5 rounded-xl border border-[#F0E6D6] focus:border-[#58111E] focus:ring-2 focus:ring-[#58111E]/20 transition-all outline-hidden"
               />
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-[#7E6569] absolute left-3.5 top-1/2 -translate-y-1/2" />
             </form>
           </div>
 
@@ -88,52 +88,52 @@ export default function Header() {
             <div className="relative">
               <button
                 onClick={() => setIsPortalsOpen(!isPortalsOpen)}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#58111E] hover:text-[#380611] bg-[#FAF5EC] hover:bg-[#F0E6D6] rounded-lg border border-[#F0E6D6] transition-colors"
               >
-                <Layers className="w-3.5 h-3.5 text-amber-600" />
+                <Layers className="w-3.5 h-3.5 text-[#58111E]" />
                 <span className="hidden lg:inline">Portals</span>
                 <ChevronDown className="w-3 h-3" />
               </button>
 
               {isPortalsOpen && (
                 <div 
-                  className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 animate-in fade-in slide-in-from-top-1"
+                  className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-[#F0E6D6] py-1.5 z-50 animate-in fade-in slide-in-from-top-1"
                   onMouseLeave={() => setIsPortalsOpen(false)}
                 >
-                  <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                  <div className="px-3 py-1.5 text-[10px] font-bold text-[#7E6569] uppercase tracking-wider border-b border-[#F0E6D6]">
                     Staff & Admin Portals
                   </div>
                   <Link
                     href="/admin"
                     onClick={() => setIsPortalsOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 hover:bg-amber-50 hover:text-amber-900"
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-[#380611] hover:bg-[#FAF5EC]"
                   >
-                    <ShieldAlert className="w-4 h-4 text-indigo-600" />
+                    <ShieldAlert className="w-4 h-4 text-[#58111E]" />
                     <div>
                       <span className="font-semibold block">Admin Dashboard</span>
-                      <span className="text-[10px] text-slate-500">Manage products, zones, orders</span>
+                      <span className="text-[10px] text-[#7E6569]">Manage products, zones, orders</span>
                     </div>
                   </Link>
                   <Link
                     href="/store-portal"
                     onClick={() => setIsPortalsOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 hover:bg-amber-50 hover:text-amber-900"
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-[#380611] hover:bg-[#FAF5EC]"
                   >
-                    <Store className="w-4 h-4 text-emerald-600" />
+                    <Store className="w-4 h-4 text-[#58111E]" />
                     <div>
                       <span className="font-semibold block">Store Manager</span>
-                      <span className="text-[10px] text-slate-500">Store stock & assigned orders</span>
+                      <span className="text-[10px] text-[#7E6569]">Stock & order fulfillment</span>
                     </div>
                   </Link>
                   <Link
                     href="/delivery-portal"
                     onClick={() => setIsPortalsOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 hover:bg-amber-50 hover:text-amber-900"
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-[#380611] hover:bg-[#FAF5EC]"
                   >
-                    <Bike className="w-4 h-4 text-amber-600" />
+                    <Bike className="w-4 h-4 text-[#58111E]" />
                     <div>
                       <span className="font-semibold block">Delivery Partner</span>
-                      <span className="text-[10px] text-slate-500">Active tasks & pickup updates</span>
+                      <span className="text-[10px] text-[#7E6569]">Active tasks & pickup updates</span>
                     </div>
                   </Link>
                 </div>
@@ -145,31 +145,31 @@ export default function Header() {
               <div className="relative">
                 <button
                   onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
-                  className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-[#380611] bg-[#FAF5EC] hover:bg-[#F0E6D6] rounded-lg transition-colors border border-[#F0E6D6]"
                 >
-                  <div className="w-5 h-5 rounded-full bg-slate-900 text-amber-400 flex items-center justify-center text-[10px] font-bold">
+                  <div className="w-5 h-5 rounded-full bg-[#58111E] text-[#FDFBF7] flex items-center justify-center text-[10px] font-bold">
                     {user.name ? user.name[0].toUpperCase() : 'U'}
                   </div>
                   <span className="max-w-[80px] truncate hidden md:inline">{user.name || 'Account'}</span>
-                  <ChevronDown className="w-3 h-3 text-slate-500" />
+                  <ChevronDown className="w-3 h-3 text-[#7E6569]" />
                 </button>
 
                 {isAccountMenuOpen && (
                   <div
-                    className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50"
+                    className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-[#F0E6D6] py-1.5 z-50"
                     onMouseLeave={() => setIsAccountMenuOpen(false)}
                   >
-                    <div className="px-3 py-1.5 border-b border-slate-100">
-                      <p className="text-xs font-bold text-slate-900 truncate">{user.name}</p>
-                      <p className="text-[11px] text-slate-500 truncate">{user.phone || user.email}</p>
-                      <span className="inline-block mt-1 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                    <div className="px-3 py-1.5 border-b border-[#F0E6D6]">
+                      <p className="text-xs font-bold text-[#380611] truncate">{user.name}</p>
+                      <p className="text-[11px] text-[#7E6569] truncate">{user.phone || user.email}</p>
+                      <span className="inline-block mt-1 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#FAF5EC] text-[#58111E] border border-[#F0E6D6]">
                         {user.role}
                       </span>
                     </div>
                     <Link
                       href="/account"
                       onClick={() => setIsAccountMenuOpen(false)}
-                      className="block px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 font-medium"
+                      className="block px-3 py-2 text-xs text-[#380611] hover:bg-[#FAF5EC] font-medium"
                     >
                       My Profile & Orders
                     </Link>
@@ -189,9 +189,9 @@ export default function Header() {
             ) : (
               <Link
                 href="/login"
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-800 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#58111E] hover:text-[#380611] bg-[#FAF5EC] hover:bg-[#F0E6D6] rounded-lg border border-[#F0E6D6] transition-colors"
               >
-                <User className="w-3.5 h-3.5 text-slate-600" />
+                <User className="w-3.5 h-3.5 text-[#58111E]" />
                 <span>Sign In</span>
               </Link>
             )}
@@ -213,12 +213,12 @@ export default function Header() {
             {/* Cart Button */}
             <Link
               href="/cart"
-              className="flex items-center gap-2.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl font-bold text-xs shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="flex items-center gap-2.5 px-4 py-2 bg-[#58111E] hover:bg-[#7A162D] text-[#FDFBF7] rounded-xl font-bold text-xs shadow-md shadow-[#58111E]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               <div className="relative">
-                <ShoppingCart className="w-4 h-4 text-slate-950" />
+                <ShoppingCart className="w-4 h-4 text-[#FDFBF7]" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-2.5 -right-2.5 bg-slate-950 text-amber-400 text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white">
+                  <span className="absolute -top-2.5 -right-2.5 bg-[#380611] text-[#FDFBF7] text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center border-2 border-[#FDFBF7]">
                     {itemCount}
                   </span>
                 )}
@@ -239,13 +239,12 @@ export default function Header() {
               placeholder="Search food, groceries, medicines..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-100 text-sm text-slate-900 pl-10 pr-4 py-2 rounded-xl border border-slate-200 focus:outline-hidden"
+              className="w-full bg-[#FAF5EC] text-sm text-[#380611] pl-10 pr-4 py-2 rounded-xl border border-[#F0E6D6] focus:outline-hidden"
             />
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#7E6569] absolute left-3.5 top-1/2 -translate-y-1/2" />
           </form>
         </div>
       </div>
     </header>
   );
 }
-

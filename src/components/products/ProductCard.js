@@ -14,17 +14,17 @@ export default function ProductCard({ product }) {
   const isOutOfStock = (product.stock ?? 10) <= 0;
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 p-3.5 flex flex-col justify-between hover-lift transition-all relative group">
+    <div className="bg-white rounded-2xl border border-[#F0E6D6] hover:border-[#58111E]/40 p-3.5 flex flex-col justify-between hover-lift transition-all relative group">
       
       {/* Top badges: Discount & Pharmacy/Prescription Requirement */}
       <div className="absolute top-5 left-5 z-10 flex flex-col gap-1 items-start">
         {product.discountPercent > 0 && (
-          <span className="bg-emerald-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-xs">
+          <span className="bg-[#58111E] text-[#FDFBF7] text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-xs">
             {product.discountPercent}% OFF
           </span>
         )}
         {product.isPrescriptionRequired && (
-          <span className="bg-rose-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md shadow-xs flex items-center gap-1">
+          <span className="bg-rose-700 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md shadow-xs flex items-center gap-1">
             <FileText className="w-2.5 h-2.5" />
             Rx Required
           </span>
@@ -32,7 +32,7 @@ export default function ProductCard({ product }) {
       </div>
 
       {/* Image & Product Link */}
-      <Link href={`/products/${product.id}`} className="block overflow-hidden rounded-xl bg-slate-50 relative aspect-square mb-3">
+      <Link href={`/products/${product.id}`} className="block overflow-hidden rounded-xl bg-[#FAF5EC] relative aspect-square mb-3">
         {/* Real Product Image with fallback */}
         <img
           src={product.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=500&q=80'}
@@ -41,8 +41,8 @@ export default function ProductCard({ product }) {
           loading="lazy"
         />
         {isOutOfStock && (
-          <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center">
-            <span className="bg-rose-500 text-white text-xs font-bold px-2.5 py-1 rounded-md">
+          <div className="absolute inset-0 bg-[#380611]/70 backdrop-blur-xs flex items-center justify-center">
+            <span className="bg-rose-600 text-white text-xs font-bold px-2.5 py-1 rounded-md">
               Out of Stock
             </span>
           </div>
@@ -53,38 +53,38 @@ export default function ProductCard({ product }) {
       <div className="flex-1 flex flex-col justify-between">
         <div>
           {/* Store Name & Category */}
-          <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
-            <span className="truncate max-w-[120px] font-medium text-slate-500">
+          <div className="flex items-center justify-between text-[11px] text-[#7E6569] mb-1">
+            <span className="truncate max-w-[120px] font-medium text-[#7E6569]">
               {product.storeName || 'Virajpet Merchant'}
             </span>
-            <span className="text-slate-400 font-mono text-[10px]">
+            <span className="text-[#7E6569] font-mono text-[10px]">
               {product.unit || '1 unit'}
             </span>
           </div>
 
           {/* Product Title */}
           <Link href={`/products/${product.id}`}>
-            <h3 className="text-sm font-bold text-slate-900 group-hover:text-amber-600 transition-colors line-clamp-2 leading-snug">
+            <h3 className="text-sm font-bold text-[#380611] group-hover:text-[#58111E] transition-colors line-clamp-2 leading-snug">
               {product.name}
             </h3>
           </Link>
         </div>
 
         {/* Price & Quantity Controls */}
-        <div className="pt-3 mt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+        <div className="pt-3 mt-2 border-t border-[#F0E6D6] flex items-center justify-between gap-2">
           <div>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-sm font-black text-slate-900">
+              <span className="text-sm font-black text-[#380611]">
                 ₹{Number(product.price).toFixed(0)}
               </span>
               {product.originalPrice && product.originalPrice > product.price && (
-                <span className="text-[11px] text-slate-400 line-through">
+                <span className="text-[11px] text-[#7E6569] line-through">
                   ₹{Number(product.originalPrice).toFixed(0)}
                 </span>
               )}
             </div>
             {product.stock && product.stock <= 5 && !isOutOfStock && (
-              <span className="text-[10px] text-amber-700 font-bold block">
+              <span className="text-[10px] text-[#941834] font-bold block">
                 Only {product.stock} left!
               </span>
             )}
@@ -108,16 +108,16 @@ export default function ProductCard({ product }) {
               <button
                 disabled={isOutOfStock}
                 onClick={() => addItem(product, 1)}
-                className="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-slate-900 hover:bg-amber-500 text-white hover:text-slate-950 transition-all flex items-center gap-1 disabled:opacity-40 disabled:hover:bg-slate-900 disabled:hover:text-white"
+                className="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-[#58111E] hover:bg-[#7A162D] text-[#FDFBF7] transition-all flex items-center gap-1 disabled:opacity-40"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>ADD</span>
               </button>
             ) : (
-              <div className="flex items-center bg-amber-500 text-slate-950 rounded-xl px-1.5 py-1 font-bold text-xs shadow-xs">
+              <div className="flex items-center bg-[#58111E] text-[#FDFBF7] rounded-xl px-1.5 py-1 font-bold text-xs shadow-xs">
                 <button
                   onClick={() => updateQuantity(product.id, quantityInCart - 1)}
-                  className="w-5 h-5 flex items-center justify-center hover:bg-amber-600 rounded-md transition-colors"
+                  className="w-5 h-5 flex items-center justify-center hover:bg-[#7A162D] rounded-md transition-colors"
                 >
                   <Minus className="w-3 h-3" />
                 </button>
@@ -126,7 +126,7 @@ export default function ProductCard({ product }) {
                 </span>
                 <button
                   onClick={() => updateQuantity(product.id, quantityInCart + 1)}
-                  className="w-5 h-5 flex items-center justify-center hover:bg-amber-600 rounded-md transition-colors"
+                  className="w-5 h-5 flex items-center justify-center hover:bg-[#7A162D] rounded-md transition-colors"
                 >
                   <Plus className="w-3 h-3" />
                 </button>

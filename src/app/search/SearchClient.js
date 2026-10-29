@@ -58,12 +58,12 @@ export default function SearchClient() {
     <div className="space-y-6">
       
       {/* Header & Search Input */}
-      <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-2xs space-y-4">
+      <div className="bg-[#FAF5EC] rounded-3xl p-6 border border-[#F0E6D6] shadow-2xs space-y-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-black text-[#380611] tracking-tight">
             Search Products in Virajpete
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-[#7A162D]/70 mt-0.5">
             Real-time catalog search across food, groceries, pharmacy, and dairy
           </p>
         </div>
@@ -74,13 +74,13 @@ export default function SearchClient() {
             placeholder="Type a product name, spice, dish, or medicine..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full text-sm pl-11 pr-10 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-hidden transition-all text-slate-900"
+            className="w-full text-sm pl-11 pr-10 py-3.5 rounded-2xl bg-[#FDFBF7] border border-[#F0E6D6] focus:bg-white focus:border-[#58111E] focus:ring-2 focus:ring-[#58111E]/20 outline-hidden transition-all text-[#380611] placeholder:text-[#7A162D]/40"
           />
-          <Search className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-5 h-5 text-[#7A162D]/50 absolute left-3.5 top-1/2 -translate-y-1/2" />
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#7A162D]/50 hover:text-[#380611]"
             >
               <X className="w-4 h-4" />
             </button>
@@ -96,8 +96,8 @@ export default function SearchClient() {
               onClick={() => setSelectedCategory('all')}
               className={`px-3 py-1.5 rounded-xl font-bold transition-colors ${
                 selectedCategory === 'all'
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-[#58111E] text-[#FDFBF7]'
+                  : 'bg-[#FDFBF7] text-[#58111E] border border-[#F0E6D6] hover:bg-[#FAF5EC]'
               }`}
             >
               All
@@ -108,8 +108,8 @@ export default function SearchClient() {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`px-3 py-1.5 rounded-xl font-medium transition-colors ${
                   selectedCategory === cat.id
-                    ? 'bg-amber-500 text-slate-950 font-bold'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-[#58111E] text-[#FDFBF7] font-bold'
+                    : 'bg-[#FDFBF7] text-[#58111E] border border-[#F0E6D6] hover:bg-[#FAF5EC]'
                 }`}
               >
                 {cat.name}
@@ -119,12 +119,12 @@ export default function SearchClient() {
 
           {/* Sort & In-Stock Filter */}
           <div className="flex items-center gap-3 text-xs">
-            <label className="flex items-center gap-1.5 cursor-pointer text-slate-700 font-medium">
+            <label className="flex items-center gap-1.5 cursor-pointer text-[#380611] font-medium">
               <input
                 type="checkbox"
                 checked={inStockOnly}
                 onChange={(e) => setInStockOnly(e.target.checked)}
-                className="rounded border-slate-300 text-amber-500 focus:ring-amber-500 w-3.5 h-3.5"
+                className="rounded border-[#F0E6D6] text-[#58111E] focus:ring-[#58111E] w-3.5 h-3.5"
               />
               <span>In Stock Only</span>
             </label>
@@ -132,7 +132,7 @@ export default function SearchClient() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-800 outline-hidden"
+              className="bg-[#FDFBF7] border border-[#F0E6D6] rounded-xl px-2.5 py-1.5 text-xs font-semibold text-[#380611] outline-hidden"
             >
               <option value="popular">Sort: Popularity</option>
               <option value="price_asc">Price: Low to High</option>
@@ -144,9 +144,9 @@ export default function SearchClient() {
       </div>
 
       {/* Results Header */}
-      <div className="flex items-center justify-between text-xs text-slate-500 px-1">
+      <div className="flex items-center justify-between text-xs text-[#7A162D]/70 px-1">
         <span>
-          Showing <strong className="text-slate-900">{products.length}</strong> results {debouncedQuery && `for "${debouncedQuery}"`}
+          Showing <strong className="text-[#380611]">{products.length}</strong> results {debouncedQuery && `for "${debouncedQuery}"`}
         </span>
       </div>
 
@@ -154,14 +154,14 @@ export default function SearchClient() {
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <div key={i} className="bg-white rounded-2xl p-4 border border-slate-200 h-64 animate-pulse" />
+            <div key={i} className="bg-[#FAF5EC] rounded-2xl p-4 border border-[#F0E6D6] h-64 animate-pulse" />
           ))}
         </div>
       ) : products.length === 0 ? (
-        <div className="bg-white rounded-3xl p-12 text-center border border-slate-200/90 shadow-2xs space-y-3">
-          <AlertCircle className="w-8 h-8 text-slate-300 mx-auto" />
-          <h3 className="text-sm font-bold text-slate-900">No items matched your search</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+        <div className="bg-[#FAF5EC] rounded-3xl p-12 text-center border border-[#F0E6D6] shadow-2xs space-y-3">
+          <AlertCircle className="w-8 h-8 text-[#7A162D]/40 mx-auto" />
+          <h3 className="text-sm font-bold text-[#380611]">No items matched your search</h3>
+          <p className="text-xs text-[#7A162D]/70 max-w-sm mx-auto">
             Try adjusting your search terms or clearing category filters to find available items in Virajpete.
           </p>
         </div>
@@ -176,4 +176,3 @@ export default function SearchClient() {
     </div>
   );
 }
-
