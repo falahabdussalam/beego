@@ -92,14 +92,6 @@ export default function LocationModal() {
 
   if (!isLocationModalOpen) return null;
 
-  const handleSelectAreaFromPicker = (areaObj) => {
-    setAddressDetails((prev) => ({
-      ...prev,
-      area: areaObj.name,
-      street: prev.street || areaObj.landmarks || '',
-    }));
-  };
-
   const handleSaveAndConfirm = async () => {
     const fullFormatted = `${addressDetails.house ? addressDetails.house + ', ' : ''}${
       addressDetails.street ? addressDetails.street + ', ' : ''
@@ -152,7 +144,7 @@ export default function LocationModal() {
                 Pick Delivery Location on Google Map
               </h2>
               <p className="text-xs text-[#7E6569]">
-                Select on map or choose surrounding areas of Virajpet, Kodagu
+                Select pin on map and enter your address details for Virajpet delivery
               </p>
             </div>
           </div>
@@ -167,12 +159,11 @@ export default function LocationModal() {
         {/* Modal Scrollable Body */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6">
 
-          {/* 1. Google Map & Surrounding Localities Component */}
+          {/* 1. Interactive Google Map Selection */}
           <GoogleMapPicker
             coords={coords}
             onChangeCoords={setCoords}
             selectedArea={addressDetails.area}
-            onSelectArea={handleSelectAreaFromPicker}
           />
 
           {/* 2. Manual Detailed Address Form */}

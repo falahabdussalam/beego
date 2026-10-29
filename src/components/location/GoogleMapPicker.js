@@ -4,11 +4,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   MapPin, 
   Navigation, 
-  Search, 
-  CheckCircle2, 
-  AlertTriangle, 
-  Compass, 
-  ChevronRight,
   Crosshair,
   ArrowUp,
   ArrowDown,
@@ -16,42 +11,19 @@ import {
   ArrowRight,
   ExternalLink
 } from 'lucide-react';
-import { VIRAJPET_HUB, VIRAJPET_LOCALITIES } from '../../lib/virajpetLocalities';
+import { VIRAJPET_HUB } from '../../lib/virajpetLocalities';
 import { calculateDistanceKm } from '../../lib/geo';
 
 export default function GoogleMapPicker({
   coords,
   onChangeCoords,
   selectedArea,
-  onSelectArea,
 }) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
   const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false);
   const [mapType, setMapType] = useState('roadmap'); // 'roadmap' | 'satellite'
   const [zoom, setZoom] = useState(15);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('All');
   const [isLocating, setIsLocating] = useState(false);
-
-  // Strictly track a single selected locality ID to avoid multi-selection
-  const [selectedLocalityId, setSelectedLocalityId] = useState(() => {
-    const match = VIRAJPET_LOCALITIES.find(
-      (l) => l.name.toLowerCase() === (selectedArea || '').toLowerCase()
-    );
-    return match ? match.id : 'clock-tower';
-  });
-
-  // Sync selected locality ID whenever selectedArea prop changes from parent
-  useEffect(() => {
-    if (selectedArea) {
-      const match = VIRAJPET_LOCALITIES.find(
-        (l) => l.name.toLowerCase() === selectedArea.toLowerCase()
-      );
-      if (match) {
-        setSelectedLocalityId(match.id);
-      }
-    }
-  }, [selectedArea]);
 
   const mapRef = useRef(null);
   const googleMapInstance = useRef(null);
@@ -115,7 +87,6 @@ export default function GoogleMapPicker({
     googleMapInstance.current.addListener('click', (e) => {
       const newLat = Number(e.latLng.lat().toFixed(4));
       const newLng = Number(e.latLng.lng().toFixed(4));
-      setSelectedLocalityId(null);
       markerInstance.current.setPosition({ lat: newLat, lng: newLng });
       onChangeCoords({ lat: newLat, lng: newLng });
     });
@@ -124,7 +95,6 @@ export default function GoogleMapPicker({
     markerInstance.current.addListener('dragend', (e) => {
       const newLat = Number(e.latLng.lat().toFixed(4));
       const newLng = Number(e.latLng.lng().toFixed(4));
-      setSelectedLocalityId(null);
       onChangeCoords({ lat: newLat, lng: newLng });
     });
   }, [googleMapsLoaded]);
@@ -153,7 +123,6 @@ export default function GoogleMapPicker({
           lat: Number(pos.coords.latitude.toFixed(4)),
           lng: Number(pos.coords.longitude.toFixed(4)),
         };
-        setSelectedLocalityId(null);
         onChangeCoords(newCoords);
       },
       (err) => {
@@ -166,26 +135,16 @@ export default function GoogleMapPicker({
 
   // Micro pan adjustment for non-API key / keyboard / touchscreen navigation
   const handleNudgePin = (deltaLat, deltaLng) => {
-    setSelectedLocalityId(null);
     onChangeCoords({
       lat: Number((coords.lat + deltaLat).toFixed(4)),
       lng: Number((coords.lng + deltaLng).toFixed(4)),
     });
   };
 
-  // Filter localities by search query & active category
-  const filteredLocalities = VIRAJPET_LOCALITIES.filter((loc) => {
-    const matchesSearch = 
-      loc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      loc.landmarks.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = activeCategory === 'All' || loc.category === activeCategory;
-    return matchesSearch && matchesCategory;
-  });
-
   return (
     <div className="space-y-4">
       
-      {/* 1. Map Canvas Section */}
+      {/* 1. Google Map Selection Canvas */}
       <div className="relative rounded-2xl overflow-hidden border border-[#F0E6D6] shadow-sm bg-[#FAF5EC]">
         
         {/* Full Google Map JS (if API key active) or Interactive Google Maps Live Embed */}
@@ -216,7 +175,7 @@ export default function GoogleMapPicker({
               </div>
             </div>
 
-            {/* Micro-adjuster control pad (allows dragging / moving pin by 100-200m anywhere in Virajpet) */}
+            {/* Micro-adjuster control pad (allows dragging / moving pin anywhere in Virajpet) */}
             <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-md p-1.5 rounded-xl border border-[#F0E6D6] shadow-lg flex flex-col items-center gap-1">
               <span className="text-[9px] font-bold text-[#7E6569] uppercase">Nudge Pin</span>
               <button
@@ -238,12 +197,7 @@ export default function GoogleMapPicker({
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setSelectedLocalityId('clock-tower');
-                    onChangeCoords({ lat: VIRAJPET_HUB.lat, lng: VIRAJPET_HUB.lng });
-                    const hubLoc = VIRAJPET_LOCALITIES.find((l) => l.id === 'clock-tower');
-                    if (hubLoc && onSelectArea) onSelectArea(hubLoc);
-                  }}
+                  onClick={() => onChangeCoords({ lat: VIRAJPET_HUB.lat, lng: VIRAJPET_HUB.lng })}
                   className="p-1 bg-[#FAF5EC] hover:bg-[#F0E6D6] rounded text-[10px] font-black text-[#58111E]"
                   title="Reset to Clock Tower"
                 >
@@ -348,86 +302,6 @@ export default function GoogleMapPicker({
 
       </div>
 
-      {/* 2. Select From Surrounding Localities of Virajpet */}
-      <div className="space-y-2.5">
-        <div className="flex items-center justify-between">
-          <label className="block text-xs font-bold uppercase tracking-wider text-[#380611] flex items-center gap-1.5">
-            <Compass className="w-3.5 h-3.5 text-[#58111E]" />
-            <span>Select Surrounding Locality of Virajpet</span>
-          </label>
-          <span className="text-[11px] text-[#7E6569]">
-            {filteredLocalities.length} areas found
-          </span>
-        </div>
-
-        {/* Search input for surrounding areas */}
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search surrounding area (e.g. Kakotuparambu, Bittangala, Telugubedha, Chembebellur...)"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full text-xs pl-8 pr-4 py-2 rounded-xl bg-[#FAF5EC] border border-[#F0E6D6] focus:bg-white focus:border-[#58111E] outline-hidden text-[#380611] placeholder:text-[#7E6569]"
-          />
-          <Search className="w-3.5 h-3.5 text-[#7E6569] absolute left-2.5 top-1/2 -translate-y-1/2" />
-        </div>
-
-        {/* Category Pills Filter */}
-        <div className="flex gap-1.5 overflow-x-auto pb-1 text-[11px]">
-          {['All', 'Town Center', 'Surrounding Virajpet', 'Outer Estates & Surroundings'].map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setActiveCategory(cat)}
-              className={`px-2.5 py-1 rounded-lg font-medium whitespace-nowrap transition-colors ${
-                activeCategory === cat
-                  ? 'bg-[#58111E] text-[#FDFBF7] font-bold shadow-xs'
-                  : 'bg-[#FAF5EC] text-[#7E6569] hover:bg-[#F0E6D6]'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Localities Quick Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto pr-1">
-          {filteredLocalities.map((loc) => {
-            const isSelected = selectedLocalityId === loc.id;
-
-            return (
-              <button
-                key={loc.id}
-                type="button"
-                onClick={() => {
-                  setSelectedLocalityId(loc.id);
-                  onChangeCoords({ lat: loc.lat, lng: loc.lng });
-                  if (onSelectArea) onSelectArea(loc);
-                }}
-                className={`p-2.5 rounded-xl border text-left transition-all ${
-                  isSelected
-                    ? 'bg-[#FAF5EC] border-[#58111E] ring-1 ring-[#58111E] text-[#380611] shadow-2xs'
-                    : 'bg-white border-[#F0E6D6] hover:border-[#58111E]/40 text-[#2C0C12]'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-1.5">
-                  <span className="font-bold text-xs truncate block">{loc.name}</span>
-                  <span className={`text-[10px] font-bold shrink-0 ${
-                    isSelected ? 'text-[#58111E]' : 'text-[#7E6569]'
-                  }`}>
-                    {isSelected ? `✓ ${loc.approxDistanceKm} km` : `${loc.approxDistanceKm} km`}
-                  </span>
-                </div>
-                <p className="text-[10px] text-[#7E6569] truncate mt-0.5">
-                  {loc.landmarks}
-                </p>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
     </div>
   );
 }
-
