@@ -155,7 +155,7 @@ export default async function ProductDetailPage({ params }) {
               </div>
             )}
 
-            {/* Interactive Add to Cart & Direct WhatsApp Action */}
+            {/* Interactive Add to Cart */}
             <ProductDetailClient product={product} />
 
           </div>

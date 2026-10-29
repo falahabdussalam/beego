@@ -3,7 +3,6 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import LocationModal from '../components/location/LocationModal';
 import CartConflictModal from '../components/cart/CartConflictModal';
-import FloatingWhatsApp from '../components/ui/FloatingWhatsApp';
 import { LocationProvider } from '../context/LocationContext';
 import { AuthProvider } from '../context/AuthContext';
 import { CartProvider } from '../context/CartContext';
@@ -36,7 +35,6 @@ export default function RootLayout({ children }) {
               <Footer />
               <LocationModal />
               <CartConflictModal />
-              <FloatingWhatsApp />
             </CartProvider>
           </LocationProvider>
         </AuthProvider>
@@ -44,4 +42,3 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-
