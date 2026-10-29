@@ -75,7 +75,7 @@ export default function AccountPage() {
                 {user.name}
               </h1>
               <span className="bg-[#58111E]/10 text-[#58111E] border border-[#58111E]/20 text-[10px] font-bold uppercase px-2 py-0.5 rounded">
-                {user.role}
+                Customer
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-3 text-xs text-[#7A162D]/70 mt-1">

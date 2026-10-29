@@ -8,13 +8,8 @@ import {
   Lock, 
   Mail, 
   Phone, 
-  ShieldCheck, 
   ArrowRight, 
-  CheckCircle, 
-  AlertCircle,
-  Shield,
-  Store,
-  Bike
+  AlertCircle
 } from 'lucide-react';
 import Logo from '../../components/ui/Logo';
 import { useAuth } from '../../context/AuthContext';
@@ -64,32 +59,12 @@ export default function LoginPage() {
       }
 
       await refreshUser();
-
-      // Role based smart redirect
-      if (data.user?.role === 'admin') {
-        router.push('/admin');
-      } else if (data.user?.role === 'store_manager') {
-        router.push('/store-portal');
-      } else if (data.user?.role === 'delivery_partner') {
-        router.push('/delivery-portal');
-      } else {
-        router.push('/');
-      }
+      router.push('/account');
     } catch (err) {
       setErrorMsg(err.message);
     } finally {
       setLoading(false);
     }
-  };
-
-  // Demo Login Helper for Testing
-  const handleDemoLogin = (email, password) => {
-    setMode('login');
-    setFormData((prev) => ({
-      ...prev,
-      identifier: email,
-      password: password,
-    }));
   };
 
   return (
@@ -102,12 +77,12 @@ export default function LoginPage() {
             <Logo showTagline={false} size="large" />
           </div>
           <h1 className="text-xl sm:text-2xl font-black text-[#380611] tracking-tight">
-            {mode === 'login' ? 'Welcome Back to BeeGo' : 'Create Your BeeGo Account'}
+            {mode === 'login' ? 'Customer Sign In' : 'Create Your Customer Account'}
           </h1>
           <p className="text-xs text-[#7A162D]/70">
             {mode === 'login'
-              ? 'Sign in to access saved Virajpet addresses and track orders'
-              : 'Join BeeGo for fast hyperlocal delivery in Virajpete'}
+              ? 'Sign in to access saved Virajpet addresses and view orders'
+              : 'Join BeeGo for fast hyperlocal delivery across Virajpete'}
           </p>
         </div>
 
@@ -182,7 +157,7 @@ export default function LoginPage() {
                 <input
                   type="text"
                   required
-                  placeholder="admin@beegodelivery.in or 9480112233"
+                  placeholder="customer@beegodelivery.in or 9480112233"
                   value={formData.identifier}
                   onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
                   className="w-full text-xs pl-9 pr-3 py-2.5 rounded-xl bg-[#FDFBF7] border border-[#F0E6D6] text-[#380611] focus:border-[#58111E] outline-hidden placeholder:text-[#7A162D]/40"
@@ -258,60 +233,10 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Starter Accounts Fast-Login Box */}
-        <div className="pt-4 border-t border-[#F0E6D6]">
-          <p className="text-[10px] uppercase font-bold text-[#7A162D]/70 tracking-wider mb-2 text-center">
-            Starter Accounts (Quick Sign-In for Admin & Staff)
-          </p>
-          <div className="grid grid-cols-2 gap-2 text-[11px]">
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('admin@beegodelivery.in', 'BeeGo@2026Pass!')}
-              className="p-2 rounded-lg border border-[#F0E6D6] bg-[#FDFBF7] hover:bg-[#FAF5EC] text-left flex items-center gap-1.5 transition-colors text-[#380611]"
-            >
-              <Shield className="w-3.5 h-3.5 text-[#58111E] shrink-0" />
-              <div className="truncate">
-                <span className="font-bold block truncate">Admin</span>
-                <span className="text-[10px] text-[#7A162D]/60">admin@beego</span>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('manager@coorgheritage.in', 'BeeGo@2026Pass!')}
-              className="p-2 rounded-lg border border-[#F0E6D6] bg-[#FDFBF7] hover:bg-[#FAF5EC] text-left flex items-center gap-1.5 transition-colors text-[#380611]"
-            >
-              <Store className="w-3.5 h-3.5 text-[#58111E] shrink-0" />
-              <div className="truncate">
-                <span className="font-bold block truncate">Store Manager</span>
-                <span className="text-[10px] text-[#7A162D]/60">manager@coorg</span>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('driver@beegodelivery.in', 'BeeGo@2026Pass!')}
-              className="p-2 rounded-lg border border-[#F0E6D6] bg-[#FDFBF7] hover:bg-[#FAF5EC] text-left flex items-center gap-1.5 transition-colors text-[#380611]"
-            >
-              <Bike className="w-3.5 h-3.5 text-[#58111E] shrink-0" />
-              <div className="truncate">
-                <span className="font-bold block truncate">Delivery Partner</span>
-                <span className="text-[10px] text-[#7A162D]/60">driver@beego</span>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('customer@beegodelivery.in', 'BeeGo@2026Pass!')}
-              className="p-2 rounded-lg border border-[#F0E6D6] bg-[#FDFBF7] hover:bg-[#FAF5EC] text-left flex items-center gap-1.5 transition-colors text-[#380611]"
-            >
-              <User className="w-3.5 h-3.5 text-[#58111E] shrink-0" />
-              <div className="truncate">
-                <span className="font-bold block truncate">Customer</span>
-                <span className="text-[10px] text-[#7A162D]/60">customer@beego</span>
-              </div>
-            </button>
-          </div>
+        <div className="pt-2 text-center text-xs text-[#7A162D]/70">
+          <Link href="/" className="hover:text-[#380611] font-medium transition-colors">
+            ← Continue shopping as guest
+          </Link>
         </div>
 
       </div>

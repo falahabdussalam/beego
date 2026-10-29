@@ -57,7 +57,8 @@ Built with **Next.js 15 (App Router, JavaScript)**, **Tailwind CSS**, and **Post
 
 - **Brand Name**: BeeGo Delivery
 - **Tagline**: *"We deliver you."*
-- **Primary Colors**: Deep Navy Blue (`#0F172A` / `#0A192F`) & Bright Honey Yellow (`#F59E0B` / `#FACC15`)
+- **Primary Colors**: Light Cream (`#FDFBF7`, `#FAF5EC`) & Dark Maroon (`#58111E`, `#380611`)
+- **Typography**: Space Grotesk
 - **Action / WhatsApp Color**: WhatsApp Green (`#25D366`)
 - **Location**: Virajpete, Kodagu, Karnataka, India
 - **Currency**: Indian Rupee (`₹`, INR)
@@ -65,13 +66,12 @@ Built with **Next.js 15 (App Router, JavaScript)**, **Tailwind CSS**, and **Post
 
 ---
 
-## 🔑 Starter Test Credentials
+## 🔑 Customer Sign-In (Optional)
 
-| Role | Email | Password | Access URL |
+Customers can browse and order via WhatsApp directly without signing in, or create a customer account to save Virajpete delivery addresses.
+
+| Account | Email | Password | Access URL |
 | :--- | :--- | :--- | :--- |
-| **Administrator** | `admin@beegodelivery.in` | `BeeGo@2026Pass!` | `/admin` |
-| **Store Manager** | `manager@coorgheritage.in` | `BeeGo@2026Pass!` | `/store-portal` |
-| **Delivery Partner** | `driver@beegodelivery.in` | `BeeGo@2026Pass!` | `/delivery-portal` |
 | **Customer** | `customer@beegodelivery.in` | `BeeGo@2026Pass!` | `/login` |
 
 ---

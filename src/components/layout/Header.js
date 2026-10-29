@@ -9,11 +9,7 @@ import {
   ShoppingCart, 
   User, 
   ChevronDown, 
-  ShieldAlert, 
-  Store, 
-  Bike, 
-  LogOut,
-  Layers
+  LogOut
 } from 'lucide-react';
 import Logo from '../ui/Logo';
 import { useLocation } from '../../context/LocationContext';
@@ -27,7 +23,6 @@ export default function Header() {
   const { user, logout } = useAuth();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [isPortalsOpen, setIsPortalsOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
 
   const handleSearchSubmit = (e) => {
@@ -84,62 +79,6 @@ export default function Header() {
           {/* Right Action Controls */}
           <div className="flex items-center gap-3">
             
-            {/* Quick Portals Switcher Menu */}
-            <div className="relative">
-              <button
-                onClick={() => setIsPortalsOpen(!isPortalsOpen)}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#58111E] hover:text-[#380611] bg-[#FAF5EC] hover:bg-[#F0E6D6] rounded-lg border border-[#F0E6D6] transition-colors"
-              >
-                <Layers className="w-3.5 h-3.5 text-[#58111E]" />
-                <span className="hidden lg:inline">Portals</span>
-                <ChevronDown className="w-3 h-3" />
-              </button>
-
-              {isPortalsOpen && (
-                <div 
-                  className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-[#F0E6D6] py-1.5 z-50 animate-in fade-in slide-in-from-top-1"
-                  onMouseLeave={() => setIsPortalsOpen(false)}
-                >
-                  <div className="px-3 py-1.5 text-[10px] font-bold text-[#7E6569] uppercase tracking-wider border-b border-[#F0E6D6]">
-                    Staff & Admin Portals
-                  </div>
-                  <Link
-                    href="/admin"
-                    onClick={() => setIsPortalsOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-[#380611] hover:bg-[#FAF5EC]"
-                  >
-                    <ShieldAlert className="w-4 h-4 text-[#58111E]" />
-                    <div>
-                      <span className="font-semibold block">Admin Dashboard</span>
-                      <span className="text-[10px] text-[#7E6569]">Manage products, zones, orders</span>
-                    </div>
-                  </Link>
-                  <Link
-                    href="/store-portal"
-                    onClick={() => setIsPortalsOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-[#380611] hover:bg-[#FAF5EC]"
-                  >
-                    <Store className="w-4 h-4 text-[#58111E]" />
-                    <div>
-                      <span className="font-semibold block">Store Manager</span>
-                      <span className="text-[10px] text-[#7E6569]">Stock & order fulfillment</span>
-                    </div>
-                  </Link>
-                  <Link
-                    href="/delivery-portal"
-                    onClick={() => setIsPortalsOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-[#380611] hover:bg-[#FAF5EC]"
-                  >
-                    <Bike className="w-4 h-4 text-[#58111E]" />
-                    <div>
-                      <span className="font-semibold block">Delivery Partner</span>
-                      <span className="text-[10px] text-[#7E6569]">Active tasks & pickup updates</span>
-                    </div>
-                  </Link>
-                </div>
-              )}
-            </div>
-
             {/* Account Profile / Login */}
             {user ? (
               <div className="relative">
@@ -163,7 +102,7 @@ export default function Header() {
                       <p className="text-xs font-bold text-[#380611] truncate">{user.name}</p>
                       <p className="text-[11px] text-[#7E6569] truncate">{user.phone || user.email}</p>
                       <span className="inline-block mt-1 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#FAF5EC] text-[#58111E] border border-[#F0E6D6]">
-                        {user.role}
+                        Customer
                       </span>
                     </div>
                     <Link
@@ -218,31 +157,19 @@ export default function Header() {
               <div className="relative">
                 <ShoppingCart className="w-4 h-4 text-[#FDFBF7]" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-2.5 -right-2.5 bg-[#380611] text-[#FDFBF7] text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center border-2 border-[#FDFBF7]">
+                  <span className="absolute -top-2 -right-2 bg-emerald-500 text-white font-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center animate-in zoom-in-50">
                     {itemCount}
                   </span>
                 )}
               </div>
-              <span className="hidden sm:inline">
-                {itemCount > 0 ? `₹${subtotal.toFixed(0)}` : 'Cart'}
-              </span>
+              <div className="hidden sm:block text-left leading-tight">
+                <span className="block text-[10px] text-[#FAF5EC]/80 uppercase font-semibold">Cart</span>
+                <span className="block text-xs font-black">₹{subtotal.toFixed(0)}</span>
+              </div>
             </Link>
 
           </div>
-        </div>
 
-        {/* Mobile Search Row */}
-        <div className="pb-3 sm:hidden">
-          <form onSubmit={handleSearchSubmit} className="relative">
-            <input
-              type="text"
-              placeholder="Search food, groceries, medicines..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#FAF5EC] text-sm text-[#380611] pl-10 pr-4 py-2 rounded-xl border border-[#F0E6D6] focus:outline-hidden"
-            />
-            <Search className="w-4 h-4 text-[#7E6569] absolute left-3.5 top-1/2 -translate-y-1/2" />
-          </form>
         </div>
       </div>
     </header>
