@@ -93,6 +93,11 @@ export default function Footer() {
                   Cancellation & Refund Policy
                 </Link>
               </li>
+              <li>
+                <Link href="/admin/products" className="hover:text-white transition-colors text-white/50 hover:text-white">
+                  Admin Panel (Products &amp; Stock)
+                </Link>
+              </li>
             </ul>
           </div>
 

@@ -1,4 +1,4 @@
-import { getStoreById, INITIAL_PRODUCTS } from '../../../../server/data/catalog';
+import { getStoreById, getProductsByStore } from '../../../../server/data/catalog';
 import { query } from '../../../../server/db/client';
 
 export async function GET(request, { params }) {
@@ -35,8 +35,8 @@ export async function GET(request, { params }) {
       return Response.json({ error: 'Store not found' }, { status: 404 });
     }
 
-    // Also fetch store products
-    const products = INITIAL_PRODUCTS.filter((p) => p.storeId === id);
+    // Fetch store products from dynamic catalog
+    const products = await getProductsByStore(id);
 
     return Response.json({ store, products });
   } catch (err) {

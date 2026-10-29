@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Star, Clock, MapPin, Phone, ShieldCheck, ArrowLeft, Info } from 'lucide-react';
-import { getStoreById, INITIAL_PRODUCTS } from '../../../server/data/catalog';
+import { getStoreById, getProductsByStore } from '../../../server/data/catalog';
 import ProductCard from '../../../components/products/ProductCard';
 
 export async function generateMetadata({ params }) {
@@ -24,7 +24,7 @@ export default async function StoreDetailPage({ params }) {
     notFound();
   }
 
-  const products = INITIAL_PRODUCTS.filter((p) => p.storeId === id);
+  const products = await getProductsByStore(id);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">

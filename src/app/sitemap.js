@@ -1,5 +1,5 @@
 import { CATEGORIES_DATA } from '../server/data/categories';
-import { INITIAL_PRODUCTS, INITIAL_STORES } from '../server/data/catalog';
+import { getAllProducts, INITIAL_STORES } from '../server/data/catalog';
 
 export default async function sitemap() {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://beegodelivery.in';
@@ -35,7 +35,8 @@ export default async function sitemap() {
     priority: 0.8,
   }));
 
-  const productPages = INITIAL_PRODUCTS.map((p) => ({
+  const allProducts = await getAllProducts();
+  const productPages = allProducts.map((p) => ({
     url: `${baseUrl}/products/${p.id}`,
     lastModified: new Date().toISOString(),
     changeFrequency: 'weekly',

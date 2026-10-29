@@ -21,11 +21,15 @@ test('Serviceability geofence distance calculation for Virajpete', () => {
 });
 
 test('Search catalog query matching', async () => {
-  const coffeeResults = await searchCatalog('coffee', 'all', 'popular');
+  const sampleCatalog = [
+    { id: 'test_coffee', name: 'Coorg Special Coffee', categoryId: 'beverages-snacks', price: 150 },
+    { id: 'test_med', name: 'Paracetamol 650 Tablets', categoryId: 'pharmacy-medicines', price: 30 },
+  ];
+  const coffeeResults = await searchCatalog('coffee', 'all', 'popular', sampleCatalog);
   assert.ok(coffeeResults.length > 0);
   assert.ok(coffeeResults.some((p) => p.name.toLowerCase().includes('coffee')));
 
-  const pharmacyResults = await searchCatalog('', 'pharmacy-medicines', 'popular');
+  const pharmacyResults = await searchCatalog('', 'pharmacy-medicines', 'popular', sampleCatalog);
   assert.ok(pharmacyResults.length > 0);
   assert.ok(pharmacyResults.every((p) => p.categoryId === 'pharmacy-medicines'));
 });

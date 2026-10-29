@@ -1,170 +1,28 @@
 import React from 'react';
-import Link from 'next/link';
-import { 
-  ArrowRight, 
-  Sparkles, 
-  Flame, 
-  ShieldCheck, 
-  Award, 
-  Percent,
-  TrendingUp 
-} from 'lucide-react';
 import HeroBanner from '../components/home/HeroBanner';
-import CategoryGrid from '../components/home/CategoryGrid';
-import ProductCard from '../components/products/ProductCard';
-import StoreCard from '../components/stores/StoreCard';
+import HomeProductCatalog from '../components/home/HomeProductCatalog';
 import ServiceAreaBanner from '../components/home/ServiceAreaBanner';
-import { getFeaturedStores, getPopularProducts, getDailyOffers } from '../server/data/catalog';
+import { getAllProducts } from '../server/data/catalog';
+
+export const metadata = {
+  title: 'BeeGo Delivery — Hyperlocal Delivery in Virajpete, Kodagu',
+  description: 'Order food, groceries, fresh dairy, and essentials delivered in 25-35 minutes across Virajpete.',
+};
 
 export default async function HomePage() {
-  const [stores, popularProducts, offers] = await Promise.all([
-    getFeaturedStores(),
-    getPopularProducts(),
-    getDailyOffers(),
-  ]);
+  const products = await getAllProducts();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-8">
       
       {/* 1. Hero Section */}
       <HeroBanner />
 
-      {/* 2. Category Grid */}
-      <CategoryGrid />
+      {/* 2. Clean Product Catalog (Surfaces live products added from Admin Dashboard) */}
+      <HomeProductCatalog initialProducts={products} />
 
-      {/* 3. Daily Genuine Offers Banner */}
-      {offers && offers.length > 0 && (
-        <section className="my-10">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-[#FAF5EC] text-[#58111E] border border-[#F0E6D6]">
-                <Percent className="w-4 h-4 text-[#58111E]" />
-              </div>
-              <div>
-                <h2 className="text-xl sm:text-2xl font-black text-[#380611] tracking-tight">
-                  Daily Offers &amp; Value Packs
-                </h2>
-                <p className="text-xs text-[#7A162D]/70">
-                  Genuinely configured discounts from verified Virajpete merchants
-                </p>
-              </div>
-            </div>
-            <Link
-              href="/search?filter=offers"
-              className="text-xs font-bold text-[#58111E] hover:text-[#7A162D] flex items-center gap-1 group"
-            >
-              <span>See All Offers</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
-            {offers.slice(0, 4).map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* 4. Featured Stores / Restaurants */}
-      <section className="my-12">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-[#FAF5EC] text-[#58111E] border border-[#F0E6D6]">
-              <Award className="w-4 h-4 text-[#58111E]" />
-            </div>
-            <div>
-              <h2 className="text-xl sm:text-2xl font-black text-[#380611] tracking-tight">
-                Top Rated Virajpete Stores
-              </h2>
-              <p className="text-xs text-[#7A162D]/70">
-                Local restaurants, grocers, pharmacies, and specialty bakeries
-              </p>
-            </div>
-          </div>
-          <Link
-            href="/search?type=stores"
-            className="text-xs font-bold text-[#58111E] hover:text-[#7A162D] flex items-center gap-1 group"
-          >
-            <span>View All Stores</span>
-            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {stores.map((store) => (
-            <StoreCard key={store.id} store={store} />
-          ))}
-        </div>
-      </section>
-
-      {/* 5. Popular Bestsellers Grid */}
-      <section className="my-12">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-[#58111E]/10 text-[#58111E] border border-[#F0E6D6]">
-              <Flame className="w-4 h-4 fill-[#58111E] text-[#58111E]" />
-            </div>
-            <div>
-              <h2 className="text-xl sm:text-2xl font-black text-[#380611] tracking-tight">
-                Popular in Virajpete
-              </h2>
-              <p className="text-xs text-[#7A162D]/70">
-                Most ordered items right now in food, dairy, groceries, and pharmacy
-              </p>
-            </div>
-          </div>
-          <Link
-            href="/search?sort=popular"
-            className="text-xs font-bold text-[#58111E] hover:text-[#7A162D] flex items-center gap-1 group"
-          >
-            <span>Explore All</span>
-            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-          {popularProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
-
-      {/* 6. Service Area Information Banner */}
+      {/* 3. Service Area Information Banner */}
       <ServiceAreaBanner />
-
-      {/* 7. Trust & Safety Standards */}
-      <section className="my-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-[#FAF5EC] p-6 rounded-2xl border border-[#F0E6D6] shadow-2xs space-y-2">
-          <div className="w-10 h-10 rounded-xl bg-[#58111E] text-[#FDFBF7] flex items-center justify-center font-bold">
-            1
-          </div>
-          <h3 className="text-sm font-bold text-[#380611]">Direct From Virajpete Merchants</h3>
-          <p className="text-xs text-[#7A162D]/80 leading-relaxed">
-            No middle warehouses. Orders are picked fresh directly from local shops, bakeries, and licensed pharmacies in Virajpete.
-          </p>
-        </div>
-
-        <div className="bg-[#FAF5EC] p-6 rounded-2xl border border-[#F0E6D6] shadow-2xs space-y-2">
-          <div className="w-10 h-10 rounded-xl bg-[#58111E] text-[#FDFBF7] flex items-center justify-center font-bold">
-            2
-          </div>
-          <h3 className="text-sm font-bold text-[#380611]">Guaranteed Safe Delivery</h3>
-          <p className="text-xs text-[#7A162D]/80 leading-relaxed">
-            Hygienically handled and temperature-conscious packaging for dairy, hot meals, and refrigerated medicines.
-          </p>
-        </div>
-
-        <div className="bg-[#FAF5EC] p-6 rounded-2xl border border-[#F0E6D6] shadow-2xs space-y-2">
-          <div className="w-10 h-10 rounded-xl bg-[#58111E] text-[#FDFBF7] flex items-center justify-center font-bold">
-            3
-          </div>
-          <h3 className="text-sm font-bold text-[#380611]">Honest Pricing &amp; Transparent Fees</h3>
-          <p className="text-xs text-[#7A162D]/80 leading-relaxed">
-            Exact store prices, ₹35 standard delivery fee, zero hidden charges, and fast doorstep delivery in Virajpete.
-          </p>
-        </div>
-      </section>
 
     </div>
   );

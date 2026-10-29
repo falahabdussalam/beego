@@ -1,4 +1,4 @@
-import { getProductById } from '../../../../server/data/catalog';
+import { getProductById, deleteProduct } from '../../../../server/data/catalog';
 import { query } from '../../../../server/db/client';
 
 export async function GET(request, { params }) {
@@ -44,3 +44,20 @@ export async function GET(request, { params }) {
   }
 }
 
+export async function DELETE(request, { params }) {
+  try {
+    const { id } = await params;
+    await deleteProduct(id);
+
+    try {
+      await query('DELETE FROM products WHERE id = $1', [id]);
+    } catch (e) {
+      // Memory fallback
+    }
+
+    return Response.json({ success: true, message: 'Product deleted successfully' });
+  } catch (err) {
+    console.error('Product delete API error:', err);
+    return Response.json({ error: 'Failed to delete product' }, { status: 500 });
+  }
+}
