@@ -33,6 +33,26 @@ export default function GoogleMapPicker({
   const [activeCategory, setActiveCategory] = useState('All');
   const [isLocating, setIsLocating] = useState(false);
 
+  // Strictly track a single selected locality ID to avoid multi-selection
+  const [selectedLocalityId, setSelectedLocalityId] = useState(() => {
+    const match = VIRAJPET_LOCALITIES.find(
+      (l) => l.name.toLowerCase() === (selectedArea || '').toLowerCase()
+    );
+    return match ? match.id : 'clock-tower';
+  });
+
+  // Sync selected locality ID whenever selectedArea prop changes from parent
+  useEffect(() => {
+    if (selectedArea) {
+      const match = VIRAJPET_LOCALITIES.find(
+        (l) => l.name.toLowerCase() === selectedArea.toLowerCase()
+      );
+      if (match) {
+        setSelectedLocalityId(match.id);
+      }
+    }
+  }, [selectedArea]);
+
   const mapRef = useRef(null);
   const googleMapInstance = useRef(null);
   const markerInstance = useRef(null);
@@ -95,6 +115,7 @@ export default function GoogleMapPicker({
     googleMapInstance.current.addListener('click', (e) => {
       const newLat = Number(e.latLng.lat().toFixed(4));
       const newLng = Number(e.latLng.lng().toFixed(4));
+      setSelectedLocalityId(null);
       markerInstance.current.setPosition({ lat: newLat, lng: newLng });
       onChangeCoords({ lat: newLat, lng: newLng });
     });
@@ -103,6 +124,7 @@ export default function GoogleMapPicker({
     markerInstance.current.addListener('dragend', (e) => {
       const newLat = Number(e.latLng.lat().toFixed(4));
       const newLng = Number(e.latLng.lng().toFixed(4));
+      setSelectedLocalityId(null);
       onChangeCoords({ lat: newLat, lng: newLng });
     });
   }, [googleMapsLoaded]);
@@ -131,6 +153,7 @@ export default function GoogleMapPicker({
           lat: Number(pos.coords.latitude.toFixed(4)),
           lng: Number(pos.coords.longitude.toFixed(4)),
         };
+        setSelectedLocalityId(null);
         onChangeCoords(newCoords);
       },
       (err) => {
@@ -143,6 +166,7 @@ export default function GoogleMapPicker({
 
   // Micro pan adjustment for non-API key / keyboard / touchscreen navigation
   const handleNudgePin = (deltaLat, deltaLng) => {
+    setSelectedLocalityId(null);
     onChangeCoords({
       lat: Number((coords.lat + deltaLat).toFixed(4)),
       lng: Number((coords.lng + deltaLng).toFixed(4)),
@@ -214,7 +238,12 @@ export default function GoogleMapPicker({
                 </button>
                 <button
                   type="button"
-                  onClick={() => onChangeCoords({ lat: VIRAJPET_HUB.lat, lng: VIRAJPET_HUB.lng })}
+                  onClick={() => {
+                    setSelectedLocalityId('clock-tower');
+                    onChangeCoords({ lat: VIRAJPET_HUB.lat, lng: VIRAJPET_HUB.lng });
+                    const hubLoc = VIRAJPET_LOCALITIES.find((l) => l.id === 'clock-tower');
+                    if (hubLoc && onSelectArea) onSelectArea(hubLoc);
+                  }}
                   className="p-1 bg-[#FAF5EC] hover:bg-[#F0E6D6] rounded text-[10px] font-black text-[#58111E]"
                   title="Reset to Clock Tower"
                 >
@@ -364,28 +393,29 @@ export default function GoogleMapPicker({
         {/* Localities Quick Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto pr-1">
           {filteredLocalities.map((loc) => {
-            const isSelected = 
-              Math.abs(coords.lat - loc.lat) < 0.005 && 
-              Math.abs(coords.lng - loc.lng) < 0.005;
+            const isSelected = selectedLocalityId === loc.id;
 
             return (
               <button
                 key={loc.id}
                 type="button"
                 onClick={() => {
+                  setSelectedLocalityId(loc.id);
                   onChangeCoords({ lat: loc.lat, lng: loc.lng });
                   if (onSelectArea) onSelectArea(loc);
                 }}
-                className={`p-2 rounded-xl border text-left transition-all ${
+                className={`p-2.5 rounded-xl border text-left transition-all ${
                   isSelected
-                    ? 'bg-[#FAF5EC] border-[#58111E] ring-1 ring-[#58111E] text-[#380611]'
+                    ? 'bg-[#FAF5EC] border-[#58111E] ring-1 ring-[#58111E] text-[#380611] shadow-2xs'
                     : 'bg-white border-[#F0E6D6] hover:border-[#58111E]/40 text-[#2C0C12]'
                 }`}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-1.5">
                   <span className="font-bold text-xs truncate block">{loc.name}</span>
-                  <span className="text-[10px] text-[#58111E] font-semibold shrink-0">
-                    {loc.approxDistanceKm} km
+                  <span className={`text-[10px] font-bold shrink-0 ${
+                    isSelected ? 'text-[#58111E]' : 'text-[#7E6569]'
+                  }`}>
+                    {isSelected ? `✓ ${loc.approxDistanceKm} km` : `${loc.approxDistanceKm} km`}
                   </span>
                 </div>
                 <p className="text-[10px] text-[#7E6569] truncate mt-0.5">
