@@ -35,10 +35,12 @@ function mirrorDirectories(currentDir) {
       const relative = path.relative(appDir, fullPath);
       
       const targetServer = path.join(nextServerApp, relative);
+      const targetServerSegments = path.join(nextServerApp, `${relative}.segments`, entry.name);
       const targetTypes = path.join(nextTypesApp, relative);
       const targetChunks = path.join(nextStaticChunksApp, relative);
 
       ensureDir(targetServer);
+      ensureDir(targetServerSegments);
       ensureDir(targetTypes);
       ensureDir(targetChunks);
 

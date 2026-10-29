@@ -63,8 +63,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Poppins', 'var(--font-poppins)', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        poppins: ['Poppins', 'sans-serif'],
+        sans: ["'Space Grotesk'", 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        'space-grotesk': ["'Space Grotesk'", 'sans-serif'],
       },
     },
   },
