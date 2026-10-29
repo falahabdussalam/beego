@@ -6,6 +6,9 @@ import { CATEGORIES_DATA } from '../../../server/data/categories';
 import { getProductsByCategory, getFeaturedStores } from '../../../server/data/catalog';
 import ProductCard from '../../../components/products/ProductCard';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const category = CATEGORIES_DATA.find((c) => c.id === slug);

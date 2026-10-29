@@ -66,6 +66,25 @@ Built with **Next.js 15 (App Router, JavaScript)**, **Tailwind CSS**, and **Post
 
 ---
 
+## 🛠️ Admin Dashboard & Live Synchronization
+
+BeeGo features a dedicated, separately styled **Admin Dashboard** linked directly with the customer website:
+
+| Section | Route | Capabilities |
+| :--- | :--- | :--- |
+| **Console Overview** | `/admin` | Live metrics, active stores, order volume, live sync monitor, quick status changer. |
+| **Products & Inventory** | `/admin/products` | Add products, edit prices/names/images, 1-click in/out-of-stock toggle, Schedule H compliance check. |
+| **Merchant Stores** | `/admin/stores` | Onboard Virajpet shops, toggle store Open/Closed status, edit delivery times & contact. |
+| **Orders & Dispatch** | `/admin/orders` | Live order log (WhatsApp & checkouts), change status (Confirmed, Preparing, Out for Delivery, Delivered). |
+| **Platform Settings** | `/admin/settings` | Delivery fees, free delivery threshold, WhatsApp desk number, customer announcement banner. |
+
+### ⚡ Live Two-Way Sync
+Any modifications made in the Admin Dashboard (price updates, adding/deleting products, toggling store hours, or publishing announcement banners) **instantly update the customer site in real time** without requiring a page refresh via the built-in cross-tab broadcast engine and Next.js dynamic invalidation (`revalidatePath`).
+
+Access the Admin Dashboard directly from the **Admin** pill button in the Customer Header or navigate to [http://localhost:3000/admin](http://localhost:3000/admin).
+
+---
+
 ## 🔑 Customer Sign-In (Optional)
 
 Customers can browse and order via WhatsApp directly without signing in, or create a customer account to save Virajpete delivery addresses.
@@ -107,7 +126,7 @@ NEXT_PUBLIC_WHATSAPP_DISPLAY="+91 82770 00000"
 ```bash
 npm test
 ```
-*Runs 14 unit tests covering WhatsApp message formatting, URL generation, security, geofencing, and pricing.*
+*Runs 19 unit tests covering WhatsApp message formatting, URL generation, security, geofencing, pricing, and live admin sync.*
 
 ### 4. Start Development Server
 ```bash

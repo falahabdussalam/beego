@@ -1,0 +1,18 @@
+{
+  "platformName": "BeeGo Delivery",
+  "tagline": "We deliver you.",
+  "hubLocation": "Virajpete, Kodagu, Karnataka",
+  "hubOpen": true,
+  "baseDeliveryFee": 35,
+  "freeDeliveryThreshold": 499,
+  "deliveryRadiusKm": 5,
+  "whatsappNumber": "918277000000",
+  "whatsappDisplay": "+91 82770 00000",
+  "operatingHours": "07:00 AM - 10:30 PM",
+  "announcement": {
+    "enabled": true,
+    "text": "🐝 Express Hyperlocal Delivery across Virajpete Town! Direct WhatsApp ordering active.",
+    "type": "info"
+  },
+  "updatedAt": "2026-10-29T11:04:38.408Z"
+}

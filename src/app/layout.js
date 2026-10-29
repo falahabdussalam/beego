@@ -1,4 +1,5 @@
 import './globals.css';
+import AnnouncementBanner from '../components/layout/AnnouncementBanner';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import LocationModal from '../components/location/LocationModal';
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <LocationProvider>
             <CartProvider>
+              <AnnouncementBanner />
               <Header />
               <main className="flex-1">
                 {children}

@@ -5,6 +5,9 @@ import { Star, Clock, MapPin, Phone, ShieldCheck, ArrowLeft, Info } from 'lucide
 import { getStoreById, getProductsByStore } from '../../../server/data/catalog';
 import ProductCard from '../../../components/products/ProductCard';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({ params }) {
   const { id } = await params;
   const store = await getStoreById(id);

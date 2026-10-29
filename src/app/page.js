@@ -4,6 +4,9 @@ import HomeProductCatalog from '../components/home/HomeProductCatalog';
 import ServiceAreaBanner from '../components/home/ServiceAreaBanner';
 import { getAllProducts } from '../server/data/catalog';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata = {
   title: 'BeeGo Delivery — Hyperlocal Delivery in Virajpete, Kodagu',
   description: 'Order food, groceries, fresh dairy, and essentials delivered in 25-35 minutes across Virajpete.',

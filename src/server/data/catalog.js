@@ -6,7 +6,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { INITIAL_STORES } from './stores.js';
+import { INITIAL_STORES, getAllStores, getStoreById as getStoredStoreById } from './stores.js';
 
 export { INITIAL_STORES };
 
@@ -46,11 +46,11 @@ export function writeStoredProducts(products) {
 }
 
 export async function getFeaturedStores() {
-  return INITIAL_STORES;
+  return getAllStores();
 }
 
 export async function getStoreById(id) {
-  return INITIAL_STORES.find((s) => s.id === id) || null;
+  return getStoredStoreById(id);
 }
 
 export async function getAllProducts() {
@@ -123,20 +123,26 @@ export async function saveProduct(productData) {
   const products = readStoredProducts();
   const id = productData.id || `prod_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
   
-  const discountPercent = productData.originalPrice && productData.originalPrice > productData.price
-    ? Math.round(((productData.originalPrice - productData.price) / productData.originalPrice) * 100)
+  const price = Number(productData.price) || 0;
+  const originalPrice = productData.originalPrice ? Number(productData.originalPrice) : price;
+  
+  const discountPercent = originalPrice > price
+    ? Math.round(((originalPrice - price) / originalPrice) * 100)
     : Number(productData.discountPercent) || 0;
+
+  const stores = await getAllStores();
+  const matchingStore = stores.find((s) => s.id === productData.storeId);
 
   const newProduct = {
     id,
     name: productData.name,
-    price: Number(productData.price) || 0,
-    originalPrice: productData.originalPrice ? Number(productData.originalPrice) : Number(productData.price) || 0,
+    price,
+    originalPrice,
     discountPercent,
     unit: productData.unit || '1 unit',
-    stock: Number(productData.stock) || 0,
+    stock: productData.stock !== undefined ? Number(productData.stock) : 25,
     storeId: productData.storeId || 'store_viraj_provisions',
-    storeName: productData.storeName || INITIAL_STORES.find((s) => s.id === productData.storeId)?.name || 'Virajpet Merchant',
+    storeName: productData.storeName || matchingStore?.name || 'Virajpet Merchant',
     categoryId: productData.categoryId || 'groceries',
     categoryName: productData.categoryName || 'General',
     description: productData.description || '',
@@ -144,6 +150,7 @@ export async function saveProduct(productData) {
     isPrescriptionRequired: Boolean(productData.isPrescriptionRequired),
     rating: Number(productData.rating) || 4.8,
     tags: Array.isArray(productData.tags) ? productData.tags : [],
+    updatedAt: new Date().toISOString(),
     createdAt: productData.createdAt || new Date().toISOString(),
   };
 
@@ -156,6 +163,17 @@ export async function saveProduct(productData) {
 
   writeStoredProducts(products);
   return newProduct;
+}
+
+export async function toggleProductStock(id) {
+  const products = readStoredProducts();
+  const product = products.find((p) => p.id === id);
+  if (!product) return null;
+
+  product.stock = product.stock > 0 ? 0 : 25;
+  product.updatedAt = new Date().toISOString();
+  writeStoredProducts(products);
+  return product;
 }
 
 export async function deleteProduct(id) {

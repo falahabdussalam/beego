@@ -1,6 +1,10 @@
 /**
  * Verified Virajpete Merchant Stores
+ * Dynamic persistence in stores.json
  */
+
+import fs from 'fs';
+import path from 'path';
 
 export const INITIAL_STORES = [
   {
@@ -101,3 +105,98 @@ export const INITIAL_STORES = [
     phone: '+91 8274 257666',
   },
 ];
+
+const STORES_FILE_PATH = path.join(process.cwd(), 'src', 'server', 'data', 'stores.json');
+
+let inMemoryStoresCache = null;
+
+export function readStoredStores() {
+  try {
+    if (fs.existsSync(STORES_FILE_PATH)) {
+      const data = fs.readFileSync(STORES_FILE_PATH, 'utf-8');
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        inMemoryStoresCache = parsed;
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.warn('readStoredStores fallback to memory:', err.message);
+  }
+
+  // Initialize file if not found or empty
+  if (!inMemoryStoresCache) {
+    inMemoryStoresCache = [...INITIAL_STORES];
+    try {
+      fs.writeFileSync(STORES_FILE_PATH, JSON.stringify(INITIAL_STORES, null, 2), 'utf-8');
+    } catch (e) {
+      // Ignored
+    }
+  }
+  return inMemoryStoresCache;
+}
+
+export function writeStoredStores(stores) {
+  try {
+    inMemoryStoresCache = stores;
+    fs.writeFileSync(STORES_FILE_PATH, JSON.stringify(stores, null, 2), 'utf-8');
+    return true;
+  } catch (err) {
+    console.error('writeStoredStores error:', err.message);
+    return false;
+  }
+}
+
+export async function getAllStores() {
+  return readStoredStores();
+}
+
+export async function getStoreById(id) {
+  const stores = readStoredStores();
+  return stores.find((s) => s.id === id) || null;
+}
+
+export async function saveStore(storeData) {
+  const stores = readStoredStores();
+  const id = storeData.id || `store_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+
+  const newStore = {
+    id,
+    name: storeData.name,
+    type: storeData.type || 'Merchant',
+    categoryName: storeData.categoryName || 'General',
+    address: storeData.address || 'Virajpete, Kodagu',
+    lat: Number(storeData.lat) || 12.2039,
+    lng: Number(storeData.lng) || 75.8037,
+    rating: Number(storeData.rating) || 4.8,
+    deliveryTimeMinutes: storeData.deliveryTimeMinutes || '20-30',
+    distanceKm: Number(storeData.distanceKm) || 0.8,
+    minOrderAmount: Number(storeData.minOrderAmount) || 50,
+    isOpen: storeData.isOpen !== undefined ? Boolean(storeData.isOpen) : true,
+    image: storeData.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80',
+    phone: storeData.phone || '+91 8274 257000',
+    licenseNumber: storeData.licenseNumber || null,
+    updatedAt: new Date().toISOString(),
+  };
+
+  const existingIndex = stores.findIndex((s) => s.id === id);
+  if (existingIndex >= 0) {
+    stores[existingIndex] = { ...stores[existingIndex], ...newStore };
+  } else {
+    stores.push(newStore);
+  }
+
+  writeStoredStores(stores);
+  return newStore;
+}
+
+export async function toggleStoreStatus(id) {
+  const stores = readStoredStores();
+  const store = stores.find((s) => s.id === id);
+  if (!store) return null;
+
+  store.isOpen = !store.isOpen;
+  store.updatedAt = new Date().toISOString();
+  writeStoredStores(stores);
+  return store;
+}

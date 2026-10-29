@@ -23,6 +23,9 @@ const ICON_MAP = {
   Sparkles,
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata = {
   title: 'All Categories — BeeGo Delivery Virajpete',
   description: 'Browse all delivery categories in Virajpete including Food, Groceries, Fruits & Vegetables, Pharmacy, and Dairy.',

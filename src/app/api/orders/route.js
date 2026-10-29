@@ -3,6 +3,7 @@ import { query, withTransaction, getMemoryStore } from '../../../server/db/clien
 import { getUserFromRequest } from '../../../server/auth/session';
 import { calculateOrderPricing } from '../../../server/orders/pricing';
 import { calculateDistanceKm, VIRAJPET_CENTER_COORDS } from '../../../lib/geo';
+import { saveOrder } from '../../../server/data/orders';
 
 // In-memory idempotency cache to prevent accidental double-submits
 const processedIdempotencyKeys = new Set();
@@ -252,6 +253,36 @@ export async function POST(request) {
       }
     });
 
+    // Also persist to dynamic orders store for Admin Dashboard
+    try {
+      await saveOrder({
+        id: orderRecord.id,
+        customerName: deliveryAddress.contactName || (user ? user.name : 'Virajpet Customer'),
+        customerPhone: deliveryAddress.contactPhone || '',
+        storeId: orderRecord.store_id,
+        storeName: pricing.storeName || 'Virajpet Merchant',
+        status: orderRecord.status,
+        items: pricing.items.map((i) => ({
+          id: i.productId,
+          name: i.name,
+          quantity: i.quantity,
+          price: i.unitPrice,
+        })),
+        itemSubtotal: orderRecord.item_subtotal,
+        deliveryFee: orderRecord.delivery_fee,
+        taxAmount: orderRecord.tax_amount,
+        discountAmount: orderRecord.discount_amount,
+        totalAmount: orderRecord.total_amount,
+        paymentMethod: orderRecord.payment_method,
+        paymentStatus: orderRecord.payment_status,
+        deliveryAddress: orderRecord.delivery_address,
+        deliveryInstructions: orderRecord.delivery_instructions,
+        createdAt: orderRecord.created_at,
+      });
+    } catch (orderPersistErr) {
+      console.warn('Orders persistence notice:', orderPersistErr.message);
+    }
+
     return Response.json(
       {
         success: true,
@@ -276,4 +307,3 @@ export async function POST(request) {
     );
   }
 }
-

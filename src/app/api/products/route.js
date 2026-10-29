@@ -1,5 +1,8 @@
 import { getAllProducts, saveProduct, searchCatalog } from '../../../server/data/catalog';
 import { query } from '../../../server/db/client';
+import { revalidatePath } from 'next/cache';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
   try {
@@ -153,6 +156,12 @@ export async function POST(request) {
       );
     } catch (e) {
       // Ignored if DB is in memory mode
+    }
+
+    try {
+      revalidatePath('/', 'layout');
+    } catch (e) {
+      // Ignored
     }
 
     return Response.json({ success: true, product: savedProduct }, { status: 201 });

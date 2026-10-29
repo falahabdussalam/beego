@@ -1,36 +1,15 @@
 import { getStoreById, getProductsByStore } from '../../../../server/data/catalog';
+import { saveStore, toggleStoreStatus } from '../../../../server/data/stores';
 import { query } from '../../../../server/db/client';
+import { revalidatePath } from 'next/cache';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request, { params }) {
   try {
     const { id } = await params;
 
-    let store = await getStoreById(id);
-
-    try {
-      const res = await query('SELECT * FROM stores WHERE id = $1', [id]);
-      if (res.rows && res.rows.length > 0) {
-        const r = res.rows[0];
-        store = {
-          id: r.id,
-          name: r.name,
-          type: r.type,
-          categoryName: r.category_name,
-          address: r.address,
-          lat: Number(r.latitude),
-          lng: Number(r.longitude),
-          phone: r.phone,
-          rating: Number(r.rating),
-          deliveryTimeMinutes: r.delivery_time_minutes,
-          minOrderAmount: Number(r.min_order_amount),
-          isOpen: r.is_open,
-          image: r.image_url,
-        };
-      }
-    } catch (e) {
-      // Fallback
-    }
-
+    const store = await getStoreById(id);
     if (!store) {
       return Response.json({ error: 'Store not found' }, { status: 404 });
     }
@@ -45,3 +24,74 @@ export async function GET(request, { params }) {
   }
 }
 
+export async function PUT(request, { params }) {
+  try {
+    const { id } = await params;
+    const body = await request.json();
+
+    const existingStore = await getStoreById(id);
+    if (!existingStore) {
+      return Response.json({ error: 'Store not found' }, { status: 404 });
+    }
+
+    const updated = await saveStore({
+      ...existingStore,
+      ...body,
+      id,
+    });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath(`/stores/${id}`);
+    } catch (e) {
+      // Ignored
+    }
+
+    return Response.json({ success: true, store: updated });
+  } catch (err) {
+    console.error('Store update error:', err);
+    return Response.json({ error: 'Failed to update store' }, { status: 500 });
+  }
+}
+
+export async function PATCH(request, { params }) {
+  try {
+    const { id } = await params;
+    const body = await request.json();
+
+    if (body.action === 'toggleStatus') {
+      const updated = await toggleStoreStatus(id);
+      if (!updated) {
+        return Response.json({ error: 'Store not found' }, { status: 404 });
+      }
+
+      try {
+        revalidatePath('/', 'layout');
+        revalidatePath(`/stores/${id}`);
+      } catch (e) {
+        // Ignored
+      }
+
+      return Response.json({ success: true, store: updated });
+    }
+
+    const existingStore = await getStoreById(id);
+    if (!existingStore) {
+      return Response.json({ error: 'Store not found' }, { status: 404 });
+    }
+
+    const updated = await saveStore({ ...existingStore, ...body, id });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath(`/stores/${id}`);
+    } catch (e) {
+      // Ignored
+    }
+
+    return Response.json({ success: true, store: updated });
+  } catch (err) {
+    console.error('Store patch error:', err);
+    return Response.json({ error: 'Failed to patch store' }, { status: 500 });
+  }
+}

@@ -14,6 +14,9 @@ import {
 import { getProductById, getStoreById } from '../../../server/data/catalog';
 import ProductDetailClient from './ProductDetailClient';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({ params }) {
   const { id } = await params;
   const product = await getProductById(id);

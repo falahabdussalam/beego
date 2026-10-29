@@ -15,34 +15,61 @@ import {
   Layers, 
   Eye,
   RefreshCw,
-  X
+  X,
+  Edit,
+  Zap,
+  Check,
+  AlertTriangle
 } from 'lucide-react';
-import { INITIAL_STORES } from '../../../server/data/stores';
 import { CATEGORIES_DATA } from '../../../server/data/categories';
+import { broadcastSyncEvent } from '../../../lib/sync';
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
+  const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedStore, setSelectedStore] = useState('all');
+  const [stockFilter, setStockFilter] = useState('all'); // 'all' | 'instock' | 'outofstock' | 'lowstock'
+  
+  // Modals state
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  
   const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form State
-  const [form, setForm] = useState({
+  const defaultFormState = {
     name: '',
     price: '',
     originalPrice: '',
     unit: '1 unit',
     stock: 25,
-    storeId: INITIAL_STORES[0]?.id || 'store_coorg_heritage',
+    storeId: '',
     categoryId: CATEGORIES_DATA[0]?.id || 'food-dining',
     isPrescriptionRequired: false,
     description: '',
     image: '',
     tags: '',
-  });
+  };
+
+  const [form, setForm] = useState(defaultFormState);
+
+  const fetchStores = async () => {
+    try {
+      const res = await fetch('/api/stores');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.stores && data.stores.length > 0) {
+          setStores(data.stores);
+        }
+      }
+    } catch (e) {
+      // Ignored
+    }
+  };
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -60,16 +87,44 @@ export default function AdminProductsPage() {
   };
 
   useEffect(() => {
+    fetchStores();
     fetchProducts();
   }, []);
 
-  const handleAddProduct = async (e) => {
+  const handleOpenAdd = () => {
+    setEditingProduct(null);
+    setForm({
+      ...defaultFormState,
+      storeId: stores[0]?.id || 'store_coorg_heritage',
+    });
+    setShowAddModal(true);
+  };
+
+  const handleOpenEdit = (p) => {
+    setEditingProduct(p);
+    setForm({
+      name: p.name || '',
+      price: p.price !== undefined ? String(p.price) : '',
+      originalPrice: p.originalPrice ? String(p.originalPrice) : '',
+      unit: p.unit || '1 unit',
+      stock: p.stock !== undefined ? p.stock : 25,
+      storeId: p.storeId || stores[0]?.id,
+      categoryId: p.categoryId || CATEGORIES_DATA[0]?.id,
+      isPrescriptionRequired: Boolean(p.isPrescriptionRequired),
+      description: p.description || '',
+      image: p.image || '',
+      tags: Array.isArray(p.tags) ? p.tags.join(', ') : '',
+    });
+    setShowAddModal(true);
+  };
+
+  const handleSaveProduct = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setStatusMessage({ type: '', text: '' });
 
-    const selectedStore = INITIAL_STORES.find((s) => s.id === form.storeId);
-    const selectedCat = CATEGORIES_DATA.find((c) => c.id === form.categoryId);
+    const selectedStoreObj = stores.find((s) => s.id === form.storeId);
+    const selectedCatObj = CATEGORIES_DATA.find((c) => c.id === form.categoryId);
 
     const priceNum = parseFloat(form.price) || 0;
     const origPriceNum = form.originalPrice ? parseFloat(form.originalPrice) : priceNum;
@@ -85,9 +140,9 @@ export default function AdminProductsPage() {
       unit: form.unit.trim() || '1 unit',
       stock: parseInt(form.stock, 10) || 0,
       storeId: form.storeId,
-      storeName: selectedStore?.name || 'Local Store',
+      storeName: selectedStoreObj?.name || 'Local Store',
       categoryId: form.categoryId,
-      categoryName: selectedCat?.name || 'General',
+      categoryName: selectedCatObj?.name || 'General',
       isPrescriptionRequired: form.isPrescriptionRequired,
       description: form.description.trim(),
       image: form.image.trim() || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80',
@@ -95,8 +150,12 @@ export default function AdminProductsPage() {
     };
 
     try {
-      const res = await fetch('/api/products', {
-        method: 'POST',
+      const isEditing = Boolean(editingProduct);
+      const url = isEditing ? `/api/products/${editingProduct.id}` : '/api/products';
+      const method = isEditing ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
@@ -107,27 +166,26 @@ export default function AdminProductsPage() {
       }
 
       const data = await res.json();
-      setProducts([data.product, ...products]);
-      setShowAddModal(false);
-      setStatusMessage({ 
-        type: 'success', 
-        text: `"${data.product.name}" added successfully and is now LIVE on customer site!` 
-      });
+      const savedProd = data.product;
 
-      // Reset form
-      setForm({
-        name: '',
-        price: '',
-        originalPrice: '',
-        unit: '1 unit',
-        stock: 25,
-        storeId: INITIAL_STORES[0]?.id || 'store_coorg_heritage',
-        categoryId: CATEGORIES_DATA[0]?.id || 'food-dining',
-        isPrescriptionRequired: false,
-        description: '',
-        image: '',
-        tags: '',
-      });
+      if (isEditing) {
+        setProducts(products.map((p) => (p.id === savedProd.id ? savedProd : p)));
+        setStatusMessage({ 
+          type: 'success', 
+          text: `"${savedProd.name}" updated successfully! Changes are live on the customer site.` 
+        });
+        broadcastSyncEvent('PRODUCT_UPDATED', savedProd);
+      } else {
+        setProducts([savedProd, ...products]);
+        setStatusMessage({ 
+          type: 'success', 
+          text: `"${savedProd.name}" added successfully and is now LIVE for customers in Virajpet!` 
+        });
+        broadcastSyncEvent('PRODUCT_ADDED', savedProd);
+      }
+
+      setShowAddModal(false);
+      setEditingProduct(null);
     } catch (err) {
       setStatusMessage({ type: 'error', text: err.message });
     } finally {
@@ -135,8 +193,33 @@ export default function AdminProductsPage() {
     }
   };
 
+  const handleToggleStock = async (id, currentStock) => {
+    try {
+      const res = await fetch(`/api/products/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'toggleStock' }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(products.map((p) => (p.id === id ? data.product : p)));
+        const isNowInStock = data.product.stock > 0;
+        setStatusMessage({
+          type: 'success',
+          text: `"${data.product.name}" is now ${isNowInStock ? 'IN STOCK (' + data.product.stock + ')' : 'OUT OF STOCK'}. Updated on customer site!`,
+        });
+        broadcastSyncEvent('PRODUCT_UPDATED', data.product);
+      } else {
+        throw new Error('Failed to toggle stock');
+      }
+    } catch (err) {
+      setStatusMessage({ type: 'error', text: err.message });
+    }
+  };
+
   const handleDeleteProduct = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to remove "${name}" from the customer site?`)) {
+    if (!window.confirm(`Are you sure you want to remove "${name}" from the customer website?`)) {
       return;
     }
 
@@ -144,7 +227,11 @@ export default function AdminProductsPage() {
       const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setProducts(products.filter((p) => p.id !== id));
-        setStatusMessage({ type: 'success', text: `"${name}" removed from customer catalog.` });
+        setStatusMessage({ 
+          type: 'success', 
+          text: `"${name}" removed from catalog and customer site.` 
+        });
+        broadcastSyncEvent('PRODUCT_DELETED', { id });
       } else {
         throw new Error('Failed to delete product');
       }
@@ -153,14 +240,22 @@ export default function AdminProductsPage() {
     }
   };
 
-  // Filter products by search and category
+  // Filter products by search, category, store, and stock status
   const filteredProducts = products.filter((p) => {
     const matchesSearch = 
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.storeName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.categoryName?.toLowerCase().includes(searchQuery.toLowerCase());
+    
     const matchesCategory = selectedCategory === 'all' || p.categoryId === selectedCategory;
-    return matchesSearch && matchesCategory;
+    const matchesStore = selectedStore === 'all' || p.storeId === selectedStore;
+
+    let matchesStock = true;
+    if (stockFilter === 'instock') matchesStock = (p.stock || 0) > 0;
+    else if (stockFilter === 'outofstock') matchesStock = (p.stock || 0) <= 0;
+    else if (stockFilter === 'lowstock') matchesStock = (p.stock || 0) > 0 && (p.stock || 0) <= 5;
+
+    return matchesSearch && matchesCategory && matchesStore && matchesStock;
   });
 
   return (
@@ -169,7 +264,7 @@ export default function AdminProductsPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-black text-[#380611] tracking-tight">
               Products &amp; Inventory Management
             </h1>
@@ -178,20 +273,20 @@ export default function AdminProductsPage() {
             </span>
           </div>
           <p className="text-xs text-[#7E6569] mt-1">
-            Items added here will immediately appear on the BeeGo customer website in Virajpet
+            Any items added, edited, or marked out of stock immediately sync to the customer website in Virajpete
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <button
             onClick={fetchProducts}
-            className="p-2.5 rounded-xl border border-[#F0E6D6] bg-white text-[#58111E] hover:bg-[#FAF5EC] transition-colors"
+            className="p-2.5 rounded-xl border border-[#F0E6D6] bg-white text-[#58111E] hover:bg-[#FAF5EC] transition-colors shadow-2xs"
             title="Refresh Catalog"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
           <button
-            onClick={() => setShowAddModal(true)}
+            onClick={handleOpenAdd}
             className="flex items-center gap-2 px-5 py-2.5 bg-[#58111E] hover:bg-[#7A162D] text-[#FDFBF7] font-bold text-xs rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             <Plus className="w-4 h-4" />
@@ -200,9 +295,9 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
-      {/* Notification Banner */}
+      {/* Notification Toast */}
       {statusMessage.text && (
-        <div className={`p-4 rounded-2xl text-xs flex items-center justify-between border ${
+        <div className={`p-4 rounded-2xl text-xs flex items-center justify-between border animate-in fade-in ${
           statusMessage.type === 'success' 
             ? 'bg-emerald-50 border-emerald-200 text-emerald-950' 
             : 'bg-rose-50 border-rose-200 text-rose-950'
@@ -224,9 +319,11 @@ export default function AdminProductsPage() {
         </div>
       )}
 
-      {/* Search & Category Filter Bar */}
-      <div className="bg-white rounded-2xl p-4 border border-[#F0E6D6] shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="relative w-full sm:w-80">
+      {/* Search & Multi-Filter Bar */}
+      <div className="bg-white rounded-2xl p-4 border border-[#F0E6D6] shadow-2xs flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+        
+        {/* Search */}
+        <div className="relative flex-1 min-w-[200px]">
           <input
             type="text"
             placeholder="Search products by name, store..."
@@ -237,18 +334,45 @@ export default function AdminProductsPage() {
           <Search className="w-3.5 h-3.5 text-[#7E6569] absolute left-2.5 top-1/2 -translate-y-1/2" />
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto">
-          <label className="text-[11px] font-bold text-[#7E6569] whitespace-nowrap">Filter Category:</label>
+        {/* Filter Controls */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          
+          {/* Category Filter */}
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="text-xs p-2 rounded-xl bg-[#FAF5EC] border border-[#F0E6D6] text-[#380611] font-medium outline-hidden"
           >
-            <option value="all">All Categories ({products.length})</option>
+            <option value="all">All Categories</option>
             {CATEGORIES_DATA.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
+
+          {/* Store Filter */}
+          <select
+            value={selectedStore}
+            onChange={(e) => setSelectedStore(e.target.value)}
+            className="text-xs p-2 rounded-xl bg-[#FAF5EC] border border-[#F0E6D6] text-[#380611] font-medium outline-hidden"
+          >
+            <option value="all">All Stores</option>
+            {stores.map((s) => (
+              <option key={s.id} value={s.id}>{s.name}</option>
+            ))}
+          </select>
+
+          {/* Stock Filter */}
+          <select
+            value={stockFilter}
+            onChange={(e) => setStockFilter(e.target.value)}
+            className="text-xs p-2 rounded-xl bg-[#FAF5EC] border border-[#F0E6D6] text-[#380611] font-medium outline-hidden"
+          >
+            <option value="all">All Stock Status</option>
+            <option value="instock">In Stock Only</option>
+            <option value="lowstock">Low Stock (≤ 5)</option>
+            <option value="outofstock">Out of Stock Only</option>
+          </select>
+
         </div>
       </div>
 
@@ -269,12 +393,12 @@ export default function AdminProductsPage() {
             </h3>
             <p className="text-xs text-[#7E6569] max-w-sm mx-auto">
               {products.length === 0 
-                ? 'Your customer site currently has zero demo items. Click "Add New Product" to list genuine products from Virajpet stores.'
-                : 'Try clearing your search query or selecting a different category filter.'}
+                ? 'Your catalog is clean and empty. Click "Add New Product" to list genuine items from Virajpet stores.'
+                : 'Try adjusting your search query or switching filters.'}
             </p>
             {products.length === 0 && (
               <button
-                onClick={() => setShowAddModal(true)}
+                onClick={handleOpenAdd}
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#58111E] hover:bg-[#7A162D] text-[#FDFBF7] font-bold text-xs rounded-xl shadow-md transition-all mt-2"
               >
                 <Plus className="w-4 h-4" />
@@ -292,105 +416,126 @@ export default function AdminProductsPage() {
                   <th className="pb-3">Category</th>
                   <th className="pb-3">Price</th>
                   <th className="pb-3">Stock Units</th>
-                  <th className="pb-3">Type</th>
+                  <th className="pb-3">Availability</th>
                   <th className="pb-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F0E6D6]/60">
-                {filteredProducts.map((p) => (
-                  <tr key={p.id} className="hover:bg-[#FAF5EC]/40 transition-colors">
-                    <td className="py-3.5 font-bold text-[#380611]">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={p.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=120&q=80'}
-                          alt={p.name}
-                          className="w-10 h-10 rounded-xl object-cover border border-[#F0E6D6] shrink-0 bg-[#FAF5EC]"
-                        />
-                        <div>
-                          <span className="block text-xs font-bold text-[#380611]">{p.name}</span>
-                          <span className="text-[10px] text-[#7E6569] font-normal">{p.unit}</span>
+                {filteredProducts.map((p) => {
+                  const inStock = (p.stock || 0) > 0;
+                  return (
+                    <tr key={p.id} className="hover:bg-[#FAF5EC]/40 transition-colors">
+                      <td className="py-3.5 font-bold text-[#380611]">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={p.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=120&q=80'}
+                            alt={p.name}
+                            className="w-10 h-10 rounded-xl object-cover border border-[#F0E6D6] shrink-0 bg-[#FAF5EC]"
+                          />
+                          <div>
+                            <span className="block text-xs font-bold text-[#380611]">{p.name}</span>
+                            <span className="text-[10px] text-[#7E6569] font-normal">{p.unit}</span>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-3.5 text-[#58111E] font-medium">{p.storeName}</td>
-                    <td className="py-3.5 text-[#7E6569]">{p.categoryName}</td>
-                    <td className="py-3.5 font-black text-[#380611]">
-                      <div className="flex items-center gap-1.5">
-                        <span>₹{Number(p.price).toFixed(0)}</span>
-                        {p.originalPrice && p.originalPrice > p.price && (
-                          <span className="text-[10px] text-[#7E6569] line-through font-normal">
-                            ₹{Number(p.originalPrice).toFixed(0)}
-                          </span>
-                        )}
-                        {p.discountPercent > 0 && (
-                          <span className="text-[9px] font-bold bg-[#58111E] text-white px-1.5 py-0.2 rounded">
-                            {p.discountPercent}% OFF
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="py-3.5 font-bold">
-                      <span className={p.stock <= 5 ? 'text-rose-600' : 'text-[#380611]'}>
-                        {p.stock}
-                      </span>
-                    </td>
-                    <td className="py-3.5">
-                      {p.isPrescriptionRequired ? (
-                        <span className="text-[9px] font-bold bg-rose-100 text-rose-800 border border-rose-200 px-2 py-0.5 rounded-full">
-                          Schedule H (Rx)
+                      </td>
+                      <td className="py-3.5 text-[#58111E] font-medium">{p.storeName}</td>
+                      <td className="py-3.5 text-[#7E6569]">{p.categoryName}</td>
+                      <td className="py-3.5 font-black text-[#380611]">
+                        <div className="flex items-center gap-1.5">
+                          <span>₹{Number(p.price).toFixed(0)}</span>
+                          {p.originalPrice && p.originalPrice > p.price && (
+                            <span className="text-[10px] text-[#7E6569] line-through font-normal">
+                              ₹{Number(p.originalPrice).toFixed(0)}
+                            </span>
+                          )}
+                          {p.discountPercent > 0 && (
+                            <span className="text-[9px] font-bold bg-[#58111E] text-white px-1.5 py-0.2 rounded">
+                              {p.discountPercent}% OFF
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-3.5 font-bold">
+                        <span className={p.stock <= 5 && inStock ? 'text-amber-600' : !inStock ? 'text-rose-600' : 'text-[#380611]'}>
+                          {p.stock}
                         </span>
-                      ) : (
-                        <span className="text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">
-                          Live Product
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3.5 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/products/${p.id}`}
-                          target="_blank"
-                          className="p-1.5 rounded-lg text-[#58111E] hover:bg-[#FAF5EC] transition-colors"
-                          title="View on Customer Site"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                        </Link>
+                      </td>
+                      <td className="py-3.5">
                         <button
-                          onClick={() => handleDeleteProduct(p.id, p.name)}
-                          className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 transition-colors"
-                          title="Remove Product"
+                          onClick={() => handleToggleStock(p.id, p.stock)}
+                          title="Click to toggle In Stock / Out of Stock on customer site"
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-bold border transition-all ${
+                            inStock
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+                              : 'bg-rose-50 text-rose-800 border-rose-200 hover:bg-rose-100'
+                          }`}
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          {inStock ? '✓ In Stock' : '✕ Out of Stock'}
                         </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="py-3.5 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => handleOpenEdit(p)}
+                            className="p-1.5 rounded-lg text-[#58111E] hover:bg-[#FAF5EC] transition-colors"
+                            title="Edit Product Details & Price"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </button>
+                          <Link
+                            href={`/products/${p.id}`}
+                            target="_blank"
+                            className="p-1.5 rounded-lg text-[#58111E] hover:bg-[#FAF5EC] transition-colors"
+                            title="View on Customer Site"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                          </Link>
+                          <button
+                            onClick={() => handleDeleteProduct(p.id, p.name)}
+                            className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 transition-colors"
+                            title="Remove Product"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         )}
       </div>
 
-      {/* Add Product Modal */}
+      {/* Add / Edit Product Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
           <div className="bg-[#FDFBF7] rounded-3xl max-w-xl w-full p-6 sm:p-7 space-y-4 shadow-2xl border border-[#F0E6D6] max-h-[90vh] overflow-y-auto">
             
             <div className="flex items-center justify-between border-b border-[#F0E6D6] pb-3">
               <div>
-                <h2 className="text-base font-bold text-[#380611]">Add New Product to Catalog</h2>
-                <p className="text-[11px] text-[#7E6569]">This item will appear instantly on the Virajpet customer website</p>
+                <h2 className="text-base font-bold text-[#380611]">
+                  {editingProduct ? `Edit "${editingProduct.name}"` : 'Add New Product to Catalog'}
+                </h2>
+                <p className="text-[11px] text-[#7E6569]">
+                  {editingProduct 
+                    ? 'Updates saved here immediately sync to customer product pages' 
+                    : 'This item will appear instantly on the Virajpet customer website'}
+                </p>
               </div>
               <button
-                onClick={() => setShowAddModal(false)}
+                onClick={() => {
+                  setShowAddModal(false);
+                  setEditingProduct(null);
+                }}
                 className="w-8 h-8 rounded-full hover:bg-[#F0E6D6] text-[#7E6569] hover:text-[#380611] flex items-center justify-center transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
             
-            <form onSubmit={handleAddProduct} className="space-y-3.5 text-xs">
+            <form onSubmit={handleSaveProduct} className="space-y-3.5 text-xs">
               <div>
                 <label className="block text-[11px] font-bold text-[#380611] uppercase mb-1">
                   Product Name *
@@ -459,7 +604,7 @@ export default function AdminProductsPage() {
                     onChange={(e) => setForm({ ...form, storeId: e.target.value })}
                     className="w-full p-2.5 rounded-xl bg-white border border-[#F0E6D6] text-[#380611] outline-hidden"
                   >
-                    {INITIAL_STORES.map((s) => (
+                    {stores.map((s) => (
                       <option key={s.id} value={s.id}>{s.name} ({s.type})</option>
                     ))}
                   </select>
@@ -482,7 +627,7 @@ export default function AdminProductsPage() {
 
               <div>
                 <label className="block text-[11px] font-bold text-[#380611] uppercase mb-1">
-                  Product Image URL (Optional)
+                  Product Image URL
                 </label>
                 <input
                   type="url"
@@ -549,7 +694,10 @@ export default function AdminProductsPage() {
               <div className="flex justify-end gap-2.5 pt-4 border-t border-[#F0E6D6]">
                 <button
                   type="button"
-                  onClick={() => setShowAddModal(false)}
+                  onClick={() => {
+                    setShowAddModal(false);
+                    setEditingProduct(null);
+                  }}
                   className="px-4 py-2 text-[#7E6569] hover:bg-[#F0E6D6] rounded-xl font-bold transition-colors"
                 >
                   Cancel
@@ -559,7 +707,7 @@ export default function AdminProductsPage() {
                   disabled={isSubmitting}
                   className="px-6 py-2.5 bg-[#58111E] hover:bg-[#7A162D] text-[#FDFBF7] font-bold rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Saving...' : 'Save & Publish Product'}
+                  {isSubmitting ? 'Saving...' : editingProduct ? 'Save & Update Live' : 'Save & Publish Product'}
                 </button>
               </div>
             </form>
@@ -570,4 +718,3 @@ export default function AdminProductsPage() {
     </div>
   );
 }
-
