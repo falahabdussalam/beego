@@ -10,9 +10,9 @@
   "whatsappDisplay": "+91 82770 00000",
   "operatingHours": "07:00 AM - 10:30 PM",
   "announcement": {
-    "enabled": true,
-    "text": "🐝 Express Hyperlocal Delivery across Virajpete Town! Direct WhatsApp ordering active.",
+    "enabled": false,
+    "text": "",
     "type": "info"
   },
-  "updatedAt": "2026-10-29T11:04:38.408Z"
+  "updatedAt": "2026-10-30T04:15:31.805Z"
 }
