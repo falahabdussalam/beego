@@ -164,6 +164,13 @@ export default function LocationModal() {
             coords={coords}
             onChangeCoords={setCoords}
             selectedArea={addressDetails.area}
+            onSelectArea={(areaName, localityInfo) => {
+              setAddressDetails((prev) => ({
+                ...prev,
+                area: areaName,
+                landmark: prev.landmark ? prev.landmark : localityInfo?.landmarks || prev.landmark,
+              }));
+            }}
           />
 
           {/* 2. Manual Detailed Address Form */}
