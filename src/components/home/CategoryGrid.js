@@ -54,16 +54,16 @@ export default function CategoryGrid({ activeCategory, onSelectCategory }) {
                 key={cat.id}
                 type="button"
                 onClick={() => onSelectCategory(isSelected ? 'all' : cat.id)}
-                className={`p-3 rounded-2xl border text-center transition-all flex flex-col items-center justify-center gap-2 ${
+                className={`p-3 rounded-2xl border text-center transition-all duration-200 flex flex-col items-center justify-center gap-2 hover:-translate-y-0.5 group ${
                   isSelected
-                    ? 'bg-[#58111E] text-[#FDFBF7] border-[#58111E] shadow-sm'
-                    : 'bg-white border-[#F0E6D6] hover:border-[#58111E]/40 text-[#380611] hover:bg-[#FAF5EC]/50'
+                    ? 'bg-[#58111E] text-[#FDFBF7] border-[#58111E] shadow-md scale-[1.02]'
+                    : 'bg-white border-[#F0E6D6] hover:border-[#58111E]/40 text-[#380611] hover:bg-[#FAF5EC]/70 hover:shadow-xs'
                 }`}
               >
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
-                  isSelected ? 'bg-white/20 text-white' : 'bg-[#FAF5EC] text-[#58111E]'
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                  isSelected ? 'bg-white/20 text-white' : 'bg-[#FAF5EC] text-[#58111E] group-hover:scale-110 group-hover:bg-[#58111E] group-hover:text-[#FDFBF7]'
                 }`}>
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-5 h-5 transition-transform group-hover:rotate-6" />
                 </div>
                 <span className="text-xs font-bold truncate max-w-full block">
                   {cat.name}
@@ -76,10 +76,10 @@ export default function CategoryGrid({ activeCategory, onSelectCategory }) {
             <Link
               key={cat.id}
               href={`/categories/${cat.id}`}
-              className="bg-white rounded-2xl p-3 border border-[#F0E6D6] hover:border-[#58111E]/50 hover:bg-[#FAF5EC]/40 shadow-2xs transition-all flex flex-col items-center justify-center text-center gap-2 group"
+              className="bg-white rounded-2xl p-3 border border-[#F0E6D6] hover:border-[#58111E]/50 hover:bg-[#FAF5EC]/70 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 group"
             >
-              <div className="w-10 h-10 rounded-xl bg-[#FAF5EC] group-hover:bg-[#58111E] text-[#58111E] group-hover:text-[#FDFBF7] flex items-center justify-center transition-colors">
-                <Icon className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-xl bg-[#FAF5EC] group-hover:bg-[#58111E] text-[#58111E] group-hover:text-[#FDFBF7] flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                <Icon className="w-5 h-5 transition-transform group-hover:rotate-6" />
               </div>
               <div>
                 <span className="text-xs font-bold text-[#380611] group-hover:text-[#58111E] transition-colors block truncate max-w-full">

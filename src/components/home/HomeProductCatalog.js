@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Package, Search, Sparkles, RefreshCw, Zap } from 'lucide-react';
+import { Search, Sparkles, RefreshCw, Zap } from 'lucide-react';
 import ProductCard from '../products/ProductCard';
 import CategoryGrid from './CategoryGrid';
 import { subscribeSyncEvents } from '../../lib/sync';
+import DeliveryIllustration from '../illustrations/DeliveryIllustration';
 
 export default function HomeProductCatalog({ initialProducts = [] }) {
   const [products, setProducts] = useState(initialProducts);
@@ -131,9 +132,9 @@ export default function HomeProductCatalog({ initialProducts = [] }) {
 
       {/* Clean Products Grid or Empty State */}
       {products.length === 0 ? (
-        <div className="bg-white rounded-3xl p-10 sm:p-14 border border-[#F0E6D6] shadow-xs text-center space-y-4 max-w-lg mx-auto my-8">
-          <div className="w-16 h-16 rounded-3xl bg-[#FAF5EC] text-[#58111E] flex items-center justify-center mx-auto border border-[#F0E6D6]">
-            <Package className="w-8 h-8" />
+        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-[#F0E6D6] shadow-xs text-center space-y-4 max-w-lg mx-auto my-8">
+          <div className="w-36 h-28 mx-auto flex items-center justify-center">
+            <DeliveryIllustration className="w-36 h-28" animated={true} />
           </div>
           <div className="space-y-1">
             <h3 className="text-base font-black text-[#380611]">

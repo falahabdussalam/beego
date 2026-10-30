@@ -27,6 +27,7 @@ import { useLocation } from '../../context/LocationContext';
 import { useAuth } from '../../context/AuthContext';
 import { calculateDistanceKm, VIRAJPET_CENTER_COORDS } from '../../lib/geo';
 import { formatWhatsAppOrderMessage, getWhatsAppUrl, DISPLAY_WHATSAPP_NUMBER } from '../../lib/whatsapp';
+import GroceriesIllustration from '../../components/illustrations/GroceriesIllustration';
 
 export default function CartPage() {
   const { 
@@ -363,8 +364,8 @@ export default function CartPage() {
   if (cartItems.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center space-y-5">
-        <div className="w-20 h-20 rounded-3xl bg-[#FAF5EC] border border-[#F0E6D6] text-[#58111E] flex items-center justify-center mx-auto">
-          <ShoppingCart className="w-10 h-10" />
+        <div className="w-36 h-36 mx-auto flex items-center justify-center animate-float-gentle">
+          <GroceriesIllustration className="w-36 h-36" animated={true} />
         </div>
         <div className="space-y-1">
           <h1 className="text-2xl font-black text-[#380611] tracking-tight">

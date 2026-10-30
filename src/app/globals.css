@@ -58,3 +58,160 @@ select:focus-visible {
   outline: 2px solid #58111E;
   outline-offset: 2px;
 }
+
+/* Animated illustration keyframes */
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.2deg);
+  }
+}
+
+@keyframes float-delayed {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(7px) rotate(-1deg);
+  }
+}
+
+@keyframes steam-rise-1 {
+  0% {
+    transform: translateY(0) scaleY(1);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(-18px) scaleY(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes steam-rise-2 {
+  0% {
+    transform: translateY(0) scaleY(1);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateY(-22px) scaleY(1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1.08);
+  }
+  40% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes sway-leaf {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+}
+
+@keyframes spin-scooter-wheel {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes road-dash {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -40;
+  }
+}
+
+@keyframes sparkle-shine {
+  0%, 100% {
+    transform: scale(0.8) rotate(0deg);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.25) rotate(45deg);
+    opacity: 1;
+  }
+}
+
+@keyframes droplet-drip {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+.animate-float-gentle {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 4.5s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.animate-steam-1 {
+  animation: steam-rise-1 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-steam-2 {
+  animation: steam-rise-2 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation-delay: 1.2s;
+}
+
+.animate-heartbeat {
+  animation: pulse-heartbeat 2.2s ease-in-out infinite;
+}
+
+.animate-sway {
+  transform-origin: 50% 90%;
+  animation: sway-leaf 3.5s ease-in-out infinite;
+}
+
+.animate-wheel {
+  transform-origin: center;
+  animation: spin-scooter-wheel 1.2s linear infinite;
+}
+
+.animate-road {
+  stroke-dasharray: 6 6;
+  animation: road-dash 1s linear infinite;
+}
+
+.animate-sparkle {
+  transform-origin: center;
+  animation: sparkle-shine 2.5s ease-in-out infinite;
+}
+
+.animate-drip {
+  animation: droplet-drip 2s ease-in-out infinite;
+}
