@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Package, Search, Plus, Sparkles, RefreshCw, Zap } from 'lucide-react';
+import { Package, Search, Sparkles, RefreshCw, Zap } from 'lucide-react';
 import ProductCard from '../products/ProductCard';
 import CategoryGrid from './CategoryGrid';
 import { subscribeSyncEvents } from '../../lib/sync';
@@ -35,7 +35,7 @@ export default function HomeProductCatalog({ initialProducts = [] }) {
     setProducts(initialProducts);
   }, [initialProducts]);
 
-  // Real-time synchronization with Admin Dashboard actions
+  // Real-time synchronization with live catalog changes
   useEffect(() => {
     const unsubscribe = subscribeSyncEvents((event) => {
       if (event.type === 'PRODUCT_UPDATED' || event.type === 'PRODUCT_ADDED' || event.type === 'PRODUCT_DELETED') {
@@ -87,14 +87,14 @@ export default function HomeProductCatalog({ initialProducts = [] }) {
               {filtered.length} {filtered.length === 1 ? 'item' : 'items'}
             </span>
 
-            {/* Live Sync Badge */}
+            {/* Live Status Badge */}
             {isLiveUpdated ? (
               <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-black px-2 py-0.5 rounded-full animate-in zoom-in-75">
                 <Zap className="w-3 h-3 text-emerald-600 fill-emerald-600" />
-                <span>Updated Live from Admin!</span>
+                <span>Catalog Updated</span>
               </span>
             ) : (
-              <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50/80 border border-emerald-200 px-2 py-0.5 rounded-full" title="Real-time synchronized with Admin Portal">
+              <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50/80 border border-emerald-200 px-2 py-0.5 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span>Live Catalog</span>
               </span>
@@ -137,19 +137,18 @@ export default function HomeProductCatalog({ initialProducts = [] }) {
           </div>
           <div className="space-y-1">
             <h3 className="text-base font-black text-[#380611]">
-              Catalog Ready — No Products Added Yet
+              Fresh Items Arriving Soon
             </h3>
             <p className="text-xs text-[#7E6569] max-w-sm mx-auto leading-relaxed">
-              When you add or edit products in the Admin Dashboard, they will immediately show up here for customers.
+              We are updating our catalog with fresh produce, groceries, and essentials from local Virajpet merchants. Please check back shortly or explore categories.
             </p>
           </div>
           <div className="pt-2">
             <Link
-              href="/admin/products"
+              href="/categories"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#58111E] hover:bg-[#7A162D] text-[#FDFBF7] font-bold text-xs rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Plus className="w-4 h-4" />
-              <span>Add Products in Admin Dashboard</span>
+              <span>Explore Categories</span>
             </Link>
           </div>
         </div>

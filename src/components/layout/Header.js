@@ -2,15 +2,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { 
   MapPin, 
   Search, 
   ShoppingCart, 
   User, 
   ChevronDown, 
-  LogOut,
-  LayoutDashboard
+  LogOut
 } from 'lucide-react';
 import Logo from '../ui/Logo';
 import { useLocation } from '../../context/LocationContext';
@@ -19,18 +18,12 @@ import { useAuth } from '../../context/AuthContext';
 
 export default function Header() {
   const router = useRouter();
-  const pathname = usePathname();
   const { currentLocation, setIsLocationModalOpen } = useLocation();
   const { itemCount, subtotal } = useCart();
   const { user, logout } = useAuth();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
-
-  // Do not render customer header inside admin routes
-  if (pathname?.startsWith('/admin')) {
-    return null;
-  }
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -86,16 +79,6 @@ export default function Header() {
           {/* Right Action Controls */}
           <div className="flex items-center gap-2.5 sm:gap-3">
             
-            {/* Direct Admin Dashboard Pill Button */}
-            <Link
-              href="/admin"
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-[#58111E] hover:text-[#FDFBF7] bg-[#58111E]/10 hover:bg-[#58111E] rounded-xl border border-[#58111E]/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
-              title="Open BeeGo Admin Dashboard"
-            >
-              <LayoutDashboard className="w-3.5 h-3.5 shrink-0" />
-              <span className="hidden md:inline">Admin</span>
-            </Link>
-
             {/* Account Profile / Login */}
             {user ? (
               <div className="relative">
@@ -128,13 +111,6 @@ export default function Header() {
                       className="block px-3 py-2 text-xs text-[#380611] hover:bg-[#FAF5EC] font-medium"
                     >
                       My Profile & Orders
-                    </Link>
-                    <Link
-                      href="/admin"
-                      onClick={() => setIsAccountMenuOpen(false)}
-                      className="block px-3 py-2 text-xs text-[#58111E] hover:bg-[#FAF5EC] font-bold border-t border-b border-[#F0E6D6]"
-                    >
-                      Admin Dashboard ↗
                     </Link>
                     <button
                       onClick={() => {

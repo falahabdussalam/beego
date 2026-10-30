@@ -2,16 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { ShieldCheck, Phone, Mail, MapPin, Clock, Heart, LayoutDashboard } from 'lucide-react';
+import { ShieldCheck, Phone, Mail, MapPin, Clock, Heart } from 'lucide-react';
 import Logo from '../ui/Logo';
 
 export default function Footer() {
-  const pathname = usePathname();
-
-  if (pathname?.startsWith('/admin')) {
-    return null;
-  }
   return (
     <footer className="bg-[#380611] text-[#FDFBF7]/80 pt-16 pb-12 border-t border-[#58111E]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -99,11 +93,6 @@ export default function Footer() {
               <li>
                 <Link href="/refund-policy" className="hover:text-white transition-colors">
                   Cancellation & Refund Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin/products" className="hover:text-white transition-colors text-white/50 hover:text-white">
-                  Admin Panel (Products &amp; Stock)
                 </Link>
               </li>
             </ul>

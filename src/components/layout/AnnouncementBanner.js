@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
 import { Sparkles, AlertCircle, CheckCircle2, X } from 'lucide-react';
 import { subscribeSyncEvents } from '../../lib/sync';
 
 export default function AnnouncementBanner() {
-  const pathname = usePathname();
   const [announcement, setAnnouncement] = useState(null);
   const [dismissed, setDismissed] = useState(false);
 
@@ -40,7 +38,6 @@ export default function AnnouncementBanner() {
     return () => unsubscribe();
   }, []);
 
-  if (pathname?.startsWith('/admin')) return null;
   if (!announcement || dismissed) return null;
 
   const bgStyles = {
